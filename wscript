@@ -4,11 +4,6 @@
 TOP = '.'
 APPNAME = 'Junk'
 
-from waflib.extras import wcb
-#wcb.package_descriptions.append(("WCT", dict(
-#    incs=["WireCellUtil/Units.h"],
-#    libs=["WireCellUtil"], mandatory=True)))
-
 def options(opt):
     opt.load("wcb")
 
