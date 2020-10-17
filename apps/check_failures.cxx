@@ -511,6 +511,10 @@ int main( int argc, char** argv )
     }
     std::cout << "Reco 2.0 PR failure in subrun: " << map_rs_f2pr.size() << "/" << map_rs_n.size() << " POT: " << tmp_pot << " ratio " << tmp_pot/total_pot << std::endl;
 
+    // for (auto it = map_rs_f2pr.begin(); it != map_rs_f2pr.end(); it++){
+    //   std::cout << it->first.first << " aaa " << it->first.second << std::endl;
+    // }
+
     tmp_pot = 0;
     int tmp_event = 0;
     for (auto it = map_rs_f2pr.begin(); it != map_rs_f2pr.end(); it++){
