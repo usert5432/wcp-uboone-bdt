@@ -2,5 +2,5 @@
 
 ```bash
 ./wcb configure --prefix=<path-to-install> --with-root=<path-to-root>
-./wcb
+./wcb -p build install
 ```
