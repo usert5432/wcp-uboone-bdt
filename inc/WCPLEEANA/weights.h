@@ -5,6 +5,8 @@
 
 namespace LEEana{
   struct WeightInfo{
+    bool flag_sep_28;
+    
     int run;
     int subrun;
     int event;
@@ -28,12 +30,19 @@ namespace LEEana{
     std::vector<float> *piontotxsec_FluxUnisim;
     std::vector<float> *piplus_PrimaryHadronSWCentralSplineVariation;
 
+    // Sep 28, added
+    std::vector<float> *reinteractions_piminus_Geant4;
+    std::vector<float> *reinteractions_piplus_Geant4;
+    std::vector<float> *reinteractions_proton_Geant4;
+    // Sep 28 removed
+    std::vector<float> *RPA_CCQE_Reduced_UBGenie;
+    
     std::vector<float> *All_UBGenie;
     std::vector<float> *AxFFCCQEshape_UBGenie;
     std::vector<float> *DecayAngMEC_UBGenie;
     std::vector<float> *NormCCCOH_UBGenie;
     std::vector<float> *NormNCCOH_UBGenie;
-    std::vector<float> *RPA_CCQE_Reduced_UBGenie;
+
     std::vector<float> *RPA_CCQE_UBGenie;
     std::vector<float> *RootinoFix_UBGenie;
     std::vector<float> *ThetaDelta2NRad_UBGenie;
@@ -56,31 +65,37 @@ int LEEana::get_size(WeightInfo& weight, TString option){
   if (weight.mcweight_filled){
     if (option == "expskin_FluxUnisim"){
       return weight.expskin_FluxUnisim->size();
-  }else if (option == "horncurrent_FluxUnisim"){
+    }else if (option == "horncurrent_FluxUnisim"){
       return weight.horncurrent_FluxUnisim->size();
-  }else if (option == "kminus_PrimaryHadronNormalization"){
+    }else if (option == "kminus_PrimaryHadronNormalization"){
       return weight.kminus_PrimaryHadronNormalization->size();
-  }else if (option == "kplus_PrimaryHadronFeynmanScaling"){
+    }else if (option == "kplus_PrimaryHadronFeynmanScaling"){
       return weight.kplus_PrimaryHadronFeynmanScaling->size();
-  }else if (option == "kzero_PrimaryHadronSanfordWang"){
+    }else if (option == "kzero_PrimaryHadronSanfordWang"){
       return weight.kzero_PrimaryHadronSanfordWang->size();
-  }else if (option == "nucleoninexsec_FluxUnisim"){
+    }else if (option == "nucleoninexsec_FluxUnisim"){
       return weight.nucleoninexsec_FluxUnisim->size();
-  }else if (option == "nucleonqexsec_FluxUnisim"){
+    }else if (option == "nucleonqexsec_FluxUnisim"){
       return weight.nucleonqexsec_FluxUnisim->size();
-  }else if (option == "nucleontotxsec_FluxUnisim"){
+    }else if (option == "nucleontotxsec_FluxUnisim"){
       return weight.nucleontotxsec_FluxUnisim->size();
-  }else if (option == "piminus_PrimaryHadronSWCentralSplineVariation"){
+    }else if (option == "piminus_PrimaryHadronSWCentralSplineVariation"){
       return weight.piminus_PrimaryHadronSWCentralSplineVariation->size();
-  }else if (option == "pioninexsec_FluxUnisim"){
+    }else if (option == "pioninexsec_FluxUnisim"){
       return weight.pioninexsec_FluxUnisim->size();
-  }else if (option == "pionqexsec_FluxUnisim"){
+    }else if (option == "pionqexsec_FluxUnisim"){
       return weight.pionqexsec_FluxUnisim->size();
-  }else if (option == "piontotxsec_FluxUnisim"){
+    }else if (option == "piontotxsec_FluxUnisim"){
       return weight.piontotxsec_FluxUnisim->size();
-  }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
+    }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
       return weight.piplus_PrimaryHadronSWCentralSplineVariation->size();
-  }else if (option == "UBGenieFluxSmallUni"){
+    }else if (option == "reinteractions_piminus_Geant4"){
+      return weight.reinteractions_piminus_Geant4->size() ;
+    }else if (option == "reinteractions_piplus_Geant4"){
+      return weight.reinteractions_piplus_Geant4->size() ;
+    }else if (option == "reinteractions_proton_Geant4"){
+      return weight.reinteractions_proton_Geant4->size() ;
+    }else if (option == "UBGenieFluxSmallUni"){
       return weight.All_UBGenie->size();
     }
   }else{
@@ -98,6 +113,11 @@ void LEEana::set_tree_address(TTree *T, WeightInfo& weight, TString option){
   T->SetBranchAddress("weight_lee",&weight.weight_lee);
   T->SetBranchAddress("mcweight_filled",&weight.mcweight_filled);
 
+  // hack for now ...
+  if (T->GetBranch("RPA_CCQE_Reduced_UBGenie")) weight.flag_sep_28 = false;
+  else weight.flag_sep_28 = true;
+
+  
   if (option == "expskin_FluxUnisim"){
     T->SetBranchAddress("expskin_FluxUnisim",&weight.expskin_FluxUnisim);
   }else if (option == "horncurrent_FluxUnisim"){
@@ -124,6 +144,12 @@ void LEEana::set_tree_address(TTree *T, WeightInfo& weight, TString option){
     T->SetBranchAddress("piontotxsec_FluxUnisim",&weight.piontotxsec_FluxUnisim);
   }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
     T->SetBranchAddress("piplus_PrimaryHadronSWCentralSplineVariation",&weight.piplus_PrimaryHadronSWCentralSplineVariation);
+  }else if (option == "reinteractions_piminus_Geant4"){
+    T->SetBranchAddress("reinteractions_piminus_Geant4",&weight.reinteractions_piminus_Geant4);
+  }else if (option == "reinteractions_piplus_Geant4"){
+    T->SetBranchAddress("reinteractions_piplus_Geant4",&weight.reinteractions_piplus_Geant4);
+  }else if (option == "reinteractions_proton_Geant4"){
+    T->SetBranchAddress("reinteractions_proton_Geant4",&weight.reinteractions_proton_Geant4);
   }else if (option == "UBGenieFluxSmallUni"){
     
     T->SetBranchAddress("All_UBGenie",&weight.All_UBGenie);   //x 500
@@ -131,7 +157,10 @@ void LEEana::set_tree_address(TTree *T, WeightInfo& weight, TString option){
     T->SetBranchAddress("DecayAngMEC_UBGenie",&weight.DecayAngMEC_UBGenie);  // x2
     T->SetBranchAddress("NormCCCOH_UBGenie",&weight.NormCCCOH_UBGenie);  // x2
     T->SetBranchAddress("NormNCCOH_UBGenie",&weight.NormNCCOH_UBGenie); // x2
-    T->SetBranchAddress("RPA_CCQE_Reduced_UBGenie",&weight.RPA_CCQE_Reduced_UBGenie); // x2
+
+    if (!weight.flag_sep_28)
+      T->SetBranchAddress("RPA_CCQE_Reduced_UBGenie",&weight.RPA_CCQE_Reduced_UBGenie); // x2
+    
     T->SetBranchAddress("RPA_CCQE_UBGenie",&weight.RPA_CCQE_UBGenie); // x2
     T->SetBranchAddress("RootinoFix_UBGenie",&weight.RootinoFix_UBGenie);  
     T->SetBranchAddress("ThetaDelta2NRad_UBGenie",&weight.ThetaDelta2NRad_UBGenie); // x2
@@ -155,6 +184,7 @@ void LEEana::put_tree_address(TTree *T, WeightInfo& weight, TString option){
   T->Branch("weight_lee",&weight.weight_lee,"weight_lee/F");
   T->Branch("mcweight_filled",&weight.mcweight_filled,"mcweight_filled/O");
 
+  
   if (option == "expskin_FluxUnisim"){
     T->Branch("expskin_FluxUnisim",&weight.expskin_FluxUnisim);
   }else if (option == "horncurrent_FluxUnisim"){
@@ -181,6 +211,12 @@ void LEEana::put_tree_address(TTree *T, WeightInfo& weight, TString option){
     T->Branch("piontotxsec_FluxUnisim",&weight.piontotxsec_FluxUnisim);
   }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
     T->Branch("piplus_PrimaryHadronSWCentralSplineVariation",&weight.piplus_PrimaryHadronSWCentralSplineVariation);
+  }else if (option == "reinteractions_piminus_Geant4"){
+    T->Branch("reinteractions_piminus_Geant4",&weight.reinteractions_piminus_Geant4);
+  }else if (option == "reinteractions_piplus_Geant4"){
+    T->Branch("reinteractions_piplus_Geant4",&weight.reinteractions_piplus_Geant4);
+  }else if (option == "reinteractions_proton_Geant4"){
+    T->Branch("reinteractions_proton_Geant4",&weight.reinteractions_proton_Geant4);
   }else if (option == "UBGenieFluxSmallUni"){
     
     T->Branch("All_UBGenie",&weight.All_UBGenie);
@@ -188,7 +224,10 @@ void LEEana::put_tree_address(TTree *T, WeightInfo& weight, TString option){
     T->Branch("DecayAngMEC_UBGenie",&weight.DecayAngMEC_UBGenie);
     T->Branch("NormCCCOH_UBGenie",&weight.NormCCCOH_UBGenie);
     T->Branch("NormNCCOH_UBGenie",&weight.NormNCCOH_UBGenie);
-    T->Branch("RPA_CCQE_Reduced_UBGenie",&weight.RPA_CCQE_Reduced_UBGenie);
+
+    if (!weight.flag_sep_28)
+      T->Branch("RPA_CCQE_Reduced_UBGenie",&weight.RPA_CCQE_Reduced_UBGenie);
+
     T->Branch("RPA_CCQE_UBGenie",&weight.RPA_CCQE_UBGenie);
     T->Branch("RootinoFix_UBGenie",&weight.RootinoFix_UBGenie);
     T->Branch("ThetaDelta2NRad_UBGenie",&weight.ThetaDelta2NRad_UBGenie);

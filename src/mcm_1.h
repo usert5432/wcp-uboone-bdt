@@ -175,7 +175,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
     double rel_err = random3.Gaus(0,1);
     for (int j=0;j!=rows;j++){
       matrix_variation(j,0) += (*vec_mean_diff)(j); // standard ...
-      //matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
+      // matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
       x[j] = rel_err * matrix_variation(j,0);
       //x[j] = matrix_variation(j,0); //original no abs term
     }

@@ -1023,6 +1023,10 @@ std::vector<int> LEEana::CovMatrix::get_events_weights(TString input_filename, s
   weight.xsr_scc_Fa3_SCC= new std::vector<float>;
   weight.xsr_scc_Fv3_SCC= new std::vector<float>;
 
+  weight.reinteractions_piminus_Geant4 = new std::vector<float>;
+  weight.reinteractions_piplus_Geant4 = new std::vector<float>;
+  weight.reinteractions_proton_Geant4 = new std::vector<float>; 
+  
   TString option;
   if (T_weight->GetBranch("expskin_FluxUnisim")){
     option = "expskin_FluxUnisim";
@@ -1052,6 +1056,12 @@ std::vector<int> LEEana::CovMatrix::get_events_weights(TString input_filename, s
     option = "piplus_PrimaryHadronSWCentralSplineVariation";
   }else if (T_weight->GetBranch("All_UBGenie")){
     option = "UBGenieFluxSmallUni";
+  }else if (T_weight->GetBranch("reinteractions_piminus_Geant4")){
+    option = "reinteractions_piminus_Geant4";
+  }else if (T_weight->GetBranch("reinteractions_piplus_Geant4")){
+    option = "reinteractions_piplus_Geant4";
+  }else if (T_weight->GetBranch("reinteractions_proton_Geant4")){
+    option = "reinteractions_proton_Geant4";
   }
   
   set_tree_address(T_weight, weight, option);
@@ -1173,6 +1183,24 @@ std::vector<int> LEEana::CovMatrix::get_events_weights(TString input_filename, s
 	for (size_t j=0; j!= weight.piplus_PrimaryHadronSWCentralSplineVariation->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.piplus_PrimaryHadronSWCentralSplineVariation->at(j) - 1.0;
 	}
+      }else if (option == "reinteractions_piminus_Geant4"){
+	std::get<2>(event_info).resize(weight.reinteractions_piminus_Geant4->size());
+	std::get<3>(event_info).push_back(weight.reinteractions_piminus_Geant4->size());
+	for (size_t j=0; j!= weight.reinteractions_piminus_Geant4->size(); j++){
+	  std::get<2>(event_info).at(j) = weight.reinteractions_piminus_Geant4->at(j) - 1.0;
+	}
+      }else if (option == "reinteractions_piplus_Geant4"){
+	std::get<2>(event_info).resize(weight.reinteractions_piplus_Geant4->size());
+	std::get<3>(event_info).push_back(weight.reinteractions_piplus_Geant4->size());
+	for (size_t j=0; j!= weight.reinteractions_piplus_Geant4->size(); j++){
+	  std::get<2>(event_info).at(j) = weight.reinteractions_piplus_Geant4->at(j) - 1.0;
+	}
+      }else if (option == "reinteractions_proton_Geant4"){
+	std::get<2>(event_info).resize(weight.reinteractions_proton_Geant4->size());
+	std::get<3>(event_info).push_back(weight.reinteractions_proton_Geant4->size());
+	for (size_t j=0; j!= weight.reinteractions_proton_Geant4->size(); j++){
+	  std::get<2>(event_info).at(j) = weight.reinteractions_proton_Geant4->at(j) - 1.0;
+	}
       }else if (option == "UBGenieFluxSmallUni"){
 	int acc_no = 0;
 	std::get<2>(event_info).resize(weight.All_UBGenie->size());
@@ -1233,18 +1261,18 @@ std::vector<int> LEEana::CovMatrix::get_events_weights(TString input_filename, s
 	}
 	acc_no += weight.NormNCCOH_UBGenie->size();
 
-	
-	std::get<2>(event_info).resize(acc_no + weight.RPA_CCQE_Reduced_UBGenie->size());
-	std::get<3>(event_info).push_back(weight.RPA_CCQE_Reduced_UBGenie->size());
-	for (size_t j=0; j!= weight.RPA_CCQE_Reduced_UBGenie->size(); j++){
+	if (!weight.flag_sep_28){
+	  std::get<2>(event_info).resize(acc_no + weight.RPA_CCQE_Reduced_UBGenie->size());
+	  std::get<3>(event_info).push_back(weight.RPA_CCQE_Reduced_UBGenie->size());
+	  for (size_t j=0; j!= weight.RPA_CCQE_Reduced_UBGenie->size(); j++){
 	    if (weight.weight_cv>0){
-	    std::get<2>(event_info).at(acc_no+j) = (weight.RPA_CCQE_Reduced_UBGenie->at(j) - weight.weight_cv)/weight.weight_cv;
-	  }else{
-	    std::get<2>(event_info).at(acc_no+j) = 0;
+	      std::get<2>(event_info).at(acc_no+j) = (weight.RPA_CCQE_Reduced_UBGenie->at(j) - weight.weight_cv)/weight.weight_cv;
+	    }else{
+	      std::get<2>(event_info).at(acc_no+j) = 0;
+	    }
 	  }
+	  acc_no += weight.RPA_CCQE_Reduced_UBGenie->size();
 	}
-	acc_no += weight.RPA_CCQE_Reduced_UBGenie->size();
-
 	
 	std::get<2>(event_info).resize(acc_no + weight.RPA_CCQE_UBGenie->size());
 	std::get<3>(event_info).push_back(weight.RPA_CCQE_UBGenie->size());

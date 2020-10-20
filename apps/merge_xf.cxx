@@ -80,7 +80,11 @@ int main( int argc, char** argv )
   weight.splines_general_Spline= new std::vector<float>;
   weight.xsr_scc_Fa3_SCC= new std::vector<float>;
   weight.xsr_scc_Fv3_SCC= new std::vector<float>;
+
   
+  weight.reinteractions_piminus_Geant4 = new std::vector<float>;
+  weight.reinteractions_piplus_Geant4 = new std::vector<float>;
+  weight.reinteractions_proton_Geant4 = new std::vector<float>; 
  
 
   
@@ -114,7 +118,14 @@ int main( int argc, char** argv )
     T = (TTree*)file2->Get("piplus_PrimaryHadronSWCentralSplineVariation");
   }else if (option == "UBGenieFluxSmallUni"){
     T = (TTree*)file2->Get("UBGenieFluxSmallUni");
+  }else if (option == "reinteractions_piminus_Geant4"){
+    T = (TTree*)file2->Get("reinteractions_piminus_Geant4");
+  }else if (option == "reinteractions_piplus_Geant4"){
+    T = (TTree*)file2->Get("reinteractions_piplus_Geant4");
+  }else if (option == "reinteractions_proton_Geant4"){
+    T = (TTree*)file2->Get("reinteractions_proton_Geant4");
   }
+
   
   TFile *file3 = new TFile(out_file,"RECREATE");
   file3->mkdir("wcpselection");
