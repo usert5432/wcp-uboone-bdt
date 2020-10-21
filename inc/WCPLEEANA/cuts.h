@@ -256,7 +256,7 @@ bool LEEana::is_numuCC(TaggerInfo& tagger_info){
 
 bool LEEana::is_nueCC(TaggerInfo& tagger_info){
   bool flag = false;
-
+  // default 7.0
   if (tagger_info.numu_cc_flag >=0 && tagger_info.nue_score > 7.0)
     flag = true;
   
