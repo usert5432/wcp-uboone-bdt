@@ -205,7 +205,7 @@ int main( int argc, char** argv )
  
       htemp = map_histoname_hist[histoname];
       // get kinematics variable ...
-      double val = get_kine_var(kine, pfeval, var_name);
+      double val = get_kine_var(kine, pfeval, tagger, var_name);
       // get pass or not
       bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, tagger, kine);
 

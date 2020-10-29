@@ -1118,7 +1118,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       auto it3 = disabled_ch_names.find(ch_name);
       if (it3 != disabled_ch_names.end()) continue;
       
-      float val = get_kine_var(kine, pfeval, var_name);
+      float val = get_kine_var(kine, pfeval, tagger, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval, tagger, kine);
 
       if (flag_pass) std::get<4>(event_info).insert(std::make_pair(no, val));

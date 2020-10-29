@@ -12,7 +12,7 @@
 
 namespace LEEana{
 
-  double get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TString var_name="kine_reco_Enu");
+  double get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name="kine_reco_Enu");
   bool get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, TaggerInfo& tagger, KineInfo& kine);
   double get_weight(TString weight_name, EvalInfo& eval);
   
@@ -27,6 +27,10 @@ namespace LEEana{
   // nueCC cuts
   // TCut nueCC_cut = "numu_cc_flag >=0 && nue_score > 7.0";
   bool is_nueCC(TaggerInfo& tagger_info);
+
+
+  bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger);
+  bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger);
   
   // numuCC cuts
   // TCut numuCC_cut = "numu_cc_flag >=0 && numu_score > 0.9";
@@ -41,7 +45,7 @@ namespace LEEana{
   bool is_cc_pi0(KineInfo& kine);
   
   
-
+  
  
   // NC cuts
   // TCut NC_cut = "(!cosmict_flag) && numu_score < 0.0";
@@ -81,14 +85,17 @@ double LEEana::get_weight(TString weight_name, EvalInfo& eval){
   return 1;
 }
 
-double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TString var_name ){
+double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name ){
   if (var_name == "kine_reco_Enu"){
     return kine.kine_reco_Enu;
   }else if (var_name == "pi0_energy"){
     double pi0_mass = 135;
     double alpha = fabs(kine.kine_pio_energy_1 - kine.kine_pio_energy_2)/(kine.kine_pio_energy_1 + kine.kine_pio_energy_2);
     return pi0_mass * (sqrt(2./(1-alpha*alpha)/(1-cos(kine.kine_pio_angle/180.*3.1415926)))-1);
-    
+  }else if (var_name == "nue_score"){
+    return tagger.nue_score;
+  }else if (var_name == "numu_score"){
+    return tagger.numu_score;
   }else{
     std::cout << "No such variable: " << var_name << std::endl;
   }
@@ -117,6 +124,24 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     }else if (add_cut == "anti_LowEnu"){
       if (!(eval.truth_nuEnergy<=400)) flag_add = true;
       else flag_add = false;
+    }else if (add_cut == "far_sideband"){
+      if (is_far_sideband(kine, tagger)) flag_add = true;
+      else flag_add = false;
+    }else if (add_cut == "near_sideband"){
+      if (is_near_sideband(kine, tagger)) flag_add = true;
+      else flag_add = false;
+    }else{
+      std::cout << "No add cuts: " << add_cut << std::endl;
+    }
+  }else{
+    if (add_cut == "far_sideband"){
+      if (is_far_sideband(kine, tagger)) flag_add = true;
+      else flag_add = false;
+    }else if (add_cut == "near_sideband"){
+      if (is_near_sideband(kine, tagger)) flag_add = true;
+      else flag_add = false;
+    }else if (add_cut == "all"){
+      flag_add = true;
     }else{
       std::cout << "No add cuts: " << add_cut << std::endl;
     }
@@ -170,6 +195,18 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   }else if (ch_name == "NCpi0_nonueCC_overlay" || ch_name == "BG_NCpi0_nonueCC_ext" || ch_name == "BG_NCpi0_nonueCC_dirt" || ch_name == "NCpi0_nonueCC_bnb"){
     if (flag_NC && flag_pi0 && (!flag_nueCC) ) return true;
     else return false;
+  }else if (ch_name == "nueCC_bnb" || ch_name == "nueCC_nueoverlay"){
+    if (flag_truth_inside &&  ch_name == "nueCC_nueoverlay" || ch_name == "nueCC_bnb") return true;
+    else return false;
+  }else if (ch_name == "all_but_nueCC_bnb" || ch_name == "all_but_nueCC_overlay" || ch_name == "all_but_nueCC_ext" || ch_name == "all_but_nueCC_dirt"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "all_but_nueCC_overlay" || ch_name != "all_but_nueCC_overlay") return true;
+    else return false;
+  }else if (ch_name == "nueCC_bnb1" || ch_name == "nueCC_nueoverlay1"){
+    if (flag_truth_inside &&  ch_name == "nueCC_nueoverlay1" || ch_name == "nueCC_bnb1") return true;
+    else return false;
+  }else if (ch_name == "all_but_nueCC_bnb1" || ch_name == "all_but_nueCC_overlay1" || ch_name == "all_but_nueCC_ext1" || ch_name == "all_but_nueCC_dirt1"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "all_but_nueCC_overlay1" || ch_name != "all_but_nueCC_overlay1") return true;
+    else return false;
   }else{
     std::cout << "Not sure what cut: " << ch_name << std::endl;
   }
@@ -179,6 +216,18 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   return false;
 }
 
+
+bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
+  bool flag = false;
+  if (kine.kine_reco_Enu>=800 || tagger.nue_score<=0) flag = true;
+  return flag;
+}
+bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger){
+  bool flag = false;
+  if (kine.kine_reco_Enu < 800 && tagger.nue_score>0 && (kine.kine_reco_Enu>=600 || tagger.nue_score<=7)) flag = true;
+  
+  return flag ;
+}
 
 
 
