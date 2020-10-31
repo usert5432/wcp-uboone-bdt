@@ -186,7 +186,8 @@ int main( int argc, char** argv )
 	bayes.do_convolution();
 	
 	double cov = bayes.get_covariance();
-	// double cov1 = bayes.get_covariance_mc();
+	if (std::isnan(cov))
+	  cov = bayes.get_covariance_mc();
 	std::cout << obsch << " " << i << " "	  << h1->GetBinContent(i+1) << " " << cov  << " "  << h2->GetBinContent(i+1) << std::endl;
 	// std::cout << temp << " " << temp1 << " " << h1->GetBinContent(i+1) << " " << h2->GetBinContent(i+1) << std::endl;
 	h1->SetBinError(i+1,sqrt(cov));
