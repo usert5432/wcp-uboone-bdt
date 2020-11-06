@@ -229,7 +229,7 @@ bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
   bool flag_NC = is_NC(tagger);
 
   if ((kine.kine_reco_Enu>=800 && tagger.nue_score >=0) ||
-      (tagger.nue_score<=0 && (flag_numuCC || (flag_pi0 && flag_NC) || flag_cc_pi0))) flag = true;
+      (tagger.nue_score<=0 && (flag_numuCC || (flag_pi0 && flag_NC) ))) flag = true;
   return flag;
 }
 bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger){
