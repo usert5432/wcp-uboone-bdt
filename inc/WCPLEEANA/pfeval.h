@@ -4,6 +4,7 @@
 namespace LEEana{
 struct PFevalInfo{
   bool flag_NCDelta;
+  bool flag_showerMomentum;
   
   Int_t run;
   Int_t subrun;
@@ -20,10 +21,13 @@ struct PFevalInfo{
   Float_t reco_muonvtxY;
   Float_t reco_muonvtxZ;
   Float_t reco_muonMomentum[4];
+  Float_t reco_showerMomentum[4];
+  
   
   Float_t nuvtx_diff;
   Float_t showervtx_diff;
   Float_t muonvtx_diff;
+  Float_t truth_showerMomentum[4];
   Float_t truth_corr_nuvtxX;
   Float_t truth_corr_nuvtxY;
   Float_t truth_corr_nuvtxZ;
@@ -69,7 +73,7 @@ void put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
 
 void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
   tagger_info.flag_NCDelta = false;
-
+  tagger_info.flag_showerMomentum = false;
   
   tree0->SetBranchAddress("run", &tagger_info.run);
   tree0->SetBranchAddress("subrun", &tagger_info.subrun);
@@ -87,6 +91,14 @@ void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
   tree0->SetBranchAddress("reco_muonvtxZ", &tagger_info.reco_muonvtxZ);
   tree0->SetBranchAddress("reco_muonMomentum", &tagger_info.reco_muonMomentum[0]);
 
+  if (tree0->GetBranch("reco_showerMomentum")){
+    tagger_info.flag_showerMomentum = true;
+    tree0->SetBranchAddress("reco_showerMomentum",&tagger_info.reco_showerMomentum[0]);
+    if (flag==1){
+      tree0->SetBranchAddress("truth_showerMomentum",&tagger_info.truth_showerMomentum[0]);
+    }
+  }
+  
   if (flag==1){
     tree0->SetBranchAddress("nuvtx_diff", &tagger_info.nuvtx_diff);
     tree0->SetBranchAddress("showervtx_diff", &tagger_info.showervtx_diff);
@@ -190,6 +202,15 @@ void LEEana::put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
       tree0->Branch("reco_protonMomentum",&tagger_info.reco_protonMomentum[0],"reco_protonMomentum[4]/F");
     }
   }
+
+  if (tagger_info.flag_showerMomentum){
+    
+    tree0->Branch("reco_showerMomentum",&tagger_info.reco_showerMomentum[0],"reco_showerMomentum[4]/F");
+    if (flag==1){
+      tree0->Branch("truth_showerMomentum",&tagger_info.truth_showerMomentum[0],"truth_showerMomentum[4]/F");
+    }
+  }
+  
 }
 
 
