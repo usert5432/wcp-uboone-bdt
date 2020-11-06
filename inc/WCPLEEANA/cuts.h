@@ -106,6 +106,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
   bool flag_truth_inside = false;
   if (eval.truth_vtxX > -1 && eval.truth_vtxX <= 254.3 &&  eval.truth_vtxY >-115.0 && eval.truth_vtxY<=117.0 && eval.truth_vtxZ > 0.6 && eval.truth_vtxZ <=1036.4) flag_truth_inside = true;
+
+  
   
   bool flag_add = true;
   // figure out additional cuts and flag_data ...
@@ -147,15 +149,16 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     }
   }
 
-  
-  
-  
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_nueCC = is_nueCC(tagger);
   bool flag_FC = is_FC(eval);
   bool flag_pi0 = is_pi0(kine);
   bool flag_cc_pi0 = is_cc_pi0(kine);
   bool flag_NC = is_NC(tagger);
+  
+  
+  
+ 
 
   if (!flag_add) return false;
   
@@ -219,7 +222,14 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
 bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
   bool flag = false;
-  if (kine.kine_reco_Enu>=800 || tagger.nue_score<=0) flag = true;
+
+  bool flag_numuCC = is_numuCC(tagger);
+  bool flag_pi0 = is_pi0(kine);
+  bool flag_cc_pi0 = is_cc_pi0(kine);
+  bool flag_NC = is_NC(tagger);
+
+  if ((kine.kine_reco_Enu>=800 && tagger.nue_score >=0) ||
+      (tagger.nue_score<=0 && (flag_numuCC || (flag_pi0 && flag_NC) || flag_cc_pi0))) flag = true;
   return flag;
 }
 bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger){
