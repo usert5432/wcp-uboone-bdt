@@ -1,5 +1,8 @@
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <map>
+#include <utility>
 
 #include "WCPLEEANA/master_cov_matrix.h"
 #include "WCPLEEANA/bayes.h"
@@ -22,6 +25,7 @@
 #include "TLine.h"
 #include "TPDF.h"
 #include "TF1.h"
+#include "TMatrixD.h"
 
 using namespace std;
 using namespace LEEana;
@@ -30,32 +34,41 @@ int main( int argc, char** argv )
 {
   
   if (argc < 2){
-    std::cout << "./merge_hist -r[#run, 0 for all] -e[1 for standard, 2 for Bayesian] -L[LEE strength]" << std::endl;
+    std::cout << "./plot_hist -r[#run, 0 for all] -e[1 for standard, 2 for Bayesian, 3 for total uncertainty] -l[LEE strength, check against total uncertainty config] -s[path-to-external covmatrix file] -c[check MC and DATA spectra against the ones from external file]" << std::endl;
   }
   
   int run = 1; // run 1 ...
   int flag_err = 1;// 1 for standard, 2 for Bayesian ...
   float lee_strength = 0; // no LEE strength ...
-  int flag_display = 0;
-  int flag_breakdown = 0;
+  int flag_display = 1;
+  int flag_breakdown = 1;
+  TString cov_inputfile = "";
+  int flag_check = 0;
 
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
-    case 'r':
+    case 'r':{
       run = atoi(&argv[i][2]); // which run period
-      break;
-    case 'e':
+    }break;
+    case 'e':{
       flag_err = atoi(&argv[i][2]); // error for plotting
-      break;
-    case 'l':
+    }break;
+    case 'l':{
       lee_strength = atof(&argv[i][2]);
-      break;
-    case 'd':
+    }break;
+    case 'd':{
       flag_display = atoi(&argv[i][2]);
-      break;
-    case 'b':
+    }break;
+    case 'b':{
       flag_breakdown = atoi(&argv[i][2]);
-      break;
+    }break;
+    case 's':{
+      TString sss = argv[i];
+      cov_inputfile = sss(2, sss.Length()-2);
+    }break;
+    case 'c':{
+      flag_check = atoi(&argv[i][2]);
+    }break;
     }
   }
 
@@ -209,6 +222,7 @@ int main( int argc, char** argv )
 	std::cout << obsch << " " << i << " "	  << h1->GetBinContent(i+1) << " " << cov  << " "  << h2->GetBinContent(i+1) << std::endl;
 	// std::cout << temp << " " << temp1 << " " << h1->GetBinContent(i+1) << " " << h2->GetBinContent(i+1) << std::endl;
         if(isnan(cov) || isinf(cov)) {
+            std::cout<<"Abnormal Bayesian variance.\n";
             cov = bayes.get_covariance_mc();
             //cov = h1->SetBinError(i+1, h1->GetBinError(i));
         }
@@ -218,6 +232,82 @@ int main( int argc, char** argv )
       //std::map<int, std::vector< std::vector< std::tuple<double, double, double> > > > map_obsch_bayes;
     }
   }
+
+  if (flag_err==3){
+    std::cout <<"Total uncertainty from external covariance matrix: "<< cov_inputfile << std::endl;
+    TFile* f_cov = new TFile(cov_inputfile, "READ");
+    int flag_syst_flux_Xs = 0;
+    int flag_syst_detector = 0;
+    int flag_syst_additional = 0;
+    int flag_syst_mc_stat = 0;
+    double cov_lee_strength = 0;
+    TTree* t_covconfig = (TTree*)f_cov->Get("tree");
+    t_covconfig->SetBranchAddress("flag_syst_flux_Xs", &flag_syst_flux_Xs);
+    t_covconfig->SetBranchAddress("flag_syst_detector", &flag_syst_detector);
+    t_covconfig->SetBranchAddress("flag_syst_additional", &flag_syst_additional);
+    t_covconfig->SetBranchAddress("flag_syst_mc_stat", &flag_syst_mc_stat);
+    t_covconfig->SetBranchAddress("user_Lee_strength_for_output_covariance_matrix", &cov_lee_strength);
+    t_covconfig->GetEntry(0);
+
+    // absolute cov matrix
+    TMatrixD* matrix_absolute_cov = (TMatrixD*)f_cov->Get("matrix_absolute_cov_newworld");
+
+    std::cout <<"User: "<< "chosen LEE strength: "<< lee_strength << " run option: " << run << std::endl;
+    std::cout <<"Cov matrix config: \n"
+                <<"\t syst_flux_Xs: "<< flag_syst_flux_Xs << std::endl  
+                <<"\t syst_detector: "<< flag_syst_detector << std::endl  
+                <<"\t syst_additional: "<< flag_syst_additional << std::endl  
+                <<"\t syst_mc_stat: "<< flag_syst_mc_stat << std::endl  
+                <<"\t LEE_strength: "<< cov_lee_strength << std::endl;
+    if( abs(lee_strength-cov_lee_strength)>1e-6 ) {
+        std::cout<<"ERROR: plot_hist -l option is inconsistent with external cov matrix LEE strength!\n";
+        return 1;
+    }
+    
+    // construct a map from (obsch, bin) to cov index
+    std::map< std::pair<int, int>, int> obsch_bin_index;
+    int index = 0;
+    for(size_t i=0; i<map_obsch_histos.size(); i++)
+    {
+        // + overflow bin
+        for(int j=1; j<=map_obsch_histos[i+1].at(1)->GetNbinsX()+1; j++)
+        {
+            index += 1;
+            // cov index starts from 0
+            obsch_bin_index.insert({{i+1, j}, index-1});
+        }
+    }
+
+    TMatrixD* matrix_pred = (TMatrixD*)f_cov->Get("matrix_pred_newworld");
+    TMatrixD* matrix_data = (TMatrixD*)f_cov->Get("matrix_data_newworld");
+    for (auto it = map_obsch_histos.begin(); it!= map_obsch_histos.end(); it++){
+      TH1F *h1 = it->second.at(1);
+      TH1F *h2 = it->second.at(2);
+      int obsch = it->first;
+  
+      TH1F* htemp_data = (TH1F*)h1->Clone("htemp_data");
+      TH1F* htemp_pred = (TH1F*)h1->Clone("htemp_pred");
+      htemp_data->Reset();
+      htemp_pred->Reset();
+      for (int i=0;i!=h1->GetNbinsX()+1;i++){
+        int index = obsch_bin_index.find(std::make_pair(obsch, i+1))->second;
+        double total_uncertainty = (*matrix_absolute_cov)(index, index); // only diagonal term
+        std::cout << obsch << " " << i << " "	  << h1->GetBinContent(i+1) << " " << total_uncertainty << " "  << h2->GetBinContent(i+1) << std::endl;
+	    h1->SetBinError(i+1,sqrt(total_uncertainty));
+
+        if(flag_check == 1){
+            htemp_data->SetBinContent(i+1, (*matrix_data)(0, index));
+            htemp_pred->SetBinContent(i+1, (*matrix_pred)(0, index));
+        }
+      }
+      if(flag_check == 1){
+        it->second.push_back(htemp_data);
+        it->second.push_back(htemp_pred);
+      }
+    }
+  }
+
+
 
   if (flag_display == 1){
     // plotting ...
@@ -486,10 +576,12 @@ int main( int argc, char** argv )
     g71->SetMarkerColor(2);
     g71->SetLineColor(2);
     
-  }else if (flag_err == 2){
+  }else if (flag_err == 2 || flag_err ==3){
     c1.cd(1);
     TGraphAsymmErrors *g10 = new TGraphAsymmErrors();
     TGraphErrors *g11 = new TGraphErrors();
+    TGraph *g12 = new TGraph();
+    TGraph *g13 = new TGraph();
     for (int i=0;i!=map_obsch_histos[1].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[1].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[1].at(0)->GetBinContent(i+1);
@@ -502,6 +594,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[1].at(1)->GetBinError(i+1);
       g11->SetPoint(i,x,y);
       g11->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[1].at(3)->GetBinContent(i+1);
+        g12->SetPoint(i,x,y);
+        y = map_obsch_histos[1].at(4)->GetBinContent(i+1);
+        g13->SetPoint(i,x,y);
+      }
     }
     g10->Draw("A*"); g10->SetTitle("nueCC FC");
     g10->SetMarkerStyle(20);
@@ -509,10 +607,20 @@ int main( int argc, char** argv )
     g11->SetMarkerStyle(21);
     g11->SetMarkerColor(2);
     g11->SetLineColor(2);
+    if(flag_check == 1){
+        g12->Draw("L same");
+        g12->SetLineStyle(kDashed);
+        g12->SetLineColor(kBlack);
+        g13->Draw("L same");
+        g13->SetLineStyle(kDashed);
+        g13->SetLineColor(kRed);
+    }
 
     c1.cd(5);
     TGraphAsymmErrors *g20 = new TGraphAsymmErrors();
     TGraphErrors *g21 = new TGraphErrors();
+    TGraph *g22 = new TGraph();
+    TGraph *g23 = new TGraph();
     for (int i=0;i!=map_obsch_histos[2].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[2].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[2].at(0)->GetBinContent(i+1);
@@ -525,6 +633,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[2].at(1)->GetBinError(i+1);
       g21->SetPoint(i,x,y);
       g21->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[2].at(3)->GetBinContent(i+1);
+        g22->SetPoint(i,x,y);
+        y = map_obsch_histos[2].at(4)->GetBinContent(i+1);
+        g23->SetPoint(i,x,y);
+      }
     }
     g20->Draw("A*");  g20->SetTitle("nueCC PC");
     g20->SetMarkerStyle(20);
@@ -532,10 +646,20 @@ int main( int argc, char** argv )
     g21->SetMarkerStyle(21);
     g21->SetMarkerColor(2);
     g21->SetLineColor(2);
+    if(flag_check == 1){
+        g22->Draw("L same");
+        g22->SetLineStyle(kDashed);
+        g22->SetLineColor(kBlack);
+        g23->Draw("L same");
+        g23->SetLineStyle(kDashed);
+        g23->SetLineColor(kRed);
+    }
 
     c1.cd(2);
     TGraphAsymmErrors *g30 = new TGraphAsymmErrors();
     TGraphErrors *g31 = new TGraphErrors();
+    TGraph *g32 = new TGraph();
+    TGraph *g33 = new TGraph();
     for (int i=0;i!=map_obsch_histos[3].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[3].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[3].at(0)->GetBinContent(i+1);
@@ -548,6 +672,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[3].at(1)->GetBinError(i+1);
       g31->SetPoint(i,x,y);
       g31->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[3].at(3)->GetBinContent(i+1);
+        g32->SetPoint(i,x,y);
+        y = map_obsch_histos[3].at(4)->GetBinContent(i+1);
+        g33->SetPoint(i,x,y);
+      }
     }
     g30->Draw("A*"); g30->SetTitle("numuCC FC");
     g30->SetMarkerStyle(20);
@@ -555,10 +685,20 @@ int main( int argc, char** argv )
     g31->SetMarkerStyle(21);
     g31->SetMarkerColor(2);
     g31->SetLineColor(2);
+    if(flag_check == 1){
+        g32->Draw("L same");
+        g32->SetLineStyle(kDashed);
+        g32->SetLineColor(kBlack);
+        g33->Draw("L same");
+        g33->SetLineStyle(kDashed);
+        g33->SetLineColor(kRed);
+    }
 
     c1.cd(6);
     TGraphAsymmErrors *g40 = new TGraphAsymmErrors();
     TGraphErrors *g41 = new TGraphErrors();
+    TGraph *g42 = new TGraph();
+    TGraph *g43 = new TGraph();
     for (int i=0;i!=map_obsch_histos[4].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[4].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[4].at(0)->GetBinContent(i+1);
@@ -571,6 +711,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[4].at(1)->GetBinError(i+1);
       g41->SetPoint(i,x,y);
       g41->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[4].at(3)->GetBinContent(i+1);
+        g42->SetPoint(i,x,y);
+        y = map_obsch_histos[4].at(4)->GetBinContent(i+1);
+        g43->SetPoint(i,x,y);
+      }
     }
     g40->Draw("A*");  g40->SetTitle("numuCC PC");
     g40->SetMarkerStyle(20);
@@ -578,10 +724,20 @@ int main( int argc, char** argv )
     g41->SetMarkerStyle(21);
     g41->SetMarkerColor(2);
     g41->SetLineColor(2);
+    if(flag_check == 1){
+        g42->Draw("L same");
+        g42->SetLineStyle(kDashed);
+        g42->SetLineColor(kBlack);
+        g43->Draw("L same");
+        g43->SetLineStyle(kDashed);
+        g43->SetLineColor(kRed);
+    }
 
     c1.cd(3);
     TGraphAsymmErrors *g50 = new TGraphAsymmErrors();
     TGraphErrors *g51 = new TGraphErrors();
+    TGraph *g52 = new TGraph();
+    TGraph *g53 = new TGraph();
     for (int i=0;i!=map_obsch_histos[5].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[5].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[5].at(0)->GetBinContent(i+1);
@@ -594,6 +750,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[5].at(1)->GetBinError(i+1);
       g51->SetPoint(i,x,y);
       g51->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[5].at(3)->GetBinContent(i+1);
+        g52->SetPoint(i,x,y);
+        y = map_obsch_histos[5].at(4)->GetBinContent(i+1);
+        g53->SetPoint(i,x,y);
+      }
     }
     g50->Draw("A*");  g50->SetTitle("CC pio FC");
     g50->SetMarkerStyle(20);
@@ -601,10 +763,20 @@ int main( int argc, char** argv )
     g51->SetMarkerStyle(21);
     g51->SetMarkerColor(2);
     g51->SetLineColor(2);
+    if(flag_check == 1){
+        g52->Draw("L same");
+        g52->SetLineStyle(kDashed);
+        g52->SetLineColor(kBlack);
+        g53->Draw("L same");
+        g53->SetLineStyle(kDashed);
+        g53->SetLineColor(kRed);
+    }
 
     c1.cd(7);
     TGraphAsymmErrors *g60 = new TGraphAsymmErrors();
     TGraphErrors *g61 = new TGraphErrors();
+    TGraph *g62 = new TGraph();
+    TGraph *g63 = new TGraph();
     for (int i=0;i!=map_obsch_histos[6].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[6].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[6].at(0)->GetBinContent(i+1);
@@ -617,6 +789,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[6].at(1)->GetBinError(i+1);
       g61->SetPoint(i,x,y);
       g61->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[6].at(3)->GetBinContent(i+1);
+        g62->SetPoint(i,x,y);
+        y = map_obsch_histos[6].at(4)->GetBinContent(i+1);
+        g63->SetPoint(i,x,y);
+      }
     }
     g60->Draw("A*"); g60->SetTitle("CCpio PC");
     g60->SetMarkerStyle(20);
@@ -624,10 +802,20 @@ int main( int argc, char** argv )
     g61->SetMarkerStyle(21);
     g61->SetMarkerColor(2);
     g61->SetLineColor(2);
+    if(flag_check == 1){
+        g62->Draw("L same");
+        g62->SetLineStyle(kDashed);
+        g62->SetLineColor(kBlack);
+        g63->Draw("L same");
+        g63->SetLineStyle(kDashed);
+        g63->SetLineColor(kRed);
+    }
 
     c1.cd(4);
     TGraphAsymmErrors *g70 = new TGraphAsymmErrors();
     TGraphErrors *g71 = new TGraphErrors();
+    TGraph *g72 = new TGraph();
+    TGraph *g73 = new TGraph();
     for (int i=0;i!=map_obsch_histos[7].at(0)->GetNbinsX()+1;i++){
       double x = map_obsch_histos[7].at(0)->GetBinCenter(i+1);
       double y = map_obsch_histos[7].at(0)->GetBinContent(i+1);
@@ -640,6 +828,12 @@ int main( int argc, char** argv )
       y_err = map_obsch_histos[7].at(1)->GetBinError(i+1);
       g71->SetPoint(i,x,y);
       g71->SetPointError(i,x_err,y_err);
+      if(flag_check == 1){
+        y = map_obsch_histos[7].at(3)->GetBinContent(i+1);
+        g72->SetPoint(i,x,y);
+        y = map_obsch_histos[7].at(4)->GetBinContent(i+1);
+        g73->SetPoint(i,x,y);
+      }
     }
     g70->Draw("A*");g70->SetTitle("NCpio " );
     g70->SetMarkerStyle(20);
@@ -647,6 +841,14 @@ int main( int argc, char** argv )
     g71->SetMarkerStyle(21);
     g71->SetMarkerColor(2);
     g71->SetLineColor(2);
+    if(flag_check == 1){
+        g72->Draw("L same");
+        g72->SetLineStyle(kDashed);
+        g72->SetLineColor(kBlack);
+        g73->Draw("L same");
+        g73->SetLineStyle(kDashed);
+        g73->SetLineColor(kRed);
+    }
     
   }
   theApp.Run();
@@ -882,7 +1084,7 @@ int main( int argc, char** argv )
                 gratio_data[obschannel-1]->SetPoint(i, x, 10); // invalid value 
                 gratio_mc[obschannel-1]->SetPointError(i, x_err, x_err, 0, 0);
             }
-            if(flag_err==2){ //update data point errors
+            if(flag_err==2 || flag_err==3){ //update data point errors
                 gr[obschannel-1]->SetPointError(i, x_err, x_err, bayesError_low, bayesError_up);
                 if(ymc!=0) gratio_data[obschannel-1]->SetPointError(i, x_err, x_err, bayesError_low/ymc, bayesError_up/ymc);
                 else gratio_data[obschannel-1]->SetPointError(i, x_err, x_err, 0, 0);
@@ -898,6 +1100,15 @@ int main( int argc, char** argv )
         gr[obschannel-1]->SetMarkerStyle(20);
         gr[obschannel-1]->SetMarkerSize(1.5);
         gr[obschannel-1]->SetLineColor(kBlack);
+        if(flag_check == 1){
+            TH1F* hcheck_data = (TH1F*)map_obsch_histos[obschannel].at(3);
+            TH1F* hcheck_pred = (TH1F*)map_obsch_histos[obschannel].at(4);
+            hcheck_data->Draw("hist same");
+            hcheck_data->SetLineColor(kBlack);
+            hcheck_pred->Draw("hist same");
+            hcheck_pred->SetLineColor(kRed);
+        }
+
 
         //legend[obschannel-1]->SetFillStyle(0);
         legend[obschannel-1]->SetHeader(Form("#SigmaDATA/#Sigma(MC+EXT)=%.2f", hdata->Integral()/hmc->Integral()), "C");
@@ -924,9 +1135,19 @@ int main( int argc, char** argv )
         gratio_data[obschannel-1]->SetMarkerStyle(20);
         gratio_data[obschannel-1]->SetMarkerSize(1.5);
         gratio_data[obschannel-1]->SetLineColor(kBlack);
+       
+        TH1F* hist = (TH1F*)hdata->Clone("hist");
+        hist->Reset();
+        hist->Draw("axis same");
+
+        TLine* line = new TLine(0,1,hmc->GetXaxis()->GetXmax(),1);
+        line->Draw();
+        line->SetLineWidth(2);
+        line->SetLineStyle(kDashed);
         legend2[obschannel-1] = new TLegend(0.2, 0.7, 0.8, 0.95);
         legend2[obschannel-1]->SetNColumns(2);
-        legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty (Bayesian)", "F");
+        if(flag_err==2) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty (Bayesian)", "F");
+        if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat.+syst. uncertainty", "F");
         legend2[obschannel-1]->AddEntry(gratio_data[obschannel-1],"Data stat. uncertainty (Bayesian)", "lp");
         legend2[obschannel-1]->SetTextSize(0.06);
         legend2[obschannel-1]->SetFillStyle(0);
@@ -935,19 +1156,16 @@ int main( int argc, char** argv )
         if(obschannel==1) canvas[obschannel-1]->Print("selection.pdf(");
         else if(obschannel==nchannels) canvas[obschannel-1]->Print("selection.pdf)");
         else canvas[obschannel-1]->Print("selection.pdf");
+
+        canvas[obschannel-1]->SaveAs(Form("canvas%d.png", obschannel));
     } 
     theApp.Run();
   } // flag_breakdown end
   }
 
 
-  
-  
-  // std::map<TString, std::pair<TString, int> > map_pred_histo_hist_err2_lee = cov.get_map_pred_histo_histo_err2_lee();
-  // std::map<std::pair<TString, TString>, std::pair<TString, int> > map_pair_histo_histos_cross = cov.get_map_pair_hist_hists_cros();
-  // std::map<int, std::set<std::set<std::pair<TString, int> > > > map_pred_obsch_histos = cov.get_map_pred_obsch_histos();
-
-  if (flag_err == 1){
+  // legacy codes to save hist/matrix for TLee
+  if (0){
     // prediction ...
     TFile *file3 = new TFile("merge.root","RECREATE");
     

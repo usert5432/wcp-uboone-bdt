@@ -24,7 +24,7 @@ int main( int argc, char** argv )
 {
   
   if (argc < 2){
-    std::cout << "./det_cov_matrix -r[#sys 1-9]" << std::endl;
+    std::cout << "./det_cov_matrix -r[#sys 1-10]" << std::endl;
   }
   int run = 1; // run 1 ...
   for (Int_t i=1;i!=argc;i++){

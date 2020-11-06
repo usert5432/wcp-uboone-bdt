@@ -10,10 +10,14 @@
 #include "eval.h"
 #include "pfeval.h"
 
+#include <map>
+#include <sstream>
+#include <string>
+
 namespace LEEana{
 
   double get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name="kine_reco_Enu");
-  bool get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, TaggerInfo& tagger, KineInfo& kine);
+  bool get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine);
   double get_weight(TString weight_name, EvalInfo& eval);
   
   // generic neutrino cuts
@@ -27,8 +31,7 @@ namespace LEEana{
   // nueCC cuts
   // TCut nueCC_cut = "numu_cc_flag >=0 && nue_score > 7.0";
   bool is_nueCC(TaggerInfo& tagger_info);
-
-
+  
   bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger);
   bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger);
   
@@ -45,7 +48,7 @@ namespace LEEana{
   bool is_cc_pi0(KineInfo& kine);
   
   
-  
+
  
   // NC cuts
   // TCut NC_cut = "(!cosmict_flag) && numu_score < 0.0";
@@ -92,6 +95,8 @@ double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagg
     double pi0_mass = 135;
     double alpha = fabs(kine.kine_pio_energy_1 - kine.kine_pio_energy_2)/(kine.kine_pio_energy_1 + kine.kine_pio_energy_2);
     return pi0_mass * (sqrt(2./(1-alpha*alpha)/(1-cos(kine.kine_pio_angle/180.*3.1415926)))-1);
+  }else if (var_name == "pi0_mass"){
+    return kine.kine_pio_mass;
   }else if (var_name == "nue_score"){
     return tagger.nue_score;
   }else if (var_name == "numu_score"){
@@ -102,66 +107,83 @@ double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagg
   return -1;
 }
 
-bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, TaggerInfo& tagger, KineInfo& kine){
+bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine){
 
-  bool flag_truth_inside = false;
+  bool flag_truth_inside = false; // in the active volume
   if (eval.truth_vtxX > -1 && eval.truth_vtxX <= 254.3 &&  eval.truth_vtxY >-115.0 && eval.truth_vtxY<=117.0 && eval.truth_vtxZ > 0.6 && eval.truth_vtxZ <=1036.4) flag_truth_inside = true;
 
+  // definition of additional cuts
+  std::map<std::string, bool> map_cuts_flag;
+  if(is_far_sideband(kine, tagger)) map_cuts_flag["farsideband"] = true; 
+  else map_cuts_flag["farsideband"] = false; 
   
+  if(is_near_sideband(kine, tagger)) map_cuts_flag["nearsideband"] = true; 
+  else map_cuts_flag["nearsideband"] = false; 
   
-  bool flag_add = true;
+  if(eval.truth_nuEnergy <=400) map_cuts_flag["LowEintnueCC"] = true;
+  else map_cuts_flag["LowEintnueCC"] = false;
+  
+  if (!(eval.truth_nuEnergy <=400)) map_cuts_flag["antiLowEintnueCC"] = true;
+  else map_cuts_flag["antiLowEintnueCC"] = false;
+
+  if(eval.truth_nuEnergy<=400) map_cuts_flag["LowEnu"] = true;
+  else map_cuts_flag["LowEnu"] = false;
+  
+  if(!(eval.truth_nuEnergy<=400)) map_cuts_flag["antiLowEnu"] = true;
+  else map_cuts_flag["antiLowEnu"] = false;
+
+  if(eval.match_completeness_energy/eval.truth_energyInside<0.1) map_cuts_flag["badmatch"] = true;
+  else map_cuts_flag["badmatch"] = false;
+  
+  if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && abs(eval.truth_nuPdg)==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["numuCCinFV"] = true;
+  else map_cuts_flag["numuCCinFV"] = false;
+
+  if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && abs(eval.truth_nuPdg)==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1) map_cuts_flag["nueCCinFV"] = true;
+  else map_cuts_flag["nueCCinFV"] = false;
+    
+  if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_isCC==0 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["NCinFV"] = true;
+  else map_cuts_flag["NCinFV"] = false;
+
+  if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_vtxInside==0) map_cuts_flag["outFV"] = true;
+  else map_cuts_flag["outFV"] = false;
+      
+  if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && abs(eval.truth_nuPdg)==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio>0) map_cuts_flag["CCpi0inFV"] = true;
+  else map_cuts_flag["CCpi0inFV"] = false;
+      
+  if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_isCC==0 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio>0) map_cuts_flag["NCpi0inFV"] = true;
+  else map_cuts_flag["NCpi0inFV"] = false;
+
+
   // figure out additional cuts and flag_data ...
-  if (!flag_data){
-    if (add_cut == "all"){
-      flag_add = true;
-    }else if (add_cut == "LowEintnueCC"){
-      if (eval.truth_nuEnergy <=400) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "anti_LowEintnueCC"){
-      if (!(eval.truth_nuEnergy <=400)) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "LowEnu"){
-      if (eval.truth_nuEnergy <=400) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "anti_LowEnu"){
-      if (!(eval.truth_nuEnergy<=400)) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "far_sideband"){
-      if (is_far_sideband(kine, tagger)) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "near_sideband"){
-      if (is_near_sideband(kine, tagger)) flag_add = true;
-      else flag_add = false;
-    }else{
-      std::cout << "No add cuts: " << add_cut << std::endl;
-    }
-  }else{
-    if (add_cut == "far_sideband"){
-      if (is_far_sideband(kine, tagger)) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "near_sideband"){
-      if (is_near_sideband(kine, tagger)) flag_add = true;
-      else flag_add = false;
-    }else if (add_cut == "all"){
-      flag_add = true;
-    }else{
-      std::cout << "No add cuts: " << add_cut << std::endl;
-    }
+  bool flag_add = true;
+  if(add_cut == "all") flag_add = true;
+  else if( (flag_data && (add_cut=="farsideband" || add_cut=="nearsideband")) || !flag_data ){ 
+      std::istringstream sss(add_cut.Data());
+      for(std::string line; std::getline(sss, line, '_');){
+          if(map_cuts_flag.find(line)!=map_cuts_flag.end()){
+              flag_add *= map_cuts_flag[line];
+          }
+          else{
+              std::cout<<"ERROR: add_cut "<<line<<" not defined!\n";
+              exit(EXIT_FAILURE);
+          }
+      } 
   }
+  else{ 
+    std::cout<<"ERROR: add_cut "<<add_cut<<" of channel "<< ch_name <<" is not assigned to sample "<<flag_data<<" [1: data; 0: mc]\n";
+    exit(EXIT_FAILURE);
+  }
+ 
+  if (!flag_add) return false;
+
 
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_nueCC = is_nueCC(tagger);
-  bool flag_FC = is_FC(eval);
   bool flag_pi0 = is_pi0(kine);
   bool flag_cc_pi0 = is_cc_pi0(kine);
   bool flag_NC = is_NC(tagger);
-  
-  
-  
- 
+  bool flag_FC = is_FC(eval);
 
-  if (!flag_add) return false;
-  
   if (ch_name == "LEE_FC_nueoverlay"  || ch_name == "nueCC_FC_nueoverlay"){
     if (flag_nueCC && flag_FC && flag_truth_inside) return true;
     else return false;
@@ -213,8 +235,6 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   }else{
     std::cout << "Not sure what cut: " << ch_name << std::endl;
   }
-  
-  
   
   return false;
 }

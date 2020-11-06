@@ -11,6 +11,7 @@
 #include "WCPLEEANA/cuts.h"
 #include "WCPLEEANA/pot.h"
 #include "WCPLEEANA/pfeval.h"
+#include "WCPLEEANA/eval.h"
 
 using namespace std;
 using namespace LEEana;
@@ -136,6 +137,29 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("numu_score",1);
   T_BDTvars->SetBranchStatus("nue_score",1);
   T_BDTvars->SetBranchStatus("cosmict_flag",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_0",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_1",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_2",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_3",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_4",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_5",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_6",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_7",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_8",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_9",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_10",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_11",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_12",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_13",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_14",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_15",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_16",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_17",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_18",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_19",1);
+  T_BDTvars->SetBranchStatus("mip_energy",1);
+  T_BDTvars->SetBranchStatus("mip_angle_beam",1);
+
 
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("match_isFC",1);
@@ -159,9 +183,11 @@ int main( int argc, char** argv )
     T_eval->SetBranchStatus("truth_nuPdg",1);
     T_eval->SetBranchStatus("truth_vtxInside",1);
     T_eval->SetBranchStatus("truth_nuEnergy",1);
+    T_eval->SetBranchStatus("truth_energyInside",1);
     T_eval->SetBranchStatus("truth_vtxX",1);
     T_eval->SetBranchStatus("truth_vtxY",1);
     T_eval->SetBranchStatus("truth_vtxZ",1);
+    T_eval->SetBranchStatus("match_completeness_energy",1);
   }
 
   
@@ -181,7 +207,11 @@ int main( int argc, char** argv )
   T_KINEvars->SetBranchStatus("kine_pio_angle",1);
 
   T_PFeval->SetBranchStatus("*",0);
-  
+  if(!flag_data){
+  T_PFeval->SetBranchStatus("truth_NprimPio",1);
+  T_PFeval->SetBranchStatus("truth_NCDelta",1);
+  }
+
   std::cout << "Total entries: " << T_eval->GetEntries() << std::endl;
 
 
@@ -207,7 +237,7 @@ int main( int argc, char** argv )
       // get kinematics variable ...
       double val = get_kine_var(kine, pfeval, tagger, var_name);
       // get pass or not
-      bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, tagger, kine);
+      bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, pfeval, tagger, kine);
 
       // std::cout << weight << std::endl;
       // get weight ...
@@ -228,6 +258,7 @@ int main( int argc, char** argv )
   T->Fill();
   
   for (auto it = map_histoname_hist.begin(); it!= map_histoname_hist.end(); it++){
+    //std::cout<<"DEBUG: "<<it->first<<" "<<it->second->GetName()<<" "<<it->second->GetSum()<<"\n";
     it->second->SetDirectory(file1);
   }
   

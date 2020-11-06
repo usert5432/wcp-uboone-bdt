@@ -176,7 +176,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
     for (int j=0;j!=rows;j++){
       //      matrix_variation(j,0) = matrix_variation(j,0)/sqrt(11.) + (*vec_mean_diff)(j); // increase MC stat by a factor of 11
       matrix_variation(j,0) += (*vec_mean_diff)(j); // standard ...
-      // matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
+      //matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
       x[j] = rel_err * matrix_variation(j,0);
       //x[j] = matrix_variation(j,0); //original no abs term
     }
@@ -588,10 +588,10 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
       if (it3 != disabled_ch_names.end()) continue;
       
       double val = get_kine_var(kine_cv, pfeval_cv, tagger_cv, var_name);
-      bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval_cv, tagger_cv, kine_cv);
+      bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval_cv, pfeval_cv, tagger_cv, kine_cv);
 
       double val1 = get_kine_var(kine_det, pfeval_det, tagger_det, var_name);
-      bool flag_pass1 = get_cut_pass(ch_name, add_cut, false, eval_det, tagger_det, kine_det);
+      bool flag_pass1 = get_cut_pass(ch_name, add_cut, false, eval_det, pfeval_det, tagger_det, kine_det);
       if (flag_pass || flag_pass1) 	std::get<4>(vec_events.at(i) ).insert(std::make_tuple(no, val, flag_pass, val1, flag_pass1));
       
     }
@@ -666,7 +666,7 @@ void LEEana::CovMatrix::fill_data_histograms(int run, std::map<int, std::vector<
 }
 
 
-void LEEana::CovMatrix::fill_pred_histograms(int run, std::map<int, std::vector<TH1F*> >& map_obsch_histos, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_bayes, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_infos, std::map<TString, std::pair<TH1F*, double> >& map_name_histogram, float lee_strength, std::map<int, double> map_data_period_pot){
+void LEEana::CovMatrix::fill_pred_histograms(int run, std::map<int, std::vector<TH1F*> >& map_obsch_histos, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_bayes, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_infos, std::map<TString, std::pair<TH1F*, double> >& map_name_histogram, float lee_strength, std::map<int, double> map_data_period_pot, bool flag_breakdown, std::map<int, std::vector<TH1F*> >& map_obsch_subhistos){
   
   for (auto it = map_pred_obsch_histos.begin(); it!=map_pred_obsch_histos.end();it++){
     //std::cout << it->first << std::endl;
@@ -735,9 +735,15 @@ void LEEana::CovMatrix::fill_pred_histograms(int run, std::map<int, std::vector<
 	temp_map_histo_ratios[histoname] = std::make_pair(ratio, lee_strength);
 	
 	if (flag_lee == 1) ratio *= lee_strength;
-	
+
 	htemp->Add(hmc, ratio);
 	htemp_err2->Add(hmc_err2, ratio*ratio);
+    if(flag_breakdown){
+        TH1F *hbreakdown = (TH1F*)hmc->Clone(Form("bk_%s", hmc->GetName()));
+        hbreakdown->Scale(ratio);
+        map_obsch_subhistos[obsch].push_back(hbreakdown);
+        //std::cout<<"DEBUG: "<<obsch<<" "<<hmc->GetName()<<"\n";
+    }
 
 	// mean, sigma2, pot_ratio, covch, add_sys2
 	std::vector< std::tuple<double, double, double, int, double> > values;
