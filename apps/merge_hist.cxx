@@ -705,6 +705,7 @@ int main( int argc, char** argv )
         hext->Reset();
         hdirt->Reset();
         hLEE->Reset();
+        bool flag_leeexist = false;
         for(size_t i=0; i<it->second.size(); i++){
             TH1F* htemp = map_obsch_subhistos[obschannel].at(i);
             std::string histname = htemp->GetName();
@@ -757,6 +758,7 @@ int main( int argc, char** argv )
                 }
                 if(line == "LEE") {
                     std::cout<<"LEE"<<" "<<histname<<std::endl;
+                    flag_leeexist = true;
                     hLEE->Add(htemp);
                     break;
                 }
@@ -837,14 +839,16 @@ int main( int argc, char** argv )
         hnueCCinFV->SetFillColorAlpha(kGreen+1, 0.5);
         hnueCCinFV->SetLineColor(kGreen+1);
         hnueCCinFV->SetLineWidth(1);
-        
+       
+        if(flag_leeexist){
         hstack[obschannel-1]->Add(hLEE); 
         legend[obschannel-1]->AddEntry(hLEE, Form("LEE, %.1f", hLEE->Integral()), "F");
         hLEE->SetFillStyle(1001);
         hLEE->SetFillColorAlpha(kMagenta, 0.5);
         hLEE->SetLineColor(kMagenta);
         hLEE->SetLineWidth(1);
-       
+        }
+
         TH1F* hmc = (TH1F*)map_obsch_histos[obschannel].at(1)->Clone("hmc");
         hmc->Draw("hist");
         hmc->GetYaxis()->SetTitle("Event counts");
@@ -906,7 +910,7 @@ int main( int argc, char** argv )
         gratio_mc[obschannel-1]->Draw("a2");
         gratio_mc[obschannel-1]->SetFillColor(kGray);
         gratio_mc[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio));
-        gratio_mc[obschannel-1]->GetXaxis()->SetRangeUser(0,hmc->GetXaxis()->GetXmax());
+        gratio_mc[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
         gratio_mc[obschannel-1]->GetYaxis()->SetTitle("Data/Pred");
         gratio_mc[obschannel-1]->GetYaxis()->SetTitleOffset(0.5);
         if(obschannel>=5) //hard coded at this moment
@@ -924,6 +928,15 @@ int main( int argc, char** argv )
         gratio_data[obschannel-1]->SetMarkerStyle(20);
         gratio_data[obschannel-1]->SetMarkerSize(1.5);
         gratio_data[obschannel-1]->SetLineColor(kBlack);
+
+        TH1F* hist = (TH1F*)hdata->Clone("hist");
+        hist->Reset();
+        hist->Draw("axis same");
+
+        TLine* line = new TLine(hmc->GetXaxis()->GetXmin(),1,hmc->GetXaxis()->GetXmax(),1);
+        line->Draw();
+        line->SetLineWidth(2);
+        line->SetLineStyle(kDashed);
         legend2[obschannel-1] = new TLegend(0.2, 0.7, 0.8, 0.95);
         legend2[obschannel-1]->SetNColumns(2);
         legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty (Bayesian)", "F");

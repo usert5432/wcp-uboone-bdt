@@ -361,6 +361,7 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_19",1);
   T_BDTvars_cv->SetBranchStatus("mip_energy",1);
   T_BDTvars_cv->SetBranchStatus("mip_angle_beam",1);
+  T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
   
 
   T_eval_cv->SetBranchStatus("*",0);
@@ -417,6 +418,9 @@ int main( int argc, char** argv )
   T_PFeval_cv->SetBranchStatus("reco_nuvtxX",1);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxY",1);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxZ",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxX",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxY",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxZ",1);
   T_PFeval_cv->SetBranchStatus("reco_muonMomentum",1);
   T_PFeval_cv->SetBranchStatus("reco_showerKE",1);
   if (!flag_data){

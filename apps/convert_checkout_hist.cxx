@@ -159,6 +159,7 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_19",1);
   T_BDTvars->SetBranchStatus("mip_energy",1);
   T_BDTvars->SetBranchStatus("mip_angle_beam",1);
+  T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
 
 
   T_eval->SetBranchStatus("*",0);
@@ -206,10 +207,27 @@ int main( int argc, char** argv )
   T_KINEvars->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars->SetBranchStatus("kine_pio_angle",1);
 
+
   T_PFeval->SetBranchStatus("*",0);
-  if(!flag_data){
-  T_PFeval->SetBranchStatus("truth_NprimPio",1);
-  T_PFeval->SetBranchStatus("truth_NCDelta",1);
+  T_PFeval->SetBranchStatus("reco_nuvtxX",1);
+  T_PFeval->SetBranchStatus("reco_nuvtxY",1);
+  T_PFeval->SetBranchStatus("reco_nuvtxZ",1);
+  T_PFeval->SetBranchStatus("reco_showervtxX",1);
+  T_PFeval->SetBranchStatus("reco_showervtxY",1);
+  T_PFeval->SetBranchStatus("reco_showervtxZ",1);
+  T_PFeval->SetBranchStatus("reco_muonMomentum",1);
+  T_PFeval->SetBranchStatus("reco_showerKE",1);
+  if (!flag_data){
+      T_PFeval->SetBranchStatus("nuvtx_diff",1);
+      T_PFeval->SetBranchStatus("showervtx_diff",1);
+      T_PFeval->SetBranchStatus("muonvtx_diff",1);
+  }
+  if (pfeval.flag_NCDelta){
+      T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+      if (!flag_data){
+          T_PFeval->SetBranchStatus("truth_NCDelta",1);
+          T_PFeval->SetBranchStatus("truth_NprimPio",1);
+      }
   }
 
   std::cout << "Total entries: " << T_eval->GetEntries() << std::endl;

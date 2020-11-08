@@ -427,6 +427,29 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("numu_score",1);
   T_BDTvars->SetBranchStatus("nue_score",1);
   T_BDTvars->SetBranchStatus("cosmict_flag",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_0",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_1",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_2",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_3",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_4",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_5",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_6",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_7",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_8",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_9",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_10",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_11",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_12",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_13",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_14",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_15",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_16",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_17",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_18",1);
+  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_19",1);
+  T_BDTvars->SetBranchStatus("mip_energy",1);
+  T_BDTvars->SetBranchStatus("mip_angle_beam",1);
+  T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
 
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("match_isFC",1);
@@ -473,6 +496,22 @@ int main( int argc, char** argv )
   T_KINEvars->SetBranchStatus("kine_pio_angle",1);
 
   T_PFeval->SetBranchStatus("*",0);
+  T_PFeval->SetBranchStatus("reco_nuvtxX",1);
+  T_PFeval->SetBranchStatus("reco_nuvtxY",1);
+  T_PFeval->SetBranchStatus("reco_nuvtxZ",1);
+  T_PFeval->SetBranchStatus("reco_showervtxX",1);
+  T_PFeval->SetBranchStatus("reco_showervtxY",1);
+  T_PFeval->SetBranchStatus("reco_showervtxZ",1);
+  T_PFeval->SetBranchStatus("reco_muonMomentum",1);
+  T_PFeval->SetBranchStatus("reco_showerKE",1);
+  T_PFeval->SetBranchStatus("nuvtx_diff",1);
+  T_PFeval->SetBranchStatus("showervtx_diff",1);
+  T_PFeval->SetBranchStatus("muonvtx_diff",1);
+  if (pfeval.flag_NCDelta){
+      T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+      T_PFeval->SetBranchStatus("truth_NCDelta",1);
+      T_PFeval->SetBranchStatus("truth_NprimPio",1);
+  }
 
   std::map<std::pair<int, int>, int> map_re_entry;
   std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re;

@@ -69,6 +69,7 @@ class TLee {
 public:
   TLee() {
     rand = new TRandom3(0);
+    flag_individual_cov_newworld = true;
   }
 
   /////////////////////////////////////////////////////// data memeber
@@ -102,8 +103,11 @@ public:
   map<int, double>map_data_spectrum_newworld_bin;
   TMatrixD matrix_data_newworld;
   
-  TMatrixD matrix_input_cov_flux_Xs;
+  TMatrixD matrix_input_cov_flux_Xs;  
+  TMatrixD matrix_input_cov_flux;
+  TMatrixD matrix_input_cov_Xs;
   TMatrixD matrix_input_cov_detector;
+  map<int, TMatrixD>matrix_input_cov_detector_sub;
   TMatrixD matrix_input_cov_additional;
 
   map<int, TGraph*>gh_mc_stat_bin;
@@ -115,6 +119,14 @@ public:
   
   TMatrixD matrix_absolute_cov_oldworld;
   TMatrixD matrix_absolute_cov_newworld;
+
+  bool flag_individual_cov_newworld;
+  TMatrixD matrix_absolute_flux_cov_newworld;
+  TMatrixD matrix_absolute_Xs_cov_newworld;
+  TMatrixD matrix_absolute_detector_cov_newworld;
+  map<int, TMatrixD>matrix_absolute_detector_sub_cov_newworld;
+  TMatrixD matrix_absolute_mc_stat_cov_newworld;
+  TMatrixD matrix_absolute_additional_cov_newworld;
 
   map<int, map<int, double> >map_toy_variation;
   

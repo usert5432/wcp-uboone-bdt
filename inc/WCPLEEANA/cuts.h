@@ -13,6 +13,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace LEEana{
 
@@ -31,6 +32,7 @@ namespace LEEana{
   // nueCC cuts
   // TCut nueCC_cut = "numu_cc_flag >=0 && nue_score > 7.0";
   bool is_nueCC(TaggerInfo& tagger_info);
+  bool is_loosenueCC(TaggerInfo& tagger_info);
   
   bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger);
   bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger);
@@ -101,8 +103,32 @@ double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagg
     return tagger.nue_score;
   }else if (var_name == "numu_score"){
     return tagger.numu_score;
+  }else if (var_name == "shower_energy"){
+    return tagger.mip_energy;
+  }else if (var_name == "shower_angle_beam"){
+    return tagger.mip_angle_beam;
+  }else if (var_name == "shower_angle_vertical"){
+    return tagger.spt_angle_vertical;
+  }else if (var_name == "shwvtx_nuvtx_dis"){
+    return sqrt(pow(pfeval.reco_nuvtxX-pfeval.reco_showervtxX,2)+pow(pfeval.reco_nuvtxY-pfeval.reco_showervtxY,2)+pow(pfeval.reco_nuvtxZ-pfeval.reco_showervtxZ,2)); 
+  }else if (var_name == "median_dQdx"){
+    std::vector<float> dqdx;
+    dqdx.push_back(tagger.mip_vec_dQ_dx_2);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_3);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_4);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_5);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_6);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_7);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_8);
+    std::sort(dqdx.begin(), dqdx.end());
+    size_t vecsize = dqdx.size();
+    size_t mid = vecsize/2;
+    return vecsize%2==0 ? (dqdx[mid]+dqdx[mid-1])/2:dqdx[mid];
+  }else if (var_name == "reco_showervtxX"){
+      return pfeval.reco_showervtxX;
   }else{
     std::cout << "No such variable: " << var_name << std::endl;
+    exit(EXIT_FAILURE);
   }
   return -1;
 }
@@ -119,7 +145,16 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   
   if(is_near_sideband(kine, tagger)) map_cuts_flag["nearsideband"] = true; 
   else map_cuts_flag["nearsideband"] = false; 
+ 
+  if(is_nueCC(tagger)) map_cuts_flag["nueCC"] = true;
+  else map_cuts_flag["nueCC"] = false;
+
+  if(is_loosenueCC(tagger)) map_cuts_flag["loosenueCC"] = true;
+  else map_cuts_flag["loosenueCC"] = false;
   
+  if(is_generic(eval)) map_cuts_flag["generic"] = true;
+  else map_cuts_flag["generic"] = false;
+
   if(eval.truth_nuEnergy <=400) map_cuts_flag["LowEintnueCC"] = true;
   else map_cuts_flag["LowEintnueCC"] = false;
   
@@ -157,7 +192,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   // figure out additional cuts and flag_data ...
   bool flag_add = true;
   if(add_cut == "all") flag_add = true;
-  else if( (flag_data && (add_cut=="farsideband" || add_cut=="nearsideband")) || !flag_data ){ 
+  else if( (flag_data && (add_cut=="farsideband" || add_cut=="nearsideband" || add_cut=="nueCC" || add_cut=="generic" || add_cut=="loosenueCC")) || !flag_data ){ 
       std::istringstream sss(add_cut.Data());
       for(std::string line; std::getline(sss, line, '_');){
           if(map_cuts_flag.find(line)!=map_cuts_flag.end()){
@@ -171,6 +206,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   }
   else{ 
     std::cout<<"ERROR: add_cut "<<add_cut<<" of channel "<< ch_name <<" is not assigned to sample "<<flag_data<<" [1: data; 0: mc]\n";
+    std::cout<<"Please modify inc/WCPLEEANA/cuts.h\n";
     exit(EXIT_FAILURE);
   }
  
@@ -231,6 +267,30 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
   }else if (ch_name == "all_but_nueCC_bnb1" || ch_name == "all_but_nueCC_overlay1" || ch_name == "all_but_nueCC_ext1" || ch_name == "all_but_nueCC_dirt1"){
     if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "all_but_nueCC_overlay1" || ch_name != "all_but_nueCC_overlay1") return true;
+    else return false;
+  }else if (ch_name == "testA_bnb" || ch_name == "testA_nueoverlay"){
+    if (flag_truth_inside &&  ch_name == "testA_nueoverlay" || ch_name == "testA_bnb") return true;
+    else return false;
+  }else if (ch_name == "testA_overlay" || ch_name == "testA_ext" || ch_name == "testA_dirt"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "testA_overlay" || ch_name != "testA_overlay") return true;
+    else return false;
+  }else if (ch_name == "testB_bnb" || ch_name == "testB_nueoverlay"){
+    if (flag_truth_inside &&  ch_name == "testB_nueoverlay" || ch_name == "testB_bnb") return true;
+    else return false;
+  }else if (ch_name == "testB_overlay" || ch_name == "testB_ext" || ch_name == "testB_dirt"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "testB_overlay" || ch_name != "testB_overlay") return true;
+    else return false;
+  }else if (ch_name == "testC_bnb" || ch_name == "testC_nueoverlay"){
+    if (flag_truth_inside &&  ch_name == "testC_nueoverlay" || ch_name == "testC_bnb") return true;
+    else return false;
+  }else if (ch_name == "testC_overlay" || ch_name == "testC_ext" || ch_name == "testC_dirt"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "testC_overlay" || ch_name != "testC_overlay") return true;
+    else return false;
+  }else if (ch_name == "testD_bnb" || ch_name == "testD_nueoverlay"){
+    if (flag_truth_inside &&  ch_name == "testD_nueoverlay" || ch_name == "testD_bnb") return true;
+    else return false;
+  }else if (ch_name == "testD_overlay" || ch_name == "testD_ext" || ch_name == "testD_dirt"){
+    if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "testD_overlay" || ch_name != "testD_overlay") return true;
     else return false;
   }else{
     std::cout << "Not sure what cut: " << ch_name << std::endl;
@@ -342,6 +402,13 @@ bool LEEana::is_nueCC(TaggerInfo& tagger_info){
   return flag;
 }
 
+bool LEEana::is_loosenueCC(TaggerInfo& tagger_info){
+  bool flag = false;
+  if (tagger_info.numu_cc_flag >=0 && tagger_info.nue_score > 0.0)
+    flag = true;
+  
+  return flag;
+}
 
 bool LEEana::is_generic(EvalInfo& eval){
   // not very useful for the main analysis

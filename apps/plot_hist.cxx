@@ -10,6 +10,7 @@
 #include "TROOT.h"
 #include "TApplication.h"
 #include "TCanvas.h"
+#include "TImage.h"
 #include "TGraphErrors.h"
 #include "TGraphAsymmErrors.h" 
 #include "TAxis.h"
@@ -251,6 +252,7 @@ int main( int argc, char** argv )
 
     // absolute cov matrix
     TMatrixD* matrix_absolute_cov = (TMatrixD*)f_cov->Get("matrix_absolute_cov_newworld");
+    TMatrixD* matrix_absolute_detector_cov = (TMatrixD*)f_cov->Get("matrix_absolute_detector_cov_newworld");
 
     std::cout <<"User: "<< "chosen LEE strength: "<< lee_strength << " run option: " << run << std::endl;
     std::cout <<"Cov matrix config: \n"
@@ -281,8 +283,8 @@ int main( int argc, char** argv )
     TMatrixD* matrix_pred = (TMatrixD*)f_cov->Get("matrix_pred_newworld");
     TMatrixD* matrix_data = (TMatrixD*)f_cov->Get("matrix_data_newworld");
     for (auto it = map_obsch_histos.begin(); it!= map_obsch_histos.end(); it++){
-      TH1F *h1 = it->second.at(1);
-      TH1F *h2 = it->second.at(2);
+      TH1F *h1 = it->second.at(1); // error --> total uncertainty
+      TH1F *h2 = it->second.at(2); // bonus: error --> detector systematic uncertainty
       int obsch = it->first;
   
       TH1F* htemp_data = (TH1F*)h1->Clone("htemp_data");
@@ -292,8 +294,10 @@ int main( int argc, char** argv )
       for (int i=0;i!=h1->GetNbinsX()+1;i++){
         int index = obsch_bin_index.find(std::make_pair(obsch, i+1))->second;
         double total_uncertainty = (*matrix_absolute_cov)(index, index); // only diagonal term
-        std::cout << obsch << " " << i << " "	  << h1->GetBinContent(i+1) << " " << total_uncertainty << " "  << h2->GetBinContent(i+1) << std::endl;
+        double detector_uncertainty = (*matrix_absolute_detector_cov)(index, index); // only diagonal term
+        std::cout << obsch << " " << i << " "	  << h1->GetBinContent(i+1) << " " << total_uncertainty << " "  << h2->GetBinContent(i+1) << " " << detector_uncertainty << std::endl;
 	    h1->SetBinError(i+1,sqrt(total_uncertainty));
+        h2->SetBinError(i+1,sqrt(detector_uncertainty));
 
         if(flag_check == 1){
             htemp_data->SetBinContent(i+1, (*matrix_data)(0, index));
@@ -865,6 +869,7 @@ int main( int argc, char** argv )
     TCanvas *canvas[nchannels];
     TGraphAsymmErrors *gr[nchannels];
     TGraphAsymmErrors *gratio_mc[nchannels];
+    TGraphAsymmErrors *gratio_mc2[nchannels]; // to plot uncertainty
     TGraphAsymmErrors *gratio_data[nchannels];
     THStack *hstack[nchannels]; 
     TLegend *legend[nchannels]; 
@@ -907,6 +912,7 @@ int main( int argc, char** argv )
         hext->Reset();
         hdirt->Reset();
         hLEE->Reset();
+        bool flag_leeexist = false;
         for(size_t i=0; i<it->second.size(); i++){
             TH1F* htemp = map_obsch_subhistos[obschannel].at(i);
             std::string histname = htemp->GetName();
@@ -959,6 +965,7 @@ int main( int argc, char** argv )
                 }
                 if(line == "LEE") {
                     std::cout<<"LEE"<<" "<<histname<<std::endl;
+                    flag_leeexist = true;
                     hLEE->Add(htemp);
                     break;
                 }
@@ -1039,15 +1046,18 @@ int main( int argc, char** argv )
         hnueCCinFV->SetFillColorAlpha(kGreen+1, 0.5);
         hnueCCinFV->SetLineColor(kGreen+1);
         hnueCCinFV->SetLineWidth(1);
-        
+       
+        if(flag_leeexist){
         hstack[obschannel-1]->Add(hLEE); 
         legend[obschannel-1]->AddEntry(hLEE, Form("LEE, %.1f", hLEE->Integral()), "F");
         hLEE->SetFillStyle(1001);
         hLEE->SetFillColorAlpha(kMagenta, 0.5);
         hLEE->SetLineColor(kMagenta);
         hLEE->SetLineWidth(1);
-       
+        }
+
         TH1F* hmc = (TH1F*)map_obsch_histos[obschannel].at(1)->Clone("hmc");
+        TH1F* hmc2 = (TH1F*)map_obsch_histos[obschannel].at(2)->Clone("hmc2");
         hmc->Draw("hist");
         hmc->GetYaxis()->SetTitle("Event counts");
         float mcymax = hmc->GetBinContent(hmc->GetMaximumBin());
@@ -1060,6 +1070,7 @@ int main( int argc, char** argv )
         hstack[obschannel-1]->Draw("hist same");
         
         gratio_mc[obschannel-1] = new TGraphAsymmErrors();
+        gratio_mc2[obschannel-1] = new TGraphAsymmErrors();
         gratio_data[obschannel-1] = new TGraphAsymmErrors();
         float maxratio = 1.5;
         for(int i=0; i<hdata->GetNbinsX(); i++)
@@ -1073,16 +1084,20 @@ int main( int argc, char** argv )
             double bayesError_up = bayesError.second;
             double ymc = hmc->GetBinContent(i+1);
             double ymc_err = hmc->GetBinError(i+1);
+            double ymc2_err = hmc2->GetBinError(i+1);
             gr[obschannel-1]->SetPoint(i,x,y);
             gratio_mc[obschannel-1]->SetPoint(i,x,1);
+            gratio_mc2[obschannel-1]->SetPoint(i,x,1);
             if(ymc!=0){ 
                 gratio_data[obschannel-1]->SetPoint(i,x,y/ymc); 
                 if(maxratio<y/ymc) maxratio = y/ymc;
                 gratio_mc[obschannel-1]->SetPointError(i, x_err, x_err, ymc_err/ymc, ymc_err/ymc);
+                gratio_mc2[obschannel-1]->SetPointError(i, x_err, x_err, sqrt(ymc_err*ymc_err-ymc2_err*ymc2_err)/ymc, sqrt(ymc_err*ymc_err-ymc2_err*ymc2_err)/ymc);
             }
             else { 
                 gratio_data[obschannel-1]->SetPoint(i, x, 10); // invalid value 
                 gratio_mc[obschannel-1]->SetPointError(i, x_err, x_err, 0, 0);
+                gratio_mc2[obschannel-1]->SetPointError(i, x_err, x_err, 0, 0);
             }
             if(flag_err==2 || flag_err==3){ //update data point errors
                 gr[obschannel-1]->SetPointError(i, x_err, x_err, bayesError_low, bayesError_up);
@@ -1113,18 +1128,33 @@ int main( int argc, char** argv )
         //legend[obschannel-1]->SetFillStyle(0);
         legend[obschannel-1]->SetHeader(Form("#SigmaDATA/#Sigma(MC+EXT)=%.2f", hdata->Integral()/hmc->Integral()), "C");
         legend[obschannel-1]->Draw();
+        pad1->Modified();
         pad2->cd();
         gratio_mc[obschannel-1]->Draw("a2");
-        gratio_mc[obschannel-1]->SetFillColor(kGray);
-        gratio_mc[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio));
-        gratio_mc[obschannel-1]->GetXaxis()->SetRangeUser(0,hmc->GetXaxis()->GetXmax());
+        gratio_mc[obschannel-1]->SetFillColor(kBlue);
+        gratio_mc[obschannel-1]->SetFillStyle(3002);
+        gratio_mc[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<3?int(1.5*maxratio):3);
+        gratio_mc[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
         gratio_mc[obschannel-1]->GetYaxis()->SetTitle("Data/Pred");
         gratio_mc[obschannel-1]->GetYaxis()->SetTitleOffset(0.5);
+        gratio_mc2[obschannel-1]->Draw("2 same");
+        gratio_mc2[obschannel-1]->SetFillColor(kGray);
+        gratio_mc2[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<3?int(1.5*maxratio):3);
+        gratio_mc2[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
         if(obschannel>=5) //hard coded at this moment
         {
             gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco #pi^{0} mass [MeV]");
         }
         else gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino energy [MeV]");
+        ///hack
+        /* if(obschannel<=2) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco electron shower energy [MeV]"); */ 
+        /* else if(obschannel==3) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("nue BDT score"); */ 
+        /* else if(obschannel==4) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Median dQ/dx (1-5 cm) [43k e-/cm]"); */ 
+        /* else if(obschannel==5) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to beam [degree]"); */ 
+        /* else if(obschannel==6) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to vertical [degree]"); */ 
+        /* else if(obschannel==7) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower vertex position in drift direction [cm]"); */ 
+        /* //hack end */
+
         gratio_mc[obschannel-1]->GetXaxis()->SetTitleSize(0.1);
         gratio_mc[obschannel-1]->GetXaxis()->SetLabelSize(0.1);
         gratio_mc[obschannel-1]->GetYaxis()->SetTitleSize(0.1);
@@ -1140,24 +1170,27 @@ int main( int argc, char** argv )
         hist->Reset();
         hist->Draw("axis same");
 
-        TLine* line = new TLine(0,1,hmc->GetXaxis()->GetXmax(),1);
+        TLine* line = new TLine(hmc->GetXaxis()->GetXmin(),1,hmc->GetXaxis()->GetXmax(),1);
         line->Draw();
         line->SetLineWidth(2);
         line->SetLineStyle(kDashed);
         legend2[obschannel-1] = new TLegend(0.2, 0.7, 0.8, 0.95);
         legend2[obschannel-1]->SetNColumns(2);
         if(flag_err==2) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty (Bayesian)", "F");
-        if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat.+syst. uncertainty", "F");
+        if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred total uncertainty", "F");
+        if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc2[obschannel-1],"Pred stat.+xsec+flux uncertainty", "F");
         legend2[obschannel-1]->AddEntry(gratio_data[obschannel-1],"Data stat. uncertainty (Bayesian)", "lp");
         legend2[obschannel-1]->SetTextSize(0.06);
         legend2[obschannel-1]->SetFillStyle(0);
         legend2[obschannel-1]->Draw();
+        pad2->Modified();
 
+        canvas[obschannel-1]->Print(Form("canvas%d.pdf", obschannel));
+        
         if(obschannel==1) canvas[obschannel-1]->Print("selection.pdf(");
         else if(obschannel==nchannels) canvas[obschannel-1]->Print("selection.pdf)");
         else canvas[obschannel-1]->Print("selection.pdf");
 
-        canvas[obschannel-1]->SaveAs(Form("canvas%d.png", obschannel));
     } 
     theApp.Run();
   } // flag_breakdown end

@@ -631,6 +631,29 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("numu_score",1);
   T_BDTvars_cv->SetBranchStatus("nue_score",1);
   T_BDTvars_cv->SetBranchStatus("cosmict_flag",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_0",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_1",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_2",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_3",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_4",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_5",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_6",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_7",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_8",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_9",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_10",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_11",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_12",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_13",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_14",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_15",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_16",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_17",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_18",1);
+  T_BDTvars_cv->SetBranchStatus("mip_vec_dQ_dx_19",1);
+  T_BDTvars_cv->SetBranchStatus("mip_energy",1);
+  T_BDTvars_cv->SetBranchStatus("mip_angle_beam",1);
+  T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
 
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("match_isFC",1);
@@ -677,6 +700,22 @@ int main( int argc, char** argv )
   T_KINEvars_cv->SetBranchStatus("kine_pio_angle",1);
 
   T_PFeval_cv->SetBranchStatus("*",0);
+  T_PFeval_cv->SetBranchStatus("reco_nuvtxX",1);
+  T_PFeval_cv->SetBranchStatus("reco_nuvtxY",1);
+  T_PFeval_cv->SetBranchStatus("reco_nuvtxZ",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxX",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxY",1);
+  T_PFeval_cv->SetBranchStatus("reco_showervtxZ",1);
+  T_PFeval_cv->SetBranchStatus("reco_muonMomentum",1);
+  T_PFeval_cv->SetBranchStatus("reco_showerKE",1);
+  T_PFeval_cv->SetBranchStatus("nuvtx_diff",1);
+  T_PFeval_cv->SetBranchStatus("showervtx_diff",1);
+  T_PFeval_cv->SetBranchStatus("muonvtx_diff",1);
+  if (pfeval_cv.flag_NCDelta){
+      T_PFeval_cv->SetBranchStatus("reco_protonMomentum",1);
+      T_PFeval_cv->SetBranchStatus("truth_NCDelta",1);
+      T_PFeval_cv->SetBranchStatus("truth_NprimPio",1);
+  }
 
 
   T_BDTvars_det->SetBranchStatus("*",0);
@@ -684,6 +723,29 @@ int main( int argc, char** argv )
   T_BDTvars_det->SetBranchStatus("numu_score",1);
   T_BDTvars_det->SetBranchStatus("nue_score",1);
   T_BDTvars_det->SetBranchStatus("cosmict_flag",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_0",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_1",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_2",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_3",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_4",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_5",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_6",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_7",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_8",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_9",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_10",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_11",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_12",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_13",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_14",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_15",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_16",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_17",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_18",1);
+  T_BDTvars_det->SetBranchStatus("mip_vec_dQ_dx_19",1);
+  T_BDTvars_det->SetBranchStatus("mip_energy",1);
+  T_BDTvars_det->SetBranchStatus("mip_angle_beam",1);
+  T_BDTvars_det->SetBranchStatus("spt_angle_vertical",1);
 
   T_eval_det->SetBranchStatus("*",0);
   T_eval_det->SetBranchStatus("match_isFC",1);
@@ -730,6 +792,22 @@ int main( int argc, char** argv )
   T_KINEvars_det->SetBranchStatus("kine_pio_angle",1);
 
   T_PFeval_det->SetBranchStatus("*",0);
+  T_PFeval_det->SetBranchStatus("reco_nuvtxX",1);
+  T_PFeval_det->SetBranchStatus("reco_nuvtxY",1);
+  T_PFeval_det->SetBranchStatus("reco_nuvtxZ",1);
+  T_PFeval_det->SetBranchStatus("reco_showervtxX",1);
+  T_PFeval_det->SetBranchStatus("reco_showervtxY",1);
+  T_PFeval_det->SetBranchStatus("reco_showervtxZ",1);
+  T_PFeval_det->SetBranchStatus("reco_muonMomentum",1);
+  T_PFeval_det->SetBranchStatus("reco_showerKE",1);
+  T_PFeval_det->SetBranchStatus("nuvtx_diff",1);
+  T_PFeval_det->SetBranchStatus("showervtx_diff",1);
+  T_PFeval_det->SetBranchStatus("muonvtx_diff",1);
+  if (pfeval_det.flag_NCDelta){
+      T_PFeval_det->SetBranchStatus("reco_protonMomentum",1);
+      T_PFeval_det->SetBranchStatus("truth_NCDelta",1);
+      T_PFeval_det->SetBranchStatus("truth_NprimPio",1);
+  }
   
 
   std::map<std::pair<int, int>, int> map_re_entry_cv;

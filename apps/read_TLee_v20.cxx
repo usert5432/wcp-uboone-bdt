@@ -115,10 +115,21 @@ int main(int argc, char** argv)
   file_collapsed_covariance_matrix->cd();
   tree_config->Write();
 
-  file_collapsed_covariance_matrix->cd();
   Lee_test->matrix_absolute_cov_newworld.Write("matrix_absolute_cov_newworld");// (bins, bins)
+  Lee_test->matrix_absolute_flux_cov_newworld.Write("matrix_absolute_flux_cov_newworld");
+  Lee_test->matrix_absolute_Xs_cov_newworld.Write("matrix_absolute_Xs_cov_newworld");
+  Lee_test->matrix_absolute_detector_cov_newworld.Write("matrix_absolute_detector_cov_newworld");
+  Lee_test->matrix_absolute_mc_stat_cov_newworld.Write("matrix_absolute_mc_stat_cov_newworld");
+  Lee_test->matrix_absolute_additional_cov_newworld.Write("matrix_absolute_additional_cov_newworld");
+                 
+  for(auto it=Lee_test->matrix_input_cov_detector_sub.begin(); it!=Lee_test->matrix_input_cov_detector_sub.end(); it++) {
+    int idx = it->first;
+    roostr = TString::Format("matrix_absolute_detector_sub_cov_newworld_%02d", idx);
+    Lee_test->matrix_absolute_detector_sub_cov_newworld[idx].Write(roostr);
+  }
+     
   Lee_test->matrix_pred_newworld.Write("matrix_pred_newworld");// (1, bins)
-  Lee_test->matrix_data_newworld.Write("matrix_data_newworld");// (1, bins)
+  Lee_test->matrix_data_newworld.Write("matrix_data_newworld");// (1, bins)  
   file_collapsed_covariance_matrix->Close();
   
   //////////////////////////////////////////////////////////////////////////////////////// Goodness of fit
@@ -437,7 +448,7 @@ int main(int argc, char** argv)
   
   //////////////////////////////////////////////////////////////////////////////////////// Feldman-Cousins approach
 
-  if( 1 ) {
+  if( 0 ) {
     
     Lee_test->Set_measured_data();    
     TMatrixD matrix_data_input_fc = Lee_test->matrix_data_newworld;
@@ -461,7 +472,7 @@ int main(int argc, char** argv)
 
     /////////////// Asimov
     
-    //Lee_test->Exe_Fledman_Cousins_Asimov(Lee_true_low, Lee_true_hgh, Lee_step);
+    Lee_test->Exe_Fledman_Cousins_Asimov(Lee_true_low, Lee_true_hgh, Lee_step);
 
     /////////////// measured data
     
@@ -471,7 +482,9 @@ int main(int argc, char** argv)
   
   ////////////////////////////////////////////////////////////////////////////////////////
   
-  theApp.Run();
+  cout<<endl<<" Entrer Ctrl+c to end the program"<<endl<<endl;
   
+  theApp.Run();
+
   return 0;
 }
