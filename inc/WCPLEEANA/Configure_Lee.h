@@ -1,21 +1,19 @@
 namespace config_Lee
 {
   ////////// 
+ 
+     TString spectra_file = "./TLee_input/merge.root";
+     TString flux_Xs_directory = "./TLee_input/flux_Xs/";
+     TString detector_directory = "./TLee_input/det/";
+     TString mc_directory = "./TLee_input/mc_stat/";
+ 
   
-  TString spectra_file = "./TLee_input/merge.root";
-  TString flux_Xs_directory = "./TLee_input/flux_Xs/";
-  TString detector_directory = "./TLee_input/det/";
-  TString mc_directory = "./TLee_input/mc_stat/";
+  /* TString spectra_file = "./data_framework_Doc33131/merge_all.root"; */
+  /* TString flux_Xs_directory = "./data_framework_Doc33131/flux_Xs/"; */
+  /* TString detector_directory = "./data_framework_Doc33131/det_both/"; */
+  /* //TString detector_directory = "./data_framework_Doc33131/det_norandom/"; */
+  /* TString mc_directory = "./data_framework_Doc33131/mc_stat/"; */
   
-  /*
-  TString spectra_file = "./data_framework_Doc33131/merge_all.root";
-  TString flux_Xs_directory = "./data_framework_Doc33131/flux_Xs/";
-  TString detector_directory = "./data_framework_Doc33131/det_both/";
-  //TString detector_directory = "./data_framework_Doc33131/det_11stat/";
-  //TString detector_directory = "./data_framework_Doc33131/det_norandom/";
-  TString mc_directory = "./data_framework_Doc33131/mc_stat/";
-  */
-
   /*
     void TLee::Set_Spectra_MatrixCov()
     (*) map_input_spectrum_ch_str
@@ -23,12 +21,16 @@ namespace config_Lee
     (*) for(int ich=1; ich<=7; ich++), data
     (*) for(int idx=1; idx<=17; idx++), flux_Xs
     (*) map_detectorfile_str
-    (*) int gbins_mc_stat = 137;
+    (*) int gbins_mc_stat;
     (*) for(int ifile=0; ifile<=99; ifile++), mc_sat
     
     void TLee::Set_Collapse()
     (*) double val_mc_stat_cov = gh_mc_stat_bin[ibin]->Eval( scaleF_Lee ); mc_stat
   */
+
+  ////////// set to batch mode -> do not display graphics
+
+  bool flag_batch_mode      = 1;
   
   ////////// systematics flag
   
@@ -37,22 +39,24 @@ namespace config_Lee
   bool flag_syst_additional = 1;
   bool flag_syst_mc_stat    = 1;
 
-  double Lee_strength_for_output_covariance_matrix = 0;
+  double Lee_strength_for_output_covariance_matrix = 1;
+  
+  bool flag_plotting_systematics   = 0;
   
   ////////// goodness of fit
  
-  bool flag_both_numuCC            = 0;// 1
-  bool flag_CCpi0_FC_by_numuCC     = 0;// 2
-  bool flag_CCpi0_PC_by_numuCC     = 0;// 3
-  bool flag_NCpi0_by_numuCC        = 0;// 4
-  bool flag_nueCC_PC_by_numuCC_pi0 = 0;// 5
-  bool flag_nueCC_HghE_FC_by_numuCC_pi0_nueFC = 0;// 6, HghE>800 MeV
-  bool flag_nueCC_LowE_FC_by_all   = 0;// 7
+  bool flag_both_numuCC            = 1;// 1
+  bool flag_CCpi0_FC_by_numuCC     = 1;// 2
+  bool flag_CCpi0_PC_by_numuCC     = 1;// 3
+  bool flag_NCpi0_by_numuCC        = 1;// 4
+  bool flag_nueCC_PC_by_numuCC_pi0 = 1;// 5
+  bool flag_nueCC_HghE_FC_by_numuCC_pi0_nueFC = 1;// 6, HghE>800 MeV
+  bool flag_nueCC_LowE_FC_by_all   = 1;// 7
   bool flag_nueCC_FC_by_all        = 0;// 8
 
   ////////// Lee strength fitting -- data
 
-  bool flag_Lee_strength_data = 0;
+  bool flag_Lee_strength_data = 1;
 
   //////////
 }

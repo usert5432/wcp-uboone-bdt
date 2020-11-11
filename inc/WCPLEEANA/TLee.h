@@ -57,13 +57,6 @@ using namespace std;
 //#include "draw.icc"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// TLee
-/*  
-  Set_Spectra_MatrixCov():
-      map_Lee_ch[8] = 1;
-      map_Lee_ch[9] = 1;  
-      if( map_Lee_ch.find(ich)!=map_Lee_ch.end() ) map_Lee_oldworld[index_oldworld] = 1;
-*/
-
 
 class TLee {
 public:
@@ -104,12 +97,13 @@ public:
   TMatrixD matrix_data_newworld;
   
   TMatrixD matrix_input_cov_flux_Xs;  
-  TMatrixD matrix_input_cov_flux;
-  TMatrixD matrix_input_cov_Xs;
   TMatrixD matrix_input_cov_detector;
-  map<int, TMatrixD>matrix_input_cov_detector_sub;
   TMatrixD matrix_input_cov_additional;
 
+  TMatrixD matrix_input_cov_flux;
+  TMatrixD matrix_input_cov_Xs;
+  map<int, TMatrixD>matrix_input_cov_detector_sub;
+  
   map<int, TGraph*>gh_mc_stat_bin;
 
   TMatrixD matrix_transform;
@@ -147,8 +141,10 @@ public:
 
   void Set_Collapse();
 
+  void Plotting_systematics();
+
   // Y constrained by X
-  void Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatrixD matrix_data, TMatrixD matrix_syst, int index);
+  int Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatrixD matrix_data, TMatrixD matrix_syst, int index);
 
   void Set_Variations(int num_toy);
   

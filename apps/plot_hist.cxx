@@ -1131,19 +1131,20 @@ int main( int argc, char** argv )
         pad1->Modified();
         pad2->cd();
         gratio_mc[obschannel-1]->Draw("a2");
-        gratio_mc[obschannel-1]->SetFillColor(kBlue);
-        gratio_mc[obschannel-1]->SetFillStyle(3002);
-        gratio_mc[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<3?int(1.5*maxratio):3);
+        gratio_mc[obschannel-1]->SetFillColor(kBlue-10);
+        gratio_mc[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<6?int(1.5*maxratio):6);
         gratio_mc[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
         gratio_mc[obschannel-1]->GetYaxis()->SetTitle("Data/Pred");
         gratio_mc[obschannel-1]->GetYaxis()->SetTitleOffset(0.5);
+        if(flag_err==3){
         gratio_mc2[obschannel-1]->Draw("2 same");
-        gratio_mc2[obschannel-1]->SetFillColor(kGray);
-        gratio_mc2[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<3?int(1.5*maxratio):3);
+        gratio_mc2[obschannel-1]->SetFillColor(kRed-10);
+        gratio_mc2[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<6?int(1.5*maxratio):6);
         gratio_mc2[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
+        }
         if(obschannel>=5) //hard coded at this moment
         {
-            gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco #pi^{0} mass [MeV]");
+            gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco #pi^{0} energy [MeV]");
         }
         else gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino energy [MeV]");
         ///hack
@@ -1153,7 +1154,7 @@ int main( int argc, char** argv )
         /* else if(obschannel==5) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to beam [degree]"); */ 
         /* else if(obschannel==6) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to vertical [degree]"); */ 
         /* else if(obschannel==7) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower vertex position in drift direction [cm]"); */ 
-        /* //hack end */
+        //hack end
 
         gratio_mc[obschannel-1]->GetXaxis()->SetTitleSize(0.1);
         gratio_mc[obschannel-1]->GetXaxis()->SetLabelSize(0.1);
@@ -1176,6 +1177,7 @@ int main( int argc, char** argv )
         line->SetLineStyle(kDashed);
         legend2[obschannel-1] = new TLegend(0.2, 0.7, 0.8, 0.95);
         legend2[obschannel-1]->SetNColumns(2);
+        if(flag_err==1) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty", "F");
         if(flag_err==2) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred stat. uncertainty (Bayesian)", "F");
         if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc[obschannel-1],"Pred total uncertainty", "F");
         if(flag_err==3) legend2[obschannel-1]->AddEntry(gratio_mc2[obschannel-1],"Pred stat.+xsec+flux uncertainty", "F");
