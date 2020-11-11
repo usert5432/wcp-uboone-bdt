@@ -70,8 +70,8 @@ int main(int argc, char** argv)
   gStyle->SetEndErrorSize(4);
   gStyle->SetEndErrorSize(0);
 
-  if( config_Lee::flag_batch_mode ) {
-    gROOT->SetBatch( config_Lee::flag_batch_mode );
+  if( !config_Lee::flag_display_graphics ) {
+    gROOT->SetBatch( 1 );
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
   Lee_test->flag_syst_additional = config_Lee::flag_syst_additional;
   Lee_test->flag_syst_mc_stat    = config_Lee::flag_syst_mc_stat;
   
-  Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_output_covariance_matrix;
+  Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_outputfile_covariance_matrix;
   Lee_test->Set_Collapse();
 
   //////////
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
   int flag_syst_detector = config_Lee::flag_syst_detector;
   int flag_syst_additional = config_Lee::flag_syst_additional;
   int flag_syst_mc_stat = config_Lee::flag_syst_mc_stat;
-  double user_Lee_strength_for_output_covariance_matrix = config_Lee::Lee_strength_for_output_covariance_matrix;
+  double user_Lee_strength_for_output_covariance_matrix = config_Lee::Lee_strength_for_outputfile_covariance_matrix;
   double user_scaleF_POT = scaleF_POT;
   tree_config->Branch("flag_syst_flux_Xs", &flag_syst_flux_Xs, "flag_syst_flux_Xs/I" );
   tree_config->Branch("flag_syst_detector", &flag_syst_detector, "flag_syst_detector/I" );
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
   
   //////////////////////////////////////////////////////////////////////////////////////// Goodness of fit
   
-  Lee_test->scaleF_Lee = 0;
+  Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_GoF;
   Lee_test->Set_Collapse();
  
   bool flag_both_numuCC            = config_Lee::flag_both_numuCC;// 1
@@ -373,7 +373,7 @@ int main(int argc, char** argv)
   //         Lee_test->Minimization_Lee_strength_FullCov(#, #);
   //
   
-  //////////////////////////////////////////////////////////////////////////////////////// example: do fitting on Asimov sample
+  /////////////////////////////////////////////////////// example: do fitting on Asimov sample
 
   if( 0 ) {
     Lee_test->scaleF_Lee = 1;
@@ -390,7 +390,7 @@ int main(int argc, char** argv)
 				)<<endl<<endl;
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////// example: do fitting on variation sample
+  ////////////////////////////////////////////////////// example: do fitting on variation sample
 
   if( 0 ) {
     Lee_test->scaleF_Lee = 1;
@@ -424,7 +424,7 @@ int main(int argc, char** argv)
     cout<<endl<<TString::Format(" ---> dchi2 = Lee - sm: %4.2f", val_dchi2)<<endl<<endl;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////// sensitivity calcualtion by FC
   
   if( 0 ) {
     double chi2_null_null8sm_true8sm  = 0;
@@ -490,7 +490,35 @@ int main(int argc, char** argv)
     
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////// Feldman-Cousins approach --> heavy computation cost
+  //////////////////////////////////////////////// Sensitivity by Asimov sample
+
+  if( 1 ) {
+
+    ///////////////////////// reject SM
+    
+    Lee_test->scaleF_Lee = 1;
+    Lee_test->Set_Collapse();
+    
+    Lee_test->Set_toy_Asimov();// use the Asimov sample as the input data for the fitting
+    Lee_test->Minimization_Lee_strength_FullCov(0, 1);// (initial value, fix or not)
+
+    double sigma_SM = sqrt( Lee_test->minimization_chi2 );
+    cout<<TString::Format(" ---> Excluding  SM: %5.2f sigma", sigma_SM)<<endl;
+    
+    ///////////////////////// reject 1*LEE
+    
+    Lee_test->scaleF_Lee = 0;
+    Lee_test->Set_Collapse();
+    
+    Lee_test->Set_toy_Asimov();// use the Asimov sample as the input data for the fitting
+    Lee_test->Minimization_Lee_strength_FullCov(1, 1);// (initial value, fix or not)
+
+    double sigma_Lee = sqrt( Lee_test->minimization_chi2 );
+    cout<<TString::Format(" ---> Excluding LEE: %5.2f sigma", sigma_Lee)<<endl<<endl;;
+    
+  }
+
+  ////////////////////////////////////////////////  Feldman-Cousins approach --> heavy computation cost
 
   if( 0 ) {
     
@@ -520,7 +548,7 @@ int main(int argc, char** argv)
   
   ////////////////////////////////////////////////////////////////////////////////////////
 
-  if( !config_Lee::flag_batch_mode ) {
+  if( config_Lee::flag_display_graphics ) {
     cout<<endl<<" Entrer Ctrl+c to end the program"<<endl;
     cout<<" Entrer Ctrl+c to end the program"<<endl<<endl;
     

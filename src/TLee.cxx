@@ -1062,7 +1062,7 @@ void TLee::Plotting_systematics()
     line_root_xx[idx]->SetY1(1e-3);
   }
 
-  
+  canv_h1_pred_totalsyst->SaveAs("canv_h1_pred_totalsyst.png");
 }
 
 ///////////////////////////////////////////////////////// ccc
@@ -1115,7 +1115,7 @@ void TLee::Set_Collapse()
 
   if( flag_individual_cov_newworld ) {
     cout<<" ---> Producing the systematics for plotting (should appear only one time)"<<endl;
-    cout<<" ---> The LEE strength used for the producing is corresponding to the one in Configure_LEE.h"<<endl<<endl;
+    cout<<" ---> The LEE strength used for the producing is corresponding to the one in the Configure_LEE.h"<<endl<<endl;
     
     flag_individual_cov_newworld = false;
 
