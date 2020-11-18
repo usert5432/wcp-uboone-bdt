@@ -439,8 +439,8 @@ int main( int argc, char** argv )
   }
   
 
-  std::map<std::pair<int, int>, int> map_re_entry_cv;
-  std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re_cv;
+  std::map<std::tuple<int, int, int>, int> map_re_entry_cv;
+  std::map<std::pair<int, int>, std::set<std::tuple<int, int, int> > > map_rs_re_cv;
 
   bool flag_presel = false;
 
@@ -450,7 +450,7 @@ int main( int argc, char** argv )
     T_eval_cv->GetEntry(i);
     T_BDTvars_cv->GetEntry(i);
     
-    map_rs_re_cv[std::make_pair(eval_cv.run, eval_cv.subrun)].insert(std::make_pair(eval_cv.run, eval_cv.event));
+    map_rs_re_cv[std::make_pair(eval_cv.run, eval_cv.subrun)].insert(std::make_tuple(eval_cv.run, eval_cv.subrun, eval_cv.event));
     
     int tmp_match_found = eval_cv.match_found;
     if (eval_cv.is_match_found_int) tmp_match_found = eval_cv.match_found_asInt;
@@ -467,7 +467,7 @@ int main( int argc, char** argv )
 
     //if (eval_cv.run == 7486 && eval_cv.event==3964) std::cout << flag_presel << " " << tagger_cv.numu_cc_flag << std::endl;
     
-    map_re_entry_cv[std::make_pair(eval_cv.run, eval_cv.event)] = i;
+    map_re_entry_cv[std::make_tuple(eval_cv.run, eval_cv.subrun, eval_cv.event)] = i;
   }
 
   //  std::cout << num_check << std::endl;
