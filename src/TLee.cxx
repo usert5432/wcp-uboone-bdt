@@ -646,6 +646,9 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   gh_data->Draw("same pe");
   gh_data->SetMarkerStyle(20); gh_data->SetMarkerSize(1.12);
   gh_data->SetMarkerColor(color_data); gh_data->SetLineColor(color_data);
+  if( num_X==0 ) {
+    gh_data->SetMarkerColor(kBlue); gh_data->SetLineColor(kBlue);
+  }
 
   h1_pred_Y_noConstraint->Draw("same axis");
 
@@ -690,6 +693,9 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   gh_ratio_noConstraint->Draw("same pe");
   gh_ratio_noConstraint->SetMarkerStyle(20); gh_ratio_noConstraint->SetMarkerSize(1.12);
   gh_ratio_noConstraint->SetMarkerColor(color_no); gh_ratio_noConstraint->SetLineColor(color_no);
+  if( num_X==0 ) {
+    gh_ratio_noConstraint->SetMarkerColor(kBlue); gh_ratio_noConstraint->SetLineColor(kBlue);
+  }
 
   if( num_X==0 ) {
     roostr = TString::Format("canv_spectra_GoF_no_%02d.png", index);
@@ -1424,7 +1430,7 @@ void TLee::Set_Spectra_MatrixCov()
 
   int line_data = -1;
   bins_newworld = 0;
-  for(int ich=1; ich<=7; ich++) {
+  for(int ich=1; ich<=channels_observation; ich++) {
     roostr = TString::Format("hdata_obsch_%d", ich);
     TH1F *h1_spectrum = (TH1F*)file_spectra->Get(roostr);
     for(int ibin=1; ibin<=h1_spectrum->GetNbinsX()+1; ibin++) {
@@ -1440,7 +1446,7 @@ void TLee::Set_Spectra_MatrixCov()
   
   cout<<" Flux and Xs systematics"<<endl;
     
-  //https://www.phy.bnl.gov/xqian/talks/wire-cell/Leeana/configurations/cov_input.txt  
+  //https://www.phy.bnl.gov/xqian/talks/wire-cell/LEEana/configurations/cov_input.txt  
   map<int, TFile*>map_file_flux_Xs_frac;  
   map<int, TMatrixD*>map_matrix_flux_Xs_frac;
   
@@ -1448,13 +1454,16 @@ void TLee::Set_Spectra_MatrixCov()
   TMatrixD matrix_flux_frac(bins_oldworld, bins_oldworld);
   TMatrixD matrix_Xs_frac(bins_oldworld, bins_oldworld);
   
-  for(int idx=1; idx<=17; idx++) {
+  for(int idx=syst_cov_flux_Xs_begin; idx<=syst_cov_flux_Xs_end; idx++) {
     roostr = TString::Format(flux_Xs_directory+"cov_%d.root", idx);
     map_file_flux_Xs_frac[idx] = new TFile(roostr, "read");
     map_matrix_flux_Xs_frac[idx] = (TMatrixD*)map_file_flux_Xs_frac[idx]->Get(TString::Format("frac_cov_xf_mat_%d", idx));
     cout<<TString::Format(" %2d %s", idx, roostr.Data())<<endl;
-    matrix_flux_Xs_frac += (*map_matrix_flux_Xs_frac[idx]);
 
+    
+    matrix_flux_Xs_frac += (*map_matrix_flux_Xs_frac[idx]);
+    
+    
     if( idx<=13 ) {// flux
       matrix_flux_frac += (*map_matrix_flux_Xs_frac[idx]);
     }
@@ -1478,7 +1487,7 @@ void TLee::Set_Spectra_MatrixCov()
   map_detectorfile_str[7] = detector_directory+"cov_WMThetaYZ.root";
   map_detectorfile_str[8] = detector_directory+"cov_WMX.root";
   map_detectorfile_str[9] = detector_directory+"cov_WMYZ.root";
-  //map_detectorfile_str[10]= detector_directory+"cov_LYatt.root";
+  map_detectorfile_str[10]= detector_directory+"cov_LYatt.root";
   
   map<int, TFile*>map_file_detector_frac;
   map<int, TMatrixD*>map_matrix_detector_frac;
@@ -1559,8 +1568,8 @@ void TLee::Set_Spectra_MatrixCov()
   
   ////////////////////////////////////////// MC statistics
 
-  int mc_file_begin = 0;
-  int mc_file_end = 99;
+  int mc_file_begin = syst_cov_mc_stat_begin;
+  int mc_file_end = syst_cov_mc_stat_end;
   
   cout<<TString::Format(" MC statistics. Files:  %d.log - %d.log", mc_file_begin, mc_file_end)<<endl;
   
