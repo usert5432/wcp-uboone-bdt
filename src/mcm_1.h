@@ -174,9 +174,9 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
     TMatrixD matrix_variation = matrix_eigenvector * matrix_element;
     double rel_err = random3.Gaus(0,1);
     for (int j=0;j!=rows;j++){
-      //matrix_variation(j,0) = matrix_variation(j,0)/sqrt(11.) + (*vec_mean_diff)(j); // increase MC stat by a factor of 11
+      //      matrix_variation(j,0) = matrix_variation(j,0)/sqrt(11.) + (*vec_mean_diff)(j); // increase MC stat by a factor of 11
       matrix_variation(j,0) += (*vec_mean_diff)(j); // standard ...
-      // matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
+      //matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
       x[j] = rel_err * matrix_variation(j,0);
       //x[j] = matrix_variation(j,0); //original no abs term
     }
@@ -461,6 +461,9 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_BDTvars_cv->SetBranchStatus("mip_energy",1);
   T_BDTvars_cv->SetBranchStatus("mip_angle_beam",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
+  T_BDTvars_cv->SetBranchStatus("mip_quality_n_tracks",1);
+  T_BDTvars_cv->SetBranchStatus("mip_quality_n_showers",1);
+  T_BDTvars_cv->SetBranchStatus("gap_n_bad",1);
 
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("run",1);
@@ -495,6 +498,8 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   
   T_KINEvars_cv->SetBranchStatus("*",0);
   T_KINEvars_cv->SetBranchStatus("kine_reco_Enu",1);
+  T_KINEvars_cv->SetBranchStatus("kine_energy_particle",1);
+  T_KINEvars_cv->SetBranchStatus("kine_particle_type",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_vtx_dis",1);
@@ -556,6 +561,9 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_BDTvars_det->SetBranchStatus("mip_energy",1);
   T_BDTvars_det->SetBranchStatus("mip_angle_beam",1);
   T_BDTvars_det->SetBranchStatus("spt_angle_vertical",1);
+  T_BDTvars_det->SetBranchStatus("mip_quality_n_tracks",1);
+  T_BDTvars_det->SetBranchStatus("mip_quality_n_showers",1);
+  T_BDTvars_det->SetBranchStatus("gap_n_bad",1);
 
   T_eval_det->SetBranchStatus("*",0);
   T_eval_det->SetBranchStatus("run",1);
@@ -590,6 +598,8 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   
   T_KINEvars_det->SetBranchStatus("*",0);
   T_KINEvars_det->SetBranchStatus("kine_reco_Enu",1);
+  T_KINEvars_det->SetBranchStatus("kine_energy_particle",1);
+  T_KINEvars_det->SetBranchStatus("kine_particle_type",1);
   T_KINEvars_det->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars_det->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars_det->SetBranchStatus("kine_pio_vtx_dis",1);

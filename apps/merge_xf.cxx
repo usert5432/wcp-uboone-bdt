@@ -451,6 +451,9 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("mip_energy",1);
   T_BDTvars->SetBranchStatus("mip_angle_beam",1);
   T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+  T_BDTvars->SetBranchStatus("mip_quality_n_tracks",1);
+  T_BDTvars->SetBranchStatus("mip_quality_n_showers",1);
+  T_BDTvars->SetBranchStatus("gap_n_bad",1);
 
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("match_isFC",1);
@@ -483,6 +486,8 @@ int main( int argc, char** argv )
   
   T_KINEvars->SetBranchStatus("*",0);
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
+  T_KINEvars->SetBranchStatus("kine_energy_particle",1);
+  T_KINEvars->SetBranchStatus("kine_particle_type",1);
   T_KINEvars->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);

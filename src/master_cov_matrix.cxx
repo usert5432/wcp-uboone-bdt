@@ -617,7 +617,10 @@ void LEEana::CovMatrix::fill_xf_histograms(int num, int tot_num, int acc_no, int
 	int flag_lee = std::get<2>(map_histoname_infos[histoname]);
 
 	if (std::isnan(rel_weight_diff) || std::isinf(rel_weight_diff)) continue;
-	
+    // seems to have extremely small cv weight
+    if (abs(rel_weight_diff)>100) continue;
+
+
 	if (flag_lee){
 	  htemp->Fill(val, rel_weight_diff * weight * weight_lee);
 	}else{
@@ -981,6 +984,9 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   T_BDTvars->SetBranchStatus("mip_energy",1);
   T_BDTvars->SetBranchStatus("mip_angle_beam",1);
   T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+  T_BDTvars->SetBranchStatus("mip_quality_n_tracks",1);
+  T_BDTvars->SetBranchStatus("mip_quality_n_showers",1);
+  T_BDTvars->SetBranchStatus("gap_n_bad",1);
 
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("run",1);
@@ -1015,6 +1021,8 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   
   T_KINEvars->SetBranchStatus("*",0);
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
+  T_KINEvars->SetBranchStatus("kine_energy_particle",1);
+  T_KINEvars->SetBranchStatus("kine_particle_type",1);
   T_KINEvars->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
