@@ -938,6 +938,7 @@ int main( int argc, char** argv )
         houtFV->Reset();
         hext->Reset();
         hdirt->Reset();
+        hLEE->Reset();
         hCCQE->Reset();
         hNCQE->Reset();
         hCCRES->Reset();
