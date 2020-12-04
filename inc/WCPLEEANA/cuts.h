@@ -43,7 +43,8 @@ namespace LEEana{
   // TCut numuCC_cut = "numu_cc_flag >=0 && numu_score > 0.9";
   bool is_numuCC(TaggerInfo& tagger_info);
   bool is_numuCC_tight(TaggerInfo& tagger_info, PFevalInfo& pfeval);
-  bool is_numuCC_1mu0p0pi(TaggerInfo& tagger_info, KineInfo& kine);
+  bool is_numuCC_1mu0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
+  bool is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
   bool is_numuCC_cutbased(TaggerInfo& tagger_info);
   
   // pio cuts (with and without vertex)
@@ -131,6 +132,25 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     size_t vecsize = dqdx.size();
     size_t mid = vecsize/2;
     return vecsize%2==0 ? (dqdx[mid]+dqdx[mid-1])/2:dqdx[mid];
+  }else if (var_name == "median_dEdx"){
+    std::vector<float> dqdx;
+    dqdx.push_back(tagger.mip_vec_dQ_dx_2);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_3);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_4);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_5);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_6);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_7);
+    dqdx.push_back(tagger.mip_vec_dQ_dx_8);
+    std::sort(dqdx.begin(), dqdx.end());
+    size_t vecsize = dqdx.size();
+    size_t mid = vecsize/2;
+    float median_dqdx = vecsize%2==0 ? (dqdx[mid]+dqdx[mid-1])/2:dqdx[mid];
+    float alpha = 1.;
+    float beta = 0.255;
+    float median_dedx = (exp((median_dqdx*43e3) * 23.6e-6*beta/1.38/0.273) - alpha)/(beta/1.38/0.273);
+    if(median_dedx<0) median_dedx = 0;
+    if(median_dedx>50) median_dedx = 50;
+    return median_dedx; // MeV/cm
   }else if (var_name == "reco_showervtxX"){
       return pfeval.reco_showervtxX;
   }else if (var_name == "reco_nuvtxX"){
@@ -149,7 +169,7 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       return pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
   }else if (var_name == "muon_theta"){
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
-      return muonMomentum.Theta()/TMath::Pi()*180.;
+      return TMath::Cos(muonMomentum.Theta());
   }else if (var_name == "muon_phi"){
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       return muonMomentum.Phi()/TMath::Pi()*180.;
@@ -161,15 +181,31 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   }else if (var_name == "proton_phi"){
       TLorentzVector protonMomentum(pfeval.reco_protonMomentum[0], pfeval.reco_protonMomentum[1], pfeval.reco_protonMomentum[2], pfeval.reco_protonMomentum[3]);
       return protonMomentum.Phi()/TMath::Pi()*180.;
-  }else if (var_name == "kine_reco_Ehadron"){
-      Float_t Ehadron = kine.kine_reco_Enu;
-      for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
-      {
-          int pdgcode = kine.kine_particle_type->at(i);
-          if(abs(pdgcode)==13) Ehadron = Ehadron - kine.kine_energy_particle->at(i) - 105.658; 
-          if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); 
-      }
-      return Ehadron;
+  }else if (var_name == "Ehadron"){
+      /* Float_t Ehadron = kine.kine_reco_Enu; */
+      /* for(size_t i=0; i<kine.kine_energy_particle->size(); i++) */
+      /* { */
+      /*     int pdgcode = kine.kine_particle_type->at(i); */
+      /*     if(abs(pdgcode)==13) Ehadron = Ehadron - kine.kine_energy_particle->at(i) - 105.658; */ 
+      /*     //if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); */ 
+      /* } */
+      return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
+  }else if (var_name == "Q2"){
+      Float_t Enu = kine.kine_reco_Enu;
+      Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+      Float_t Ehadron = Enu - Emu;
+      Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+      TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+      Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+      return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(1000.*1000.); // GeV^2
+  }else if (var_name == "x_Bjorken"){
+      Float_t Enu = kine.kine_reco_Enu;
+      Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+      Float_t Ehadron = Enu - Emu;
+      Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+      TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+      Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+      return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(2*938.272*Ehadron);
   }else{
     std::cout << "No such variable: " << var_name << std::endl;
     exit(EXIT_FAILURE);
@@ -281,9 +317,11 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_generic = is_generic(eval);
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_numuCC_tight = is_numuCC_tight(tagger, pfeval);
-  bool flag_numuCC_1mu0p0pi = is_numuCC_1mu0p0pi(tagger, kine);
+  bool flag_numuCC_1mu0p = is_numuCC_1mu0p(tagger, kine, pfeval);
+  bool flag_numuCC_lowEhad = is_numuCC_lowEhad(tagger, kine, pfeval);
   bool flag_numuCC_cutbased = is_numuCC_cutbased(tagger);
   bool flag_nueCC = is_nueCC(tagger);
+  bool flag_nueCC_loose = is_loosenueCC(tagger);
   bool flag_pi0 = is_pi0(kine);
   bool flag_cc_pi0 = is_cc_pi0(kine);
   bool flag_NC = is_NC(tagger);
@@ -382,33 +420,77 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
 
   }else if (ch_name == "numuCC_extra_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_extra_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_extra_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_extra_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
   }else if (ch_name == "numuCC_extra_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_extra_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_extra_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_extra_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
-  }else if (ch_name == "numuCC2_1mu0p0pi_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_1mu0p0pi_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_1mu0p0pi_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_1mu0p0pi_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC_1mu0p0pi && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+
+  }else if (ch_name == "numuCC_lowEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_lowEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_lowEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_lowEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
-  }else if (ch_name == "numuCC2_1mu0p0pi_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_1mu0p0pi_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_1mu0p0pi_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_1mu0p0pi_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC_1mu0p0pi && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+  }else if (ch_name == "numuCC_lowEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_lowEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_lowEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_lowEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
-  }else if (ch_name == "numuCC3_1muNpNpi_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_1muNpNpi_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_1muNpNpi_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_1muNpNpi_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && (!flag_numuCC_1mu0p0pi) && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+
+  }else if (ch_name == "numuCC2_lowEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_lowEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_lowEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_lowEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
-  }else if (ch_name == "numuCC3_1muNpNpi_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_1muNpNpi_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_1muNpNpi_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_1muNpNpi_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_numuCC_1mu0p0pi) && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+  }else if (ch_name == "numuCC2_lowEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_lowEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_lowEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_lowEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC3_lowEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_lowEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_lowEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_lowEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC3_lowEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_lowEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_lowEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_lowEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC4_lowEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC4_lowEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC4_lowEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC4_lowEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC4_lowEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC4_lowEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC4_lowEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC4_lowEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC_highEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_highEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_highEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_highEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_highEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_highEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_highEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_highEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC2_highEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_highEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_highEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_highEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC2_highEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_highEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_highEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_highEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC3_highEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_highEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_highEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_highEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC3_highEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_highEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_highEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_highEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC4_highEhad_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC4_highEhad_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC4_highEhad_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC4_highEhad_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC4_highEhad_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC4_highEhad_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC4_highEhad_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC4_highEhad_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_tight && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
 
  // Mike Shaevitz >800 MeV nueCC PC+FC 1 obs channel
-  }else if (ch_name == "nueCC_800MeV_nueoverlay"){
-    if (flag_nueCC && flag_truth_inside && kine.kine_reco_Enu>800) return true;
+  }else if (ch_name == "nueCC_extra_nueoverlay"){
+    if (flag_nueCC_loose && flag_truth_inside) return true;
     else return false;
-  }else if (ch_name == "BG_nueCC_800MeV_ext" || ch_name == "BG_nueCC_800MeV_dirt" || ch_name =="nueCC_800MeV_bnb"){
-    if (flag_nueCC && kine.kine_reco_Enu>800) return true;
+  }else if (ch_name == "BG_nueCC_extra_ext" || ch_name == "BG_nueCC_extra_dirt" || ch_name =="nueCC_extra_bnb"){
+    if (flag_nueCC_loose) return true;
     else return false;
-  }else if (ch_name == "BG_nueCC_800MeV_overlay"){
-    if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && kine.kine_reco_Enu>800) return true;
+  }else if (ch_name == "BG_nueCC_extra_overlay"){
+    if (flag_nueCC_loose && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
     else return false;
  // cut-based numuCC FC/PC 2 obs channels   
   }else if (ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_cutbased_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_cutbased_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_bnb"){
@@ -577,10 +659,10 @@ bool LEEana::is_numuCC_tight(TaggerInfo& tagger_info, PFevalInfo& pfeval){
   return flag;
 }
 
-bool LEEana::is_numuCC_1mu0p0pi(TaggerInfo& tagger_info, KineInfo& kine){
+bool LEEana::is_numuCC_1mu0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval){
   bool flag = false;
   
-  if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9){ 
+  if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9 && pfeval.reco_muonMomentum[3]>0){ 
       // 1 lepton <=1 proton 0 charged pion
       // 1 lepton guaranteed by numu cc flag
       // using pi0 flag to remove pi0 component in channel definition
@@ -589,13 +671,27 @@ bool LEEana::is_numuCC_1mu0p0pi(TaggerInfo& tagger_info, KineInfo& kine){
       for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
       {
           int pdgcode = kine.kine_particle_type->at(i);
-          if(abs(pdgcode)==2212 && kine.kine_energy_particle->at(i)>50) Nproton++; // KE threshold: 50 MeV, 1.5 cm? 
+          if(abs(pdgcode)==2212 && kine.kine_energy_particle->at(i)>35) Nproton++; // KE threshold: 50 MeV, 1.5 cm? 
           if(abs(pdgcode)==211 && kine.kine_energy_particle->at(i)>10) Npion++; // KE threshold: 10 MeV 
       }
-      if(Nproton==0 && Npion==0) flag = true;
+      if(Nproton==0) flag = true;
   } 
   
   return flag;
+}
+
+
+bool LEEana::is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval){
+    bool flag = false;
+   
+    if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9 && pfeval.reco_muonMomentum[3]>0){ 
+        Float_t Ehadron = kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
+        if(Ehadron<200) // MeV
+        {
+            flag = true;
+        }
+    }
+    return flag;
 }
 
 bool LEEana::is_numuCC_cutbased(TaggerInfo& tagger_info){
@@ -620,7 +716,7 @@ bool LEEana::is_nueCC(TaggerInfo& tagger_info){
 
 bool LEEana::is_loosenueCC(TaggerInfo& tagger_info){
   bool flag = false;
-  if (tagger_info.numu_cc_flag >=0 && tagger_info.nue_score > 0.0)
+  if (tagger_info.numu_cc_flag >=0 && tagger_info.nue_score > 4.0)
     flag = true;
   
   return flag;
