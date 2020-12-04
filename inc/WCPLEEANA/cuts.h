@@ -19,7 +19,7 @@
 
 namespace LEEana{
 
-  double get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name="kine_reco_Enu");
+  double get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name="kine_reco_Enu");
   bool get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine);
   double get_weight(TString weight_name, EvalInfo& eval);
   
@@ -95,9 +95,11 @@ double LEEana::get_weight(TString weight_name, EvalInfo& eval){
   return 1;
 }
 
-double LEEana::get_kine_var(KineInfo& kine, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name ){
+double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name ){
   if (var_name == "kine_reco_Enu"){
     return kine.kine_reco_Enu;
+  }else if (var_name == "match_energy"){
+    return eval.match_energy;
   }else if (var_name == "pi0_energy"){
     double pi0_mass = 135;
     double alpha = fabs(kine.kine_pio_energy_1 - kine.kine_pio_energy_2)/(kine.kine_pio_energy_1 + kine.kine_pio_energy_2);
@@ -276,6 +278,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   if (!flag_add) return false;
 
 
+  bool flag_generic = is_generic(eval);
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_numuCC_tight = is_numuCC_tight(tagger, pfeval);
   bool flag_numuCC_1mu0p0pi = is_numuCC_1mu0p0pi(tagger, kine);
@@ -415,6 +418,18 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     if (flag_numuCC_cutbased && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
 
+ // generic selection nu PC+FC 1 obs channel   
+  }else if (ch_name == "generic_nu_overlay" || ch_name == "BG_generic_nu_ext" || ch_name =="BG_generic_nu_dirt" || ch_name == "generic_nu_bnb"){
+    if (flag_generic) return true;
+    else return false;
+ // numuCC selection PC+FC 1 obs channel   
+  }else if (ch_name == "numuCC_overlay" || ch_name == "BG_numuCC_ext" || ch_name =="BG_numuCC_dirt" || ch_name == "numuCC_bnb"){
+    if (flag_numuCC) return true;
+    else return false;
+ // cutbased numuCC selection PC+FC 1 obs channel   
+  }else if (ch_name == "numuCC_cutbased_overlay" || ch_name == "BG_numuCC_cutbased_ext" || ch_name =="BG_numuCC_cutbased_dirt" || ch_name == "numuCC_cutbased_bnb"){
+    if (flag_numuCC_cutbased) return true;
+    else return false;
  // nueCC 3 variables: n_trakcs, n_showers, gap_n_bad, FC/PC x3 = 6 channels; 4 additional channels 
   }else if (ch_name == "nueCC2_FC_nueoverlay"){
     if (flag_nueCC && flag_FC && flag_truth_inside) return true;
@@ -467,7 +482,7 @@ bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
 
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_pi0 = is_pi0(kine);
-  bool flag_cc_pi0 = is_cc_pi0(kine);
+  // bool flag_cc_pi0 = is_cc_pi0(kine);
   bool flag_NC = is_NC(tagger);
 
   if ((kine.kine_reco_Enu>=800 && tagger.nue_score >=0) ||

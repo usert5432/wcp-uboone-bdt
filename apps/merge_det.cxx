@@ -660,6 +660,7 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("gap_n_bad",1);
 
   T_eval_cv->SetBranchStatus("*",0);
+  T_eval_cv->SetBranchStatus("match_energy",1);
   T_eval_cv->SetBranchStatus("match_isFC",1);
   T_eval_cv->SetBranchStatus("match_found",1);
   if (T_eval_cv->GetBranch("match_found_asInt")) T_eval_cv->SetBranchStatus("match_found_asInt",1); 
@@ -757,6 +758,7 @@ int main( int argc, char** argv )
   T_BDTvars_det->SetBranchStatus("gap_n_bad",1);
 
   T_eval_det->SetBranchStatus("*",0);
+  T_eval_det->SetBranchStatus("match_energy",1);
   T_eval_det->SetBranchStatus("match_isFC",1);
   T_eval_det->SetBranchStatus("match_found",1);
   if (T_eval_det->GetBranch("match_found_asInt")) T_eval_det->SetBranchStatus("match_found_asInt",1); 

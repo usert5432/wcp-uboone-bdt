@@ -992,6 +992,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   T_eval->SetBranchStatus("run",1);
   T_eval->SetBranchStatus("subrun",1);
   T_eval->SetBranchStatus("event",1);
+  T_eval->SetBranchStatus("match_energy",1);
   T_eval->SetBranchStatus("match_isFC",1);
   T_eval->SetBranchStatus("match_found",1);
   if (T_eval->GetBranch("match_found_asInt")) T_eval->SetBranchStatus("match_found_asInt",1); 
@@ -1165,7 +1166,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       auto it3 = disabled_ch_names.find(ch_name);
       if (it3 != disabled_ch_names.end()) continue;
       
-      float val = get_kine_var(kine, pfeval, tagger, var_name);
+      float val = get_kine_var(kine, eval, pfeval, tagger, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval, pfeval, tagger, kine);
 
       if (flag_pass) std::get<4>(event_info).insert(std::make_pair(no, val));

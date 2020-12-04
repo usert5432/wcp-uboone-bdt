@@ -456,6 +456,7 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("gap_n_bad",1);
 
   T_eval->SetBranchStatus("*",0);
+  T_eval->SetBranchStatus("match_energy",1);
   T_eval->SetBranchStatus("match_isFC",1);
   T_eval->SetBranchStatus("match_found",1);
   if (T_eval->GetBranch("match_found_asInt")) T_eval->SetBranchStatus("match_found_asInt",1); 

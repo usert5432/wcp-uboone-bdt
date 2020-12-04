@@ -470,6 +470,7 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_eval_cv->SetBranchStatus("subrun",1);
   T_eval_cv->SetBranchStatus("event",1);
   
+  T_eval_cv->SetBranchStatus("match_energy",1);
   T_eval_cv->SetBranchStatus("match_isFC",1);
   T_eval_cv->SetBranchStatus("match_found",1);
   if (T_eval_cv->GetBranch("match_found_asInt")) T_eval_cv->SetBranchStatus("match_found_asInt",1); 
@@ -570,6 +571,7 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_eval_det->SetBranchStatus("subrun",1);
   T_eval_det->SetBranchStatus("event",1);
   
+  T_eval_det->SetBranchStatus("match_energy",1);
   T_eval_det->SetBranchStatus("match_isFC",1);
   T_eval_det->SetBranchStatus("match_found",1);
   if (T_eval_det->GetBranch("match_found_asInt")) T_eval_det->SetBranchStatus("match_found_asInt",1); 
@@ -675,10 +677,10 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
       auto it3 = disabled_ch_names.find(ch_name);
       if (it3 != disabled_ch_names.end()) continue;
       
-      double val = get_kine_var(kine_cv, pfeval_cv, tagger_cv, var_name);
+      double val = get_kine_var(kine_cv, eval_cv, pfeval_cv, tagger_cv, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval_cv, pfeval_cv, tagger_cv, kine_cv);
 
-      double val1 = get_kine_var(kine_det, pfeval_det, tagger_det, var_name);
+      double val1 = get_kine_var(kine_det, eval_det, pfeval_det, tagger_det, var_name);
       bool flag_pass1 = get_cut_pass(ch_name, add_cut, false, eval_det, pfeval_det, tagger_det, kine_det);
       if (flag_pass || flag_pass1) 	std::get<4>(vec_events.at(i) ).insert(std::make_tuple(no, val, flag_pass, val1, flag_pass1));
       
