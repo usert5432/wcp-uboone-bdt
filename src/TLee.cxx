@@ -234,9 +234,10 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
       double chi2 = 0;
       double Lee_strength = par[0];
 
-      /////////      
-      TMatrixD matrix_meas(1, bins_newworld);
-      for(int ibin=0; ibin<matrix_meas.GetNcols(); ibin++) {
+      /////////
+      int size_map_fake_data = map_fake_data.size();
+      TMatrixD matrix_meas(1, size_map_fake_data);
+      for(int ibin=0; ibin<size_map_fake_data; ibin++) {
 	matrix_meas(0, ibin) = map_fake_data[ibin];	
       }
 
@@ -261,6 +262,7 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
 	matrix_cov_syst(ibin, ibin) += val_stat_cov;
       }
 
+      /////////
       TMatrixD matrix_cov_total = matrix_cov_syst;
       TMatrixD matrix_cov_total_inv = matrix_cov_total;
       matrix_cov_total_inv.Invert();
@@ -273,7 +275,53 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
       TMatrixD matrix_chi2 = matrix_delta * matrix_cov_total_inv *matrix_delta_T;
       chi2 = matrix_chi2(0,0);
       
-      /////////
+      ///////////////////////////////////////////////////////////////////////////
+
+      if( flag_Lee_minimization_after_constraint ) {// do the fitting on the spectra and cov_total after constraint
+	
+	int num_Y = 26+8;
+	int num_X = matrix_cov_syst.GetNrows() - num_Y;
+
+	//////
+	
+	matrix_pred.T(); matrix_meas.T();
+	TMatrixD matrix_pred_X = matrix_pred.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+	TMatrixD matrix_meas_X = matrix_meas.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+
+	TMatrixD matrix_pred_Y = matrix_pred.GetSub(0, num_Y-1, 0, 0);
+	TMatrixD matrix_meas_Y = matrix_meas.GetSub(0, num_Y-1, 0, 0);
+	matrix_pred.T(); matrix_meas.T();
+	
+	TMatrixD matrix_XX = matrix_cov_total.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
+	TMatrixD matrix_XX_inv = matrix_XX;
+	matrix_XX_inv.Invert();
+	
+	TMatrixD matrix_YY = matrix_cov_total.GetSub(0, num_Y-1, 0, num_Y-1);
+	
+	TMatrixD matrix_YX = matrix_cov_total.GetSub(0, num_Y-1, num_Y, num_Y+num_X-1);
+	TMatrixD matrix_XY(num_X, num_Y); matrix_XY.Transpose(matrix_YX);
+	
+	TMatrixD matrix_Y_under_X = matrix_pred_Y + matrix_YX * matrix_XX_inv * (matrix_meas_X - matrix_pred_X);
+	TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
+
+	//////
+		
+	matrix_Y_under_X.T();
+	matrix_meas_Y.T();
+
+	TMatrixD matrix_wicons_delta = matrix_Y_under_X - matrix_meas_Y;
+	TMatrixD matrix_wicons_delta_T = matrix_wicons_delta.T();
+	matrix_wicons_delta.T();
+
+	TMatrixD matrix_YY_under_XX_inv = matrix_YY_under_XX;
+	matrix_YY_under_XX_inv.Invert();
+
+	TMatrixD matrix_wicons_chi2 = matrix_wicons_delta * matrix_YY_under_XX_inv * matrix_wicons_delta_T;
+	double val_wicons_chi2 = matrix_wicons_chi2(0,0);
+	chi2 = val_wicons_chi2;	
+      }
+      
+      ///////////////////////////////////////////////////////////////////////////      
                   
       return chi2;
       
@@ -338,21 +386,25 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
 
 void TLee::Set_toy_Asimov()
 {
+  map_fake_data.clear();
   for(int ibin=0; ibin<bins_newworld; ibin++) map_fake_data[ibin] = matrix_pred_newworld(0, ibin);
 }
 
 void TLee::Set_toy_Variation(int itoy)
 {
+  map_fake_data.clear();
   for(int ibin=0; ibin<bins_newworld; ibin++) map_fake_data[ibin] = map_toy_variation[itoy][ibin];
 }
 
 void TLee::Set_measured_data()
 {
+  map_fake_data.clear();
   for(int ibin=0; ibin<bins_newworld; ibin++) map_fake_data[ibin] = matrix_data_newworld(0, ibin);
 }
   
 void TLee::Set_fakedata(TMatrixD matrix_fakedata)
 {
+  map_fake_data.clear();
   int cols = matrix_fakedata.GetNcols();
   for(int ibin=0; ibin<cols; ibin++) map_fake_data[ibin] = matrix_fakedata(0, ibin);    
 }
@@ -395,6 +447,41 @@ void TLee::Set_Variations(int num_toy)
     
 }
 
+///////////////////////////////////////////////////////// ccc
+
+// target detailed channels are constrained by supported detailed channels
+int TLee::Exe_Goodness_of_fit_detailed(vector<int>vc_target_detailed_chs, vector<int>vc_support_detailed_chs, int index)
+{
+  int num_Y = vc_target_detailed_chs.size();
+  int num_X = vc_support_detailed_chs.size();
+
+  TMatrixD matrix_gof_trans( bins_newworld, num_Y+num_X );// oldworld, newworld
+  int new_ch = -1;
+  
+  for(int idx=0; idx<num_Y; idx++) {
+    int old_ch = vc_target_detailed_chs.at(idx);
+    new_ch++;
+    matrix_gof_trans(old_ch, new_ch) = 1;
+  }
+  
+  for(int idx=0; idx<num_X; idx++) {
+    int old_ch = vc_support_detailed_chs.at(idx);
+    new_ch++;
+    matrix_gof_trans(old_ch, new_ch) = 1;
+  }
+  
+  TMatrixD matrix_gof_trans_T = matrix_gof_trans.T();
+  matrix_gof_trans.T();
+  
+  TMatrixD matrix_pred = matrix_pred_newworld * matrix_gof_trans;
+  TMatrixD matrix_data = matrix_data_newworld * matrix_gof_trans;
+  TMatrixD matrix_syst = matrix_gof_trans_T * matrix_absolute_cov_newworld * matrix_gof_trans;
+
+  Exe_Goodness_of_fit(num_Y, num_X, matrix_pred, matrix_data, matrix_syst, index);  
+  
+  return 1;
+}
+  
 ///////////////////////////////////////////////////////// ccc
 
 // target constrained by support
@@ -573,6 +660,18 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   cout<<endl<<TString::Format(" ---> GOF noConstraint: chi2 %6.2f, ndf %3d, chi2/ndf %6.2f, p-value %10.8f",
 			      val_chi2_noConstraint, num_Y, val_chi2_noConstraint/num_Y, p_value_noConstraint)<<endl;
 
+  val_GOF_noConstrain = val_chi2_noConstraint;
+  val_GOF_NDF = num_Y;
+  
+  // double sum_chi2 = 0;
+  // for(int ibin=1; ibin<=num_Y; ibin++) {
+  //   double val_pred = matrix_pred_Y(ibin-1, 0);      
+  //   double val_data = matrix_data_Y(ibin-1, 0);
+  //   double val_chi2 = pow(val_pred-val_data,2)/val_pred;
+  //   sum_chi2 += val_chi2;
+  //   cout<<" ---> ibin "<<ibin<<"\t"<<val_chi2<<"\t"<<sum_chi2<<endl;;
+  // }
+  
   /////////////////////////////
 
   roostr = TString::Format("h1_pred_Y_noConstraint_%02d", index);
@@ -614,7 +713,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     double val_ratio_no = val_data/val_pred_noConstraint;
     double val_ratio_no_low = val_ratio_no - val_data_low/val_pred_noConstraint;
     double val_ratio_no_hgh = val_data_hgh/val_pred_noConstraint - val_ratio_no;
-    if( val_ratio_no!=val_ratio_no || isinf(val_ratio_no) ) val_ratio_no = 0;
+    if( val_ratio_no!=val_ratio_no || std::isinf(val_ratio_no) ) val_ratio_no = 0;
     gh_ratio_noConstraint->SetPoint( ibin-1, ibin-0.5, val_ratio_no );
     gh_ratio_noConstraint->SetPointError( ibin-1, 0.5, 0.5, val_ratio_no_low, val_ratio_no_hgh );    
   }
@@ -755,6 +854,8 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   cout<<TString::Format(" ---> GOF wiConstraint: chi2 %6.2f, ndf %3d, chi2/ndf %6.2f, p-value %10.8f",
 			val_chi2_wiConstraint, num_Y, val_chi2_wiConstraint/num_Y, p_value_wiConstraint)<<endl<<endl;
   
+  val_GOF_wiConstrain = val_chi2_wiConstraint;
+
   /////////////////////////////
 
   roostr = TString::Format("h1_pred_Y_wiConstraint_%02d", index);
@@ -781,7 +882,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     double val_ratio_wi = val_data/val_pred_wiConstraint;
     double val_ratio_wi_low = val_ratio_wi - val_data_low/val_pred_wiConstraint;
     double val_ratio_wi_hgh = val_data_hgh/val_pred_wiConstraint - val_ratio_wi;
-    if( val_ratio_wi!=val_ratio_wi || isinf(val_ratio_wi) ) val_ratio_wi = 0;
+    if( val_ratio_wi!=val_ratio_wi || std::isinf(val_ratio_wi) ) val_ratio_wi = 0;
     gh_ratio_wiConstraint->SetPoint( ibin-1, ibin-0.5, val_ratio_wi );
     gh_ratio_wiConstraint->SetPointError( ibin-1, 0.5, 0.5, val_ratio_wi_low, val_ratio_wi_hgh );
   }
@@ -934,18 +1035,19 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   
   gh_ratio_noConstraint->Draw("same pe");
   gh_ratio_wiConstraint->Draw("same pe");
-
+  /*
   h1_spectra_wi2no->Draw("same");
   h1_spectra_wi2no->SetLineColor(kGreen+1);
   
-  // TLatex *latex = new TLatex(0.5, 0.5, TString::Format("#color[%d]{Predictioin wi/wo}", kGreen+1));
-  // latex->Draw("same"); latex->SetTextSize(0.078); //latex->SetTextAngle(90);
-
   TLegend *lg_wi2no = new TLegend(0.92, 0.15, 0.94, 0.60);
   lg_wi2no->SetHeader( TString::Format("#color[%d]{Prediction wi/wo}", kGreen+1) );
   lg_wi2no->Draw("same"); lg_wi2no->SetTextSize(0.078); lg_wi2no->SetTextAngle(90);
   lg_wi2no->SetBorderSize(0);
+  */
   
+  // TLatex *latex = new TLatex(0.5, 0.5, TString::Format("#color[%d]{Predictioin wi/wo}", kGreen+1));
+  // latex->Draw("same"); latex->SetTextSize(0.078); //latex->SetTextAngle(90);
+
   // h1_pred_Y_noConstraint_rel_error->Draw("same axis");  
   // TLegend *lg_bot_total = new TLegend(0.5, 0.85, 0.85, 0.93);
   // lg_bot_total->AddEntry(h1_pred_Y_noConstraint_rel_error, TString::Format("#color[%d]{Prediction wi/no}", kGreen+1), "l");
@@ -1390,7 +1492,7 @@ void TLee::Set_Spectra_MatrixCov()
   /// flag for LEE channels corresponding to the cov_input.txt
   map_Lee_ch[8] = 1;
   map_Lee_ch[9] = 1;
-
+  
   //////////////////
   //////////////////
   
@@ -1414,6 +1516,21 @@ void TLee::Set_Spectra_MatrixCov()
     for(int ibin=1; ibin<=bins; ibin++) map_input_spectrum_ch_bin[ich][ibin-1] = h1_spectrum->GetBinContent(ibin);
   }
   cout<<endl;
+
+  
+  /////for fake data set, begin
+  // for(int idx=10; idx<=13; idx++) {
+  //   for(int ibin=1; ibin<=26; ibin++) {
+  //     map_input_spectrum_ch_bin[idx][ibin-1] = 0;
+  //   }
+  // }  
+  // for(int idx=14; idx<=16; idx++) {
+  //   for(int ibin=1; ibin<=11; ibin++) {
+  //     map_input_spectrum_ch_bin[idx][ibin-1] = 0;
+  //   }
+  // }
+  /////for fake data set, end
+  
 
   bins_oldworld = 0;
   for(auto it_ch=map_input_spectrum_ch_bin.begin(); it_ch!=map_input_spectrum_ch_bin.end(); it_ch++) {
@@ -1460,7 +1577,7 @@ void TLee::Set_Spectra_MatrixCov()
     map_matrix_flux_Xs_frac[idx] = (TMatrixD*)map_file_flux_Xs_frac[idx]->Get(TString::Format("frac_cov_xf_mat_%d", idx));
     cout<<TString::Format(" %2d %s", idx, roostr.Data())<<endl;
 
-    
+
     matrix_flux_Xs_frac += (*map_matrix_flux_Xs_frac[idx]);
     
     
@@ -1482,20 +1599,20 @@ void TLee::Set_Spectra_MatrixCov()
   map_detectorfile_str[2] = detector_directory+"cov_LYRayleigh.root";
   map_detectorfile_str[3] = detector_directory+"cov_Recomb2.root";
   map_detectorfile_str[4] = detector_directory+"cov_SCE.root";
-  map_detectorfile_str[5] = detector_directory+"cov_WMdEdx.root";
+  //map_detectorfile_str[5] = detector_directory+"cov_WMdEdx.root";
   map_detectorfile_str[6] = detector_directory+"cov_WMThetaXZ.root";
   map_detectorfile_str[7] = detector_directory+"cov_WMThetaYZ.root";
   map_detectorfile_str[8] = detector_directory+"cov_WMX.root";
   map_detectorfile_str[9] = detector_directory+"cov_WMYZ.root";
-  map_detectorfile_str[10]= detector_directory+"cov_LYatt.root";
+  //map_detectorfile_str[10]= detector_directory+"cov_LYatt.root";
   
   map<int, TFile*>map_file_detector_frac;
   map<int, TMatrixD*>map_matrix_detector_frac;
   TMatrixD matrix_detector_frac(bins_oldworld, bins_oldworld);
   map<int, TMatrixD>matrix_detector_sub_frac;
   
-  int size_map_detectorfile_str = map_detectorfile_str.size();
-  for(int idx=1; idx<=size_map_detectorfile_str; idx++) {
+  for( auto it=map_detectorfile_str.begin(); it!=map_detectorfile_str.end(); it++ ) {
+    int idx = it->first;
     if(idx==5) continue;    
     roostr = map_detectorfile_str[idx];
     cout<<TString::Format(" %2d %s", idx, roostr.Data())<<endl;

@@ -104,6 +104,8 @@ int main(int argc, char** argv)
   Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_outputfile_covariance_matrix;
   Lee_test->Set_Collapse();
 
+  Lee_test->flag_Lee_minimization_after_constraint = config_Lee::flag_Lee_minimization_after_constraint;
+  
   //////////
   
   TFile *file_collapsed_covariance_matrix = new TFile("file_collapsed_covariance_matrix.root", "recreate");
@@ -115,6 +117,8 @@ int main(int argc, char** argv)
   int flag_syst_mc_stat = config_Lee::flag_syst_mc_stat;
   double user_Lee_strength_for_output_covariance_matrix = config_Lee::Lee_strength_for_outputfile_covariance_matrix;
   double user_scaleF_POT = scaleF_POT;
+  vector<double>vc_val_GOF;
+  vector<int>vc_val_GOF_NDF;
   tree_config->Branch("flag_syst_flux_Xs", &flag_syst_flux_Xs, "flag_syst_flux_Xs/I" );
   tree_config->Branch("flag_syst_detector", &flag_syst_detector, "flag_syst_detector/I" );
   tree_config->Branch("flag_syst_additional", &flag_syst_additional, "flag_syst_additional/I" );
@@ -122,9 +126,9 @@ int main(int argc, char** argv)
   tree_config->Branch("user_Lee_strength_for_output_covariance_matrix", &user_Lee_strength_for_output_covariance_matrix,
                       "user_Lee_strength_for_output_covariance_matrix/D" );
   tree_config->Branch("user_scaleF_POT", &user_scaleF_POT, "user_scaleF_POT/D" );
-  tree_config->Fill();
+  tree_config->Branch("vc_val_GOF", &vc_val_GOF);
+  tree_config->Branch("vc_val_GOF_NDF", &vc_val_GOF_NDF);
   file_collapsed_covariance_matrix->cd();
-  tree_config->Write();
 
   Lee_test->matrix_absolute_cov_newworld.Write("matrix_absolute_cov_newworld");// (bins, bins)
   Lee_test->matrix_absolute_flux_cov_newworld.Write("matrix_absolute_flux_cov_newworld");
@@ -141,7 +145,7 @@ int main(int argc, char** argv)
      
   Lee_test->matrix_pred_newworld.Write("matrix_pred_newworld");// (1, bins)
   Lee_test->matrix_data_newworld.Write("matrix_data_newworld");// (1, bins)  
-  file_collapsed_covariance_matrix->Close();
+  //file_collapsed_covariance_matrix->Close();
   
   //////////
 
@@ -151,7 +155,30 @@ int main(int argc, char** argv)
   
   Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_GoF;
   Lee_test->Set_Collapse();
- 
+
+  if( config_Lee::flag_GoF_output2file_default_0 ) {
+    file_collapsed_covariance_matrix->cd();
+
+    for(auto it=Lee_test->map_data_spectrum_ch_bin.begin(); it!=Lee_test->map_data_spectrum_ch_bin.end(); it++) {
+      int val_ch = it->first;
+
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( val_ch );
+      
+      vector<int>vc_support_chs;
+
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 100 + val_ch );
+
+      vc_val_GOF.push_back( Lee_test->val_GOF_noConstrain );
+      vc_val_GOF_NDF.push_back( Lee_test->val_GOF_NDF );
+      //cout<<" ---> "<<Lee_test->val_GOF_NDF<<"\t"<<Lee_test->val_GOF_noConstrain<<endl;
+    }
+    
+    tree_config->Fill();
+    tree_config->Write();
+    file_collapsed_covariance_matrix->Close();
+  }
+  
   bool flag_both_numuCC            = config_Lee::flag_both_numuCC;// 1
   bool flag_CCpi0_FC_by_numuCC     = config_Lee::flag_CCpi0_FC_by_numuCC;// 2
   bool flag_CCpi0_PC_by_numuCC     = config_Lee::flag_CCpi0_PC_by_numuCC;// 3
@@ -176,6 +203,25 @@ int main(int argc, char** argv)
     vc_support_chs.push_back( 7 );
 
     Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 8 );
+  }
+
+  if( 0 ) {
+    vector<int>vc_target_chs;
+    for(int idx=1; idx<=26; idx++) vc_target_chs.push_back( idx -1 );
+    
+    vector<int>vc_support_chs;
+    for(int idx=1; idx<=26*3+11*3; idx++) vc_support_chs.push_back( 26 +idx -1 );
+  
+    Lee_test->Exe_Goodness_of_fit_detailed( vc_target_chs, vc_support_chs, 9 );
+  }
+
+  if( 0 ) {
+    vector<int>vc_target_chs;
+    for(int idx=3; idx<=10; idx++) vc_target_chs.push_back( idx -1 );
+    
+    vector<int>vc_support_chs;
+    
+    Lee_test->Exe_Goodness_of_fit_detailed( vc_target_chs, vc_support_chs, 9 );
   }
   
   ///////////////////////// gof
@@ -209,7 +255,7 @@ int main(int argc, char** argv)
 
     Lee_test->Exe_Goodness_of_fit( (26-8), matrix_gof_trans.GetNcols()-(26-8), matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 6);    
   }
-  
+
   ///////////////////////// gof
   
   if( flag_nueCC_PC_by_numuCC_pi0) {    
@@ -296,7 +342,7 @@ int main(int argc, char** argv)
     double gmin = Lee_test->minimization_chi2;
     TGraph *gh_scan = new TGraph();
     double slow = 0;
-    double shgh = 5;
+    double shgh = 3;
     int nscan = 100;
     double val_max_dchi2 = 0;
     double step = (shgh-slow)/nscan;
@@ -308,7 +354,12 @@ int main(int argc, char** argv)
       gh_scan->SetPoint( gh_scan->GetN(), val_s, val_chi2 - gmin);
       if( val_max_dchi2<val_chi2 - gmin ) val_max_dchi2 = val_chi2 - gmin;
     }
+    
+    double val_dchi2at0 = gh_scan->Eval(0);
     double val_dchi2at1 = gh_scan->Eval(1);
+    if( fabs(val_dchi2at0)<1e-6 ) val_dchi2at0 = 0;
+    
+    cout<<endl<<Form(" ---> dchi2 at LEE 0/1: %7.4f %7.4f", val_dchi2at0, val_dchi2at1 )<<endl<<endl;
     
     TCanvas *canv_gh_scan = new TCanvas("canv_gh_scan", "canv_gh_scan", 900, 650);
     canv_gh_scan->SetLeftMargin(0.15); canv_gh_scan->SetRightMargin(0.1);
@@ -336,6 +387,7 @@ int main(int argc, char** argv)
     tt_text_data->SetTextFont(42);  tt_text_data->Draw(); tt_text_data->SetTextColor(kBlue);
 
     canv_gh_scan->SaveAs("canv_gh_scan.png");
+    
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -417,8 +469,7 @@ int main(int argc, char** argv)
     double chi2_gmin_null8sm_true8sm  = 0;
     double chi2_null_null8Lee_true8Lee = 0;
     double chi2_gmin_null8Lee_true8Lee = 0;
-
-    TFile *file_out = new TFile(TString::Format("file_out_%03d.root", ifile), "recreate");
+    
     TTree *tree = new TTree("tree", "tree");
     tree->Branch("chi2_null_null8sm_true8sm", &chi2_null_null8sm_true8sm, "chi2_null_null8sm_true8sm/D" );
     tree->Branch("chi2_gmin_null8sm_true8sm", &chi2_gmin_null8sm_true8sm, "chi2_gmin_null8sm_true8sm/D" );
@@ -470,6 +521,7 @@ int main(int argc, char** argv)
       tree->Fill();
     }
 
+    TFile *file_out = new TFile(TString::Format("file_out_%03d.root", ifile), "recreate");
     file_out->cd();
     tree->Write();
     file_out->Close();
@@ -514,7 +566,7 @@ int main(int argc, char** argv)
     /////////////// range: [low, hgh] with step
     
     // double Lee_true_low = 0;
-    // double Lee_true_hgh = 5;
+    // double Lee_true_hgh = 3;
     // double Lee_step     = 0.02;
     
     /////////////// dchi2 distribution 

@@ -7,6 +7,16 @@ namespace config_Lee
   TString detector_directory = "./data_framework_Doc33131/det_both/";
   TString mc_directory = "./data_framework_Doc33131/mc_stat/";
 
+  /* TString spectra_file = "./data_framework_fake5/merge_all.root"; */
+  /* TString flux_Xs_directory = "./data_framework_fake5/flux_Xs/"; */
+  /* TString detector_directory = "./data_framework_fake5/det_11stat/"; */
+  /* TString mc_directory = "./data_framework_fake5/mc_stat/"; */
+
+  /* TString spectra_file = "./TLee_input_1mu0p/merge.root"; */
+  /* TString flux_Xs_directory = "./TLee_input_1mu0p/flux_Xs/"; */
+  /* TString detector_directory = "./TLee_input_1mu0p/det/"; */
+  /* TString mc_directory = "./TLee_input_1mu0p/mc_stat/"; */
+  
   int channels_observation = 7;// data channels (=hdata_obsch_# in spectra_file above)
                                // which is equal to the channels after collapse
 
@@ -42,7 +52,9 @@ namespace config_Lee
   ////////// goodness of fit
   
   double Lee_strength_for_GoF      = 0;
-    
+
+  bool flag_GoF_output2file_default_0 = 0;
+  
   bool flag_both_numuCC            = 0;// 1
   bool flag_CCpi0_FC_by_numuCC     = 0;// 2
   bool flag_CCpi0_PC_by_numuCC     = 0;// 3
@@ -56,5 +68,10 @@ namespace config_Lee
 
   bool flag_Lee_strength_data = 0;
 
-  //////////
+  ////////// Advanced tools
+  
+  ///// void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag_fixed)
+  ///// do the fitting on the spectra and cov_total after constraint ?
+  bool flag_Lee_minimization_after_constraint = 0;
+  
 }
