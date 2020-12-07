@@ -164,7 +164,7 @@ int main(int argc, char** argv)
       int size_map = it->second.size();
       int size_before = 0;
       for(int idx=1; idx<val_ch; idx++) {
-	int size_current = it->second.size();
+	int size_current = Lee_test->map_data_spectrum_ch_bin[idx].size();
 	size_before += size_current;
       }
       
