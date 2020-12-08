@@ -167,9 +167,12 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       return tagger.gap_n_bad;
   }else if (var_name == "muon_KE"){
       return pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
-  }else if (var_name == "muon_theta"){
+  }else if (var_name == "muon_costheta"){
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       return TMath::Cos(muonMomentum.Theta());
+  }else if (var_name == "muon_theta"){
+      TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+      return muonMomentum.Theta()*180./TMath::Pi();
   }else if (var_name == "muon_phi"){
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       return muonMomentum.Phi()/TMath::Pi()*180.;
@@ -206,6 +209,30 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
       return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(2*938.272*Ehadron);
+  }else if (var_name == "N_tracks"){
+      int N_tracks = 0;
+      for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
+      {
+          int pdgcode = kine.kine_particle_type->at(i);
+          if(abs(pdgcode)==11) continue;
+          if(kine.kine_energy_particle->at(i)<10) continue;
+          if(abs(pdgcode)==13 || abs(pdgcode)==211){
+            N_tracks += 1;
+          }
+          else if(kine.kine_energy_particle->at(i)>35){ // proton KE threshold
+              N_tracks += 1; 
+          }
+      }
+      return N_tracks;
+  }else if (var_name == "N_showers"){
+      int N_showers = 0;
+      for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
+      {
+          int pdgcode = kine.kine_particle_type->at(i);
+          if(abs(pdgcode)!=11) continue;
+          if(kine.kine_energy_particle->at(i)>10) N_showers += 1;
+      }
+      return N_showers;
   }else{
     std::cout << "No such variable: " << var_name << std::endl;
     exit(EXIT_FAILURE);
@@ -313,7 +340,6 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
  
   if (!flag_add) return false;
 
-
   bool flag_generic = is_generic(eval);
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_numuCC_tight = is_numuCC_tight(tagger, pfeval);
@@ -400,29 +426,55 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     if (!(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && ch_name == "testD_overlay" || ch_name != "testD_overlay") return true;
     else return false;
  // Janet's requests: <600 MeV numuCC PC, FC for three variables = 6 obs channels 
-  }else if (ch_name == "numuCC_1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_600MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
     else return false;
-  }else if (ch_name == "numuCC_1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_600MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
     else return false;
-  }else if (ch_name == "numuCC2_1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC2_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_600MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
     else return false;
-  }else if (ch_name == "numuCC2_1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC2_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_600MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
     else return false;
-  }else if (ch_name == "numuCC3_1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC3_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_600MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
     else return false;
-  }else if (ch_name == "numuCC3_1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=1500 && kine.kine_reco_Enu>=600) return true;
+  }else if (ch_name == "numuCC3_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_600MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    else return false;
+  }else if (ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    else return false;
+  }else if (ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    else return false;
+  }else if (ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    else return false;
+  }else if (ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    else return false;
+  }else if (ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
     else return false;
 
   }else if (ch_name == "numuCC_extra_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_extra_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_extra_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_extra_nopi0_nonueCC_FC_bnb"){
     if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
   }else if (ch_name == "numuCC_extra_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_extra_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_extra_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_extra_nopi0_nonueCC_PC_bnb"){
+    if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+
+  }else if (ch_name == "numuCC_extra2_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_extra2_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_extra2_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_extra2_nopi0_nonueCC_FC_bnb"){
+    if (flag_numuCC_tight && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_extra2_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_extra2_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_extra2_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_extra2_nopi0_nonueCC_PC_bnb"){
     if (flag_numuCC_tight && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0)) return true;
     else return false;
 
@@ -484,13 +536,13 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
  // Mike Shaevitz >800 MeV nueCC PC+FC 1 obs channel
   }else if (ch_name == "nueCC_extra_nueoverlay"){
-    if (flag_nueCC_loose && flag_truth_inside) return true;
+    if (flag_nueCC && flag_truth_inside) return true;
     else return false;
   }else if (ch_name == "BG_nueCC_extra_ext" || ch_name == "BG_nueCC_extra_dirt" || ch_name =="nueCC_extra_bnb"){
-    if (flag_nueCC_loose) return true;
+    if (flag_nueCC) return true;
     else return false;
   }else if (ch_name == "BG_nueCC_extra_overlay"){
-    if (flag_nueCC_loose && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
+    if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
     else return false;
  // cut-based numuCC FC/PC 2 obs channels   
   }else if (ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_cutbased_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_cutbased_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_bnb"){
@@ -564,7 +616,7 @@ bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
 
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_pi0 = is_pi0(kine);
-  // bool flag_cc_pi0 = is_cc_pi0(kine);
+  bool flag_cc_pi0 = is_cc_pi0(kine);
   bool flag_NC = is_NC(tagger);
 
   if ((kine.kine_reco_Enu>=800 && tagger.nue_score >=0) ||

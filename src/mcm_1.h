@@ -826,6 +826,15 @@ void LEEana::CovMatrix::fill_pred_histograms(int run, std::map<int, std::vector<
 	
 	if (flag_lee == 1) ratio *= lee_strength;
 
+    /* std::string hhhhhname = hmc->GetName(); */ 
+    /* std::istringstream sss(hhhhhname); */
+    /* for(std::string line; std::getline(sss, line, '_');){ */
+    /*     if(line == "CCQE") */
+    /*     { */
+    /*         ratio*=1.64; */
+    /*     } */
+    /* } */
+
 	htemp->Add(hmc, ratio);
 	htemp_err2->Add(hmc_err2, ratio*ratio);
     if(flag_breakdown){

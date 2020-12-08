@@ -42,6 +42,8 @@ int main( int argc, char** argv )
   cov.add_disabled_ch_name("BG_nueCC2_PC_overlay");
   cov.add_disabled_ch_name("BG_nueCC3_FC_overlay");
   cov.add_disabled_ch_name("BG_nueCC3_PC_overlay");
+  cov.add_disabled_ch_name("BG_nueCC_extra_FC_overlay");
+  cov.add_disabled_ch_name("BG_nueCC_extra_PC_overlay");
   
 
   // Get the file based on runno ...
