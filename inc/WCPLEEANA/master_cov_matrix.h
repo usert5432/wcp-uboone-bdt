@@ -14,6 +14,8 @@ namespace LEEana{
     CovMatrix(TString cov_filename = "./configurations/cov_input.txt", TString cv_filename = "./configurations/cv_input.txt", TString file_filename = "./configurations/file_ch.txt");
     ~CovMatrix();
 
+    void add_xs_config(TString xs_ch_filename = "./configurations/xs_ch.txt", TString xs_real_bin_filename = "./configurations/xs_real_bin.txt");
+    
     void print_ch_info();
     void print_filetype_info();
     void print_systematics();
@@ -102,7 +104,7 @@ namespace LEEana{
     // name, var_name, bin, llmit, hlimit, weight, obs_no, lee
     std::map<int, std::tuple<TString, TString, int, float, float, TString, int, int> > map_ch_hist;
     std::map<TString, int> map_name_ch;
-
+    
     // information regarding ch and their filetype
     std::map<int, int> map_ch_filetype;
     std::map<int, std::vector<int> > map_filetype_chs;
@@ -172,8 +174,13 @@ namespace LEEana{
     std::map<int, std::set<std::set<std::pair<TString, int> > > > map_pred_covch_histos; // total ...
 
     std::set<TString> disabled_ch_names;
-   
     
+    // Xs related
+    std::set<TString> xs_signal_ch_names;
+    std::map<int, TString> map_xs_bin_cut;
+    std::map<TString, int> map_cut_xs_bin;
+    std::map<int, double> map_xs_bin_constant;
+    std::map<int, std::pair<double, double> > map_xs_bin_errs;
   };
 }
 

@@ -358,3 +358,32 @@ LEEana::CovMatrix::~CovMatrix(){
 
   //  std::cout << "hehe " << std::endl;
 }
+
+
+void LEEana::CovMatrix::add_xs_config(TString xs_ch_filename , TString xs_real_bin_filename ){
+  std::ifstream infile1(xs_ch_filename);
+  TString temp;
+  while(!infile1.eof()){
+    infile1 >> temp;
+    if (temp == "End") break;
+    xs_signal_ch_names.insert(temp);
+  }
+  //  std::cout << xs_signal_ch_names.size() << std::endl;
+
+  std::ifstream infile2(xs_real_bin_filename);
+  int bin_no;
+  TString cut;
+  double constant;
+  double pot_err;
+  double target_err;
+  
+  while(!infile2.eof()){
+    infile2 >> bin_no >> cut >> constant >> pot_err >> target_err;
+    if (bin_no==-1) break;
+    map_xs_bin_cut[bin_no] = cut;
+    map_cut_xs_bin[cut] = bin_no;
+    map_xs_bin_constant[bin_no] = constant;
+    map_xs_bin_errs[bin_no] = std::make_pair(pot_err, target_err);
+  }
+  
+}

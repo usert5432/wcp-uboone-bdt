@@ -40,8 +40,10 @@ int main( int argc, char** argv )
   // cov.add_disabled_ch_name("BG_nueCC_PC_overlay");
   // cov.add_disabled_ch_name("BG_nueCC_FC_dirt");
   // cov.add_disabled_ch_name("BG_nueCC_PC_dirt");
+
+  cov.add_xs_config();
   
-  
+  /*
   // Get the file based on runno ...
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();
   // Construct the histogram ...
@@ -135,6 +137,6 @@ int main( int argc, char** argv )
   
   file->Write();
   file->Close();
-  
+  */  
   return 0;
 }
