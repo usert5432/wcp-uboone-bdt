@@ -687,7 +687,10 @@ int main( int argc, char** argv )
   T_eval_cv->SetBranchStatus("run",1);
   T_eval_cv->SetBranchStatus("subrun",1);
   T_eval_cv->SetBranchStatus("event",1);
-
+  // Xs related
+  T_eval_cv->SetBranchStatus("match_completeness_energy",1);
+  T_eval_cv->SetBranchStatus("truth_energyInside",1);
+  
   
   T_KINEvars_cv->SetBranchStatus("*",0);
   T_KINEvars_cv->SetBranchStatus("kine_reco_Enu",1);
@@ -785,7 +788,9 @@ int main( int argc, char** argv )
   T_eval_det->SetBranchStatus("run",1);
   T_eval_det->SetBranchStatus("subrun",1);
   T_eval_det->SetBranchStatus("event",1);
-
+  // Xs related
+  T_eval_det->SetBranchStatus("match_completeness_energy",1);
+  T_eval_det->SetBranchStatus("truth_energyInside",1);
   
   T_KINEvars_det->SetBranchStatus("*",0);
   T_KINEvars_det->SetBranchStatus("kine_reco_Enu",1);

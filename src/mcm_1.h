@@ -495,7 +495,10 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_eval_cv->SetBranchStatus("truth_vtxX",1);
   T_eval_cv->SetBranchStatus("truth_vtxY",1);
   T_eval_cv->SetBranchStatus("truth_vtxZ",1);
- 
+  // Xs related
+  T_eval_cv->SetBranchStatus("match_completeness_energy",1);
+  T_eval_cv->SetBranchStatus("truth_energyInside",1);
+  
   
   T_KINEvars_cv->SetBranchStatus("*",0);
   T_KINEvars_cv->SetBranchStatus("kine_reco_Enu",1);
@@ -596,7 +599,9 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_eval_det->SetBranchStatus("truth_vtxX",1);
   T_eval_det->SetBranchStatus("truth_vtxY",1);
   T_eval_det->SetBranchStatus("truth_vtxZ",1);
- 
+   // Xs related
+  T_eval_det->SetBranchStatus("match_completeness_energy",1);
+  T_eval_det->SetBranchStatus("truth_energyInside",1);
   
   T_KINEvars_det->SetBranchStatus("*",0);
   T_KINEvars_det->SetBranchStatus("kine_reco_Enu",1);

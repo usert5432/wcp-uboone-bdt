@@ -483,7 +483,9 @@ int main( int argc, char** argv )
   T_eval->SetBranchStatus("run",1);
   T_eval->SetBranchStatus("subrun",1);
   T_eval->SetBranchStatus("event",1);
-
+   // Xs related
+  T_eval->SetBranchStatus("match_completeness_energy",1);
+  T_eval->SetBranchStatus("truth_energyInside",1);
   
   T_KINEvars->SetBranchStatus("*",0);
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);

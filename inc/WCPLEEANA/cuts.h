@@ -280,6 +280,9 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && abs(eval.truth_nuPdg)==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["numuCCinFV"] = true;
   else map_cuts_flag["numuCCinFV"] = false;
 
+   if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 ) map_cuts_flag["XsnumuCCinFV"] = true;
+  else map_cuts_flag["XsnumuCCinFV"] = false;
+
   if(eval.match_completeness_energy/eval.truth_energyInside>=0.1 && abs(eval.truth_nuPdg)==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1) map_cuts_flag["nueCCinFV"] = true;
   else map_cuts_flag["nueCCinFV"] = false;
     
@@ -610,13 +613,13 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
   }else if (ch_name == "numuCC_signal_FC_overlay" || ch_name == "numuCC_signal_PC_overlay" || ch_name == "numuCC_background_FC_overlay" || ch_name == "numuCC_background_PC_overlay"){
     if (ch_name == "numuCC_signal_FC_overlay"){
-      if (flag_numuCC && flag_FC && map_cuts_flag["numuCCinFV"]) return true;
+      if (flag_numuCC && flag_FC && map_cuts_flag["XsnumuCCinFV"]) return true;
     }else if (ch_name == "numuCC_signal_PC_overlay"){
-      if (flag_numuCC && (!flag_FC) && map_cuts_flag["numuCCinFV"]) return true;
+      if (flag_numuCC && (!flag_FC) && map_cuts_flag["XsnumuCCinFV"]) return true;
     }else if (ch_name == "numuCC_background_FC_overlay"){
-      if (flag_numuCC && flag_FC && (!map_cuts_flag["numuCCinFV"])) return true;
+      if (flag_numuCC && flag_FC && (!map_cuts_flag["XsnumuCCinFV"])) return true;
     }else if (ch_name == "numuCC_background_PC_overlay"){
-      if (flag_numuCC && (!flag_FC) && (!map_cuts_flag["numuCCinFV"])) return true;
+      if (flag_numuCC && (!flag_FC) && (!map_cuts_flag["XsnumuCCinFV"])) return true;
     }
     return false;
   }else{
