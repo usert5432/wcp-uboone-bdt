@@ -35,6 +35,10 @@ int main( int argc, char** argv )
       break;
     }
   }
+  if (run !=14) {
+    std::cout  << "Force run = 14" << std::endl;
+    run = 14;
+  }
 
   CovMatrix cov("./configurations/cov_input.txt", "./configurations/xf_input.txt", "./configurations/xf_file_ch.txt");
   // cov.add_disabled_ch_name("BG_nueCC_FC_overlay");
@@ -140,9 +144,9 @@ int main( int argc, char** argv )
   
   cov.gen_xs_cov_matrix(run, map_covch_hists, map_histoname_hists, vec_mean, cov_xs_mat, vec_signal, mat_R);
 
+  TMatrixD* frac_cov_xs_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
   /*
-  TMatrixD* frac_cov_xf_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
-  for (size_t i=0; i!= frac_cov_xf_mat->GetNrows(); i++){
+    for (size_t i=0; i!= frac_cov_xf_mat->GetNrows(); i++){
     double val_1 = (*vec_mean)(i);
     for (size_t j=0; j!=frac_cov_xf_mat->GetNrows();j++){
       double val_2 = (*vec_mean)(j);
@@ -164,23 +168,39 @@ int main( int argc, char** argv )
       }
     }
   }
-
+  */
+  
   TFile *file = new TFile(outfile_name,"RECREATE");
   vec_mean->Write(Form("vec_mean_%d",run));
-  cov_xf_mat->Write(Form("cov_xf_mat_%d",run));
-  frac_cov_xf_mat->Write(Form("frac_cov_xf_mat_%d",run));
+  cov_xs_mat->Write(Form("cov_xf_mat_%d",run));
+  frac_cov_xs_mat->Write(Form("frac_cov_xf_mat_%d",run));
+  vec_signal->Write(Form("vec_signal_%d",run));
+  mat_R->Write(Form("mat_R_%d",run));
   
   // save central ... results ...
   // for (auto it = map_histoname_hist.begin(); it != map_histoname_hist.end(); it++){
   //  ((TH1F*)it->second)->SetDirectory(file);
   // }
   
-  for (auto it = map_covch_hist.begin(); it != map_covch_hist.end(); it++){
-    ((TH1F*)it->second)->SetDirectory(file);
+  for (auto it = map_covch_hists.begin(); it != map_covch_hists.end(); it++){
+    auto results = it->second;
+    TH1F *h1 = std::get<0>(results);
+    TH1F *h2 = std::get<1>(results);
+    TH1F *h3 = std::get<2>(results);
+    TH2F *h4 = std::get<3>(results);
+    int num = std::get<4>(results);
+    if (num == 1){
+      h1->SetDirectory(file);
+    }else{
+      h1->SetDirectory(file);
+      h2->SetDirectory(file);
+      h3->SetDirectory(file);
+      h4->SetDirectory(file);
+    }
   }
   
   file->Write();
   file->Close();
-  */  
+  
   return 0;
 }
