@@ -26,7 +26,7 @@ int main( int argc, char** argv )
   if (argc < 2){
     std::cout << "./xf_cov_matrix -r[#sys 1-14]" << std::endl;
   }
-  int run = 1; // run 1 ...
+  int run = 14; // run 1 ... xs ...
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
@@ -43,7 +43,7 @@ int main( int argc, char** argv )
 
   cov.add_xs_config();
   
-  /*
+  
   // Get the file based on runno ...
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();
   // Construct the histogram ...
@@ -89,14 +89,24 @@ int main( int argc, char** argv )
       //  std::cout << input_filename << " " << filetype << " " << out_filename << std::endl; 
     }
   }
+  
+  // hack ...
+  outfile_name = "./hist_rootfiles/XsFlux/cov_xs.root";
   std::cout << outfile_name << std::endl;
   TMatrixD* cov_add_mat = cov.get_add_cov_matrix();
   // create a covariance matrix for bootstrapping ...
-  TMatrixD* cov_xf_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
+  TMatrixD* cov_xs_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
   TVectorD* vec_mean = new TVectorD(cov_add_mat->GetNrows());
 
-  cov.gen_xf_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, cov_xf_mat);
+  //std::cout << cov.get_xs_nmeas() << " " << cov.get_xs_nsignals() << std::endl;
+  // matrix and R ...
+  TVectorD* vec_signal = new TVectorD(cov.get_xs_nsignals());
+  TMatrixD *mat_R = new TMatrixD(cov.get_xs_nmeas(),cov.get_xs_nsignals());
+
   
+  cov.gen_xs_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, cov_xs_mat, vec_signal, mat_R);
+
+  /*
   TMatrixD* frac_cov_xf_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
   for (size_t i=0; i!= frac_cov_xf_mat->GetNrows(); i++){
     double val_1 = (*vec_mean)(i);

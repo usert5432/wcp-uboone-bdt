@@ -387,3 +387,20 @@ void LEEana::CovMatrix::add_xs_config(TString xs_ch_filename , TString xs_real_b
   }
   
 }
+
+int LEEana::CovMatrix::get_xs_nsignals(){
+  return map_xs_bin_cut.size();
+}
+
+int LEEana::CovMatrix::get_xs_nmeas(){
+  int ncount = 0;
+  for (auto it = xs_signal_ch_names.begin(); it != xs_signal_ch_names.end(); it++){
+    int ch = map_name_ch[*it];
+    ncount += std::get<2>(map_ch_hist[ch]) + 1; 
+  }
+  return ncount;
+}
+
+void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R){
+  
+}

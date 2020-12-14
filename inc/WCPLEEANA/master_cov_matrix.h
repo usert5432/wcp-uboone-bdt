@@ -73,6 +73,11 @@ namespace LEEana{
     void fill_data_histograms(int run, std::map<int, std::vector<TH1F*> >& map_obsch_histos, std::map<TString, std::pair<TH1F*, double> >& map_name_histogram);
     void fill_pred_histograms(int run, std::map<int, std::vector<TH1F*> >& map_obsch_histos, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_bayes, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_infos, std::map<TString, std::pair<TH1F*, double> >& map_name_histogram, float lee_strength, std::map<int, double> map_data_period_pot, bool flag_breakdown, std::map<int, std::vector<TH1F*> >& map_obsch_subhistos);
 
+    // Xs related 
+    void gen_xs_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R);
+    
+
+    // XsFlux related
     void gen_xf_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean,  TMatrixD* cov_xf_mat);
 
     std::pair<std::vector<int>, std::vector<int> > get_events_weights(TString input_filename, std::map<TString, std::set<std::tuple<float, float, std::vector<float>, std::vector<int>, std::set<std::pair<int, float> > > > >& map_passed_events, std::map<TString, double>& map_filename_pot, std::map<TString, std::tuple<int, int, int, TString>>& map_histoname_infos);
@@ -92,7 +97,9 @@ namespace LEEana{
     void add_disabled_ch_name(TString name);
     std::set<TString>& get_disabled_ch_names(){return disabled_ch_names;};
     void remove_disabled_ch_name(TString name);
-      
+    // xs related
+    int get_xs_nsignals();
+    int get_xs_nmeas();
   private:
     TGraph *gl, *gh;
     int llimit, hlimit;
@@ -181,6 +188,7 @@ namespace LEEana{
     std::map<TString, int> map_cut_xs_bin;
     std::map<int, double> map_xs_bin_constant;
     std::map<int, std::pair<double, double> > map_xs_bin_errs;
+    
   };
 }
 
