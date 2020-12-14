@@ -27,7 +27,7 @@ int main( int argc, char** argv )
   if (argc < 2){
     std::cout << "./xf_cov_matrix -r[#sys 1-14]" << std::endl;
   }
-  int run = 14; // run 1 ... xs ...
+  int run = 17; // run 1 ... xs ...
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
@@ -35,9 +35,9 @@ int main( int argc, char** argv )
       break;
     }
   }
-  if (run !=14) {
-    std::cout  << "Force run = 14" << std::endl;
-    run = 14;
+  if (run !=17) {
+    std::cout  << "Force run = 17, check configurations ..." << std::endl;
+    run = 17;
   }
 
   CovMatrix cov("./configurations/cov_input.txt", "./configurations/xf_input.txt", "./configurations/xf_file_ch.txt");
@@ -139,36 +139,36 @@ int main( int argc, char** argv )
   //std::cout << cov.get_xs_nmeas() << " " << cov.get_xs_nsignals() << std::endl;
   // matrix and R ...
   TVectorD* vec_signal = new TVectorD(cov.get_xs_nsignals());
-  TMatrixD *mat_R = new TMatrixD(cov.get_xs_nmeas(),cov.get_xs_nsignals());
+
+  TMatrixD *mat_R = new TMatrixD(cov_add_mat->GetNrows(),cov.get_xs_nsignals());
 
   
   cov.gen_xs_cov_matrix(run, map_covch_hists, map_histoname_hists, vec_mean, cov_xs_mat, vec_signal, mat_R);
 
   TMatrixD* frac_cov_xs_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
-  /*
-    for (size_t i=0; i!= frac_cov_xf_mat->GetNrows(); i++){
+  
+  for (size_t i=0; i!= frac_cov_xs_mat->GetNrows(); i++){
     double val_1 = (*vec_mean)(i);
-    for (size_t j=0; j!=frac_cov_xf_mat->GetNrows();j++){
+    for (size_t j=0; j!=frac_cov_xs_mat->GetNrows();j++){
       double val_2 = (*vec_mean)(j);
-      double val = (*cov_xf_mat)(i,j);
+      double val = (*cov_xs_mat)(i,j);
       if (val_1 ==0 && val_2 == 0){
-	(*frac_cov_xf_mat)(i,j) = 0;
+	(*frac_cov_xs_mat)(i,j) = 0;
       }else if (val_1 ==0 || val_2 ==0){
 	if (val !=0){
 	  if (i==j){
-	    (*frac_cov_xf_mat)(i,j) = 0.;
+	    (*frac_cov_xs_mat)(i,j) = 0.;
 	  }else{
-	    (*frac_cov_xf_mat)(i,j) = 0;
+	    (*frac_cov_xs_mat)(i,j) = 0;
 	  }
 	}else{
-	  (*frac_cov_xf_mat)(i,j) = 0;
+	  (*frac_cov_xs_mat)(i,j) = 0;
 	}
       }else{
-	(*frac_cov_xf_mat)(i,j) = val/val_1/val_2;
+	(*frac_cov_xs_mat)(i,j) = val/val_1/val_2;
       }
     }
   }
-  */
   
   TFile *file = new TFile(outfile_name,"RECREATE");
   vec_mean->Write(Form("vec_mean_%d",run));
