@@ -4,6 +4,7 @@
 #include "TString.h"
 #include "TMatrixD.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TGraph.h"
 #include <map>
 #include <set>
@@ -74,7 +75,7 @@ namespace LEEana{
     void fill_pred_histograms(int run, std::map<int, std::vector<TH1F*> >& map_obsch_histos, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_bayes, std::map<int, std::vector< std::vector< std::tuple<double, double, double, int, double> > > >& map_obsch_infos, std::map<TString, std::pair<TH1F*, double> >& map_name_histogram, float lee_strength, std::map<int, double> map_data_period_pot, bool flag_breakdown, std::map<int, std::vector<TH1F*> >& map_obsch_subhistos);
 
     // Xs related 
-    void gen_xs_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R);
+    void gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_covch_hists, std::map<TString, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_histoname_hists, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R);
     
 
     // XsFlux related
@@ -100,6 +101,8 @@ namespace LEEana{
     // xs related
     int get_xs_nsignals();
     int get_xs_nmeas();
+    bool is_xs_chname(TString name);
+    
   private:
     TGraph *gl, *gh;
     int llimit, hlimit;

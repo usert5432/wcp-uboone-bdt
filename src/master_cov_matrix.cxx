@@ -401,6 +401,14 @@ int LEEana::CovMatrix::get_xs_nmeas(){
   return ncount;
 }
 
-void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R){
+bool LEEana::CovMatrix::is_xs_chname(TString name){
+  if (xs_signal_ch_names.find(name)==xs_signal_ch_names.end()){
+    return false;
+  }else{
+    return true;
+  }
+}
+
+void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_covch_hists, std::map<TString, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_histoname_hists, TVectorD* vec_mean,  TMatrixD* cov_xf_mat, TVectorD* vec_signal, TMatrixD* mat_R){
   
 }

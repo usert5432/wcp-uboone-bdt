@@ -12,6 +12,7 @@
 #include "TLegend.h"
 #include "TMath.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TStyle.h"
@@ -51,9 +52,14 @@ int main( int argc, char** argv )
   // outfilename ...
   TString outfile_name;
 
-  TH1F *htemp;
-  std::map<TString, TH1F*> map_histoname_hist;
-  std::map<int, TH1F*> map_covch_hist;
+  TH1F *htemp; TH1F *htemp1; TH1F *htemp2; TH2F *htemp3;
+  
+  // measure, signal, signal_nominal, R, number ...
+  std::map<TString, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> > map_histoname_hists;
+  //std::map<TString, TH1F* > map_histoname_hist;
+  std::map<int, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> > map_covch_hists;
+  //std::map<int, TH1F* > map_covch_hist;
+  
   for (auto it = map_inputfile_info.begin(); it!=map_inputfile_info.end(); it++){
     TString input_filename = it->first;
     int filetype = std::get<0>(it->second);
@@ -77,13 +83,41 @@ int main( int argc, char** argv )
 	TString weight = std::get<7>(*it1);
 	
 	//	std::cout << std::get<0>(*it1)  << " " << std::get<1>(*it1) << " " << std::get<4>(*it1) << " " << std::get<5>(*it1) << " " << std::get<6>(*it1) << " " << std::get<7>(*it1) << std::endl;
+	htemp = 0; htemp1 = 0; htemp2 = 0; htemp3 = 0;
+	int htemp_n = 0;
+	// create histograms ...
 	htemp = new TH1F(histoname, histoname, nbin, llimit, hlimit);
-	map_histoname_hist[histoname] = htemp;
-
+	
+	bool flag_spec = cov.is_xs_chname(ch_name) ;
+	//std::cout << histoname << " " << ch_name << " " << cov.is_xs_chname(ch_name) << std::endl;
 	int covch = cov.get_covch_name(ch_name);
-	if (map_covch_hist.find(covch) == map_covch_hist.end()){
-	  TH1F *htemp1 = (TH1F*)htemp->Clone(Form("pred_covch_%d",covch));
-	  map_covch_hist[covch] = htemp1;
+	
+	if (flag_spec){
+	  int nbins1 = cov.get_xs_nsignals();
+	  TString temp_histoname = histoname + "_signal";
+	  htemp1 = new TH1F(temp_histoname, temp_histoname,nbins1, 0.5,nbins1+0.5);
+	  temp_histoname = histoname + "_signalbar";
+	  htemp2 = new TH1F(temp_histoname, temp_histoname,nbins1, 0.5,nbins1+0.5);
+	  temp_histoname = histoname + "_R";
+	  htemp3 = new TH2F(temp_histoname, temp_histoname,nbin, llimit, hlimit,nbins1, 0.5,nbins1+0.5);
+	  htemp_n = 4;
+	}else{
+	  htemp_n = 1;
+	}
+	
+	map_histoname_hists[histoname] = std::make_tuple(htemp, htemp1, htemp2, htemp3, htemp_n);
+	
+	
+	if (map_covch_hists.find(covch) == map_covch_hists.end()){
+	  TH1F *htemp_1 = (TH1F*)htemp->Clone(Form("pred_covch_%d",covch));
+	  if (flag_spec){
+	    TH1F *htemp1_1 = (TH1F*)htemp1->Clone(Form("pred_covch_%d_signal",covch));
+	    TH1F *htemp2_1 = (TH1F*)htemp2->Clone(Form("pred_covch_%d_signalbar",covch));
+	    TH2F *htemp3_1 = (TH2F*)htemp3->Clone(Form("pred_covch_%d_R",covch));
+	    map_covch_hists[covch] = std::make_tuple(htemp_1, htemp1_1, htemp2_1, htemp3_1, htemp_n);
+	  }else{
+	    map_covch_hists[covch] = std::make_tuple(htemp_1, htemp1, htemp2, htemp3, htemp_n);
+	  }
 	}
       }
       //  std::cout << input_filename << " " << filetype << " " << out_filename << std::endl; 
@@ -104,7 +138,7 @@ int main( int argc, char** argv )
   TMatrixD *mat_R = new TMatrixD(cov.get_xs_nmeas(),cov.get_xs_nsignals());
 
   
-  cov.gen_xs_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, cov_xs_mat, vec_signal, mat_R);
+  cov.gen_xs_cov_matrix(run, map_covch_hists, map_histoname_hists, vec_mean, cov_xs_mat, vec_signal, mat_R);
 
   /*
   TMatrixD* frac_cov_xf_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
