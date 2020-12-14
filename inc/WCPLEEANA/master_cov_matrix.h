@@ -106,6 +106,9 @@ namespace LEEana{
     int get_xs_nsignals();
     int get_xs_nmeas();
     bool is_xs_chname(TString name);
+    int get_cut_file(){return cut_file;};
+
+    std::map<TString, int>& get_map_cut_xs_bin(){return map_cut_xs_bin;};
     
   private:
     TGraph *gl, *gh;
