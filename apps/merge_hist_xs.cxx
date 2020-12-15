@@ -22,6 +22,7 @@
 #include "TLine.h"
 #include "TPDF.h"
 #include "TF1.h"
+#include "TVectorD.h"
 
 using namespace std;
 using namespace LEEana;
@@ -72,6 +73,8 @@ int main( int argc, char** argv )
   Double_t pot;
   std::map<TString, std::pair<TH1F*, double> > map_name_histogram;
 
+  std::map<TString, std::tuple<TH1F*, TH2F*, double> > map_name_xs_hists;
+
   // data POT ...
   std::map<int, double> map_data_period_pot;
   //  std::vector<TH1F*> temp_histograms;
@@ -104,9 +107,18 @@ int main( int argc, char** argv )
     
     for (size_t i=0;i!=all_histo_infos.size();i++){
       htemp = (TH1F*)temp_file->Get(std::get<0>(all_histo_infos.at(i)));
+      TString temp_name = std::get<0>(all_histo_infos.at(i));
+      TString temp_name1 = temp_name + "_signal";
+      TString temp_name2 = temp_name + "_R";
+      TH1F *htemp1 = (TH1F*)temp_file->Get(temp_name1);
+      TH2F *htemp2 = (TH2F*)temp_file->Get(temp_name2);
+      // std::cout << temp_name << " " << htemp1 << " " << htemp2 << std::endl;
       //      std::cout << std::get<0>(all_histo_infos.at(i)) << " " << htemp->GetSum() << std::endl;
       //      temp_histograms.push_back(htemp);
       map_name_histogram[std::get<0>(all_histo_infos.at(i))] = std::make_pair(htemp, pot);
+      if (htemp1 !=0 && htemp2 !=0){
+	map_name_xs_hists[std::get<0>(all_histo_infos.at(i))] = std::make_tuple(htemp1, htemp2, pot);
+      }
     }
   }
 
@@ -171,14 +183,16 @@ int main( int argc, char** argv )
   // get predictions and its uncertainties ...,
   cov.fill_pred_histograms(run, map_obsch_histos, map_obsch_bayes, map_obsch_infos, map_name_histogram, lee_strength, map_data_period_pot, flag_breakdown, map_obsch_subhistos);
 
-    /* for (auto it = map_obsch_subhistos.begin(); it!= map_obsch_subhistos.end(); it++){ */
-    /*         for(size_t i=0; i<it->second.size(); i++){ */
-    /*             std::cout<<"DEBUG2: "<<it->first<<": "<<map_obsch_subhistos[it->first].at(i)->GetName()<<std::endl; */
-    /*         } */
-    /* } */ 
-
+  
+  // matrix and R ...
+  TVectorD* vec_signal = new TVectorD(cov.get_xs_nsignals());
+  // additional covariance matrix ...
+  TMatrixD* mat_add_cov = cov.get_add_cov_matrix();
+  TMatrixD *mat_R = new TMatrixD(mat_add_cov->GetNrows(),cov.get_xs_nsignals());
+  cov.fill_pred_R_signal(run, mat_R, vec_signal,  map_data_period_pot,  map_name_xs_hists);
+  
+  
   // get Bayesian errrors ...
-
   if (flag_err==2){
     std::cout << lee_strength << " " << run << std::endl;
     
@@ -218,19 +232,14 @@ int main( int argc, char** argv )
       // obsch --> bin with overflow bin --> vector of all channels (merge certain channels) --> mean and err2 
       //std::map<int, std::vector< std::vector< std::tuple<double, double, double> > > > map_obsch_bayes;
     }
-  }
-
-   
- 
-  if (flag_err == 1){
+  }else if (flag_err == 1){
     // prediction ...
     TFile *file3 = new TFile("merge_xs.root","RECREATE");
     
     TMatrixD* mat_collapse = cov.get_mat_collapse();
     mat_collapse->Write("mat_collapse");
     
-    // additional covariance matrix ...
-    TMatrixD* mat_add_cov = cov.get_add_cov_matrix();
+    
     
     std::map<int, TH1F*> map_covch_histo;
     
@@ -259,25 +268,11 @@ int main( int argc, char** argv )
 	  htemp1->SetBinError(j+1, sqrt(pow(htemp1->GetBinError(j+1),2) + std::get<1>(bayes_inputs.at(i).at(j))));
 	  
 	  (*mat_add_cov)(start_bin + j, start_bin + j) += std::get<4>(bayes_inputs.at(i).at(j));
-	
-	  //  if (covch == 8 && obsch == 1)
-	  //  std::cout << "bin: " << j << " " << std::get<0>(bayes_inputs.at(i).at(j)) << " " << std::get<1>(bayes_inputs.at(i).at(j)) << " " << std::get<3>(bayes_inputs.at(i).at(j)) << std::endl;
-	  //	  if (std::get<4>(bayes_inputs.at(i).at(j)) > 0)
-	  //  std::cout << obsch << " " << i << " " << start_bin + j << " " <<  std::get<4>(bayes_inputs.at(i).at(j)) << std::endl;
+	  
 	}
 	
-	//	std::cout << obsch << " " << bayes_inputs.size() << " " << bayes_inputs.at(0).size() << " " << i << " " << covch << " " << start_bin << std::endl;
-	//  break;
       }
     }
-    
-    // for (auto it = map_name_histogram.begin(); it != map_name_histogram.end(); it++){
-    //  it->second.first->SetDirectory(file3);
-    // }
-        
-    //    for (auto it = map_covch_histo.begin(); it != map_covch_histo.end(); it++){
-    //  it->second->SetDirectory(file3);
-    // }
     
     for (auto it = map_obsch_histos.begin(); it != map_obsch_histos.end(); it++){
       int obsch = it->first;
@@ -291,9 +286,11 @@ int main( int argc, char** argv )
     }
     
     mat_add_cov->Write("cov_mat_add");
+    vec_signal->Write("vec_signal");
+    mat_R->Write("mat_R");
     
     file3->Write();
     file3->Close();
-  }  
+  }
 
 }
