@@ -174,7 +174,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
     TMatrixD matrix_variation = matrix_eigenvector * matrix_element;
     double rel_err = random3.Gaus(0,1);
     for (int j=0;j!=rows;j++){
-      //      matrix_variation(j,0) = matrix_variation(j,0)/sqrt(11.) + (*vec_mean_diff)(j); // increase MC stat by a factor of 11
+      //      matrix_variation(j,0) = matrix_variation(j,0)/sqrt(11.) + (*vec_mean_diff)(j); // increase MC stat by a factor of 11  x11
       matrix_variation(j,0) += (*vec_mean_diff)(j); // standard ...
       //matrix_variation(j,0) = (*vec_mean_diff)(j); // no random term
       x[j] = rel_err * matrix_variation(j,0);
