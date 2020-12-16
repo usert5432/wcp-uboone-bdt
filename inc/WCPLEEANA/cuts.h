@@ -250,6 +250,8 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
     if (cut_file == 1){
       if (cut_name == "numuCC.inside.Enu.le.300"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=300) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.400"){
+	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=400 ) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.400.gt.300"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=400 && eval.truth_nuEnergy>300) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.500.gt.400"){
@@ -264,8 +266,14 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=900 && eval.truth_nuEnergy>800) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.1000.gt.900"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1000 && eval.truth_nuEnergy>900) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1100.gt.1000"){
+	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1100 && eval.truth_nuEnergy>1000) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1200.gt.1100"){
+	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>1100) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.1200.gt.1000"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>1000) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1500.gt.1200"){
+	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1500 && eval.truth_nuEnergy>1200) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.1400.gt.1200"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1400 && eval.truth_nuEnergy>1200) return number;
       }else if (cut_name == "numuCC.inside.Enu.le.1600.gt.1400"){
@@ -276,6 +284,8 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=2500 && eval.truth_nuEnergy>2000) return number;
       }else if (cut_name == "numuCC.inside.Enu.gt.2500"){
 	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy>2500) return number;
+      }else if (cut_name == "numuCC.inside.Enu.gt.1500"){
+	if (eval.match_completeness_energy/eval.truth_energyInside>=0.1 && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy>1500) return number;
       }else{
 	std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }
