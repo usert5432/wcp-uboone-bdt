@@ -428,6 +428,7 @@ int main( int argc, char** argv )
     T_PFeval_cv->SetBranchStatus("nuvtx_diff",1);
     T_PFeval_cv->SetBranchStatus("showervtx_diff",1);
     T_PFeval_cv->SetBranchStatus("muonvtx_diff",1);
+    T_PFeval_cv->SetBranchStatus("truth_muonMomentum",1);
   }
   if (pfeval_cv.flag_NCDelta){
     T_PFeval_cv->SetBranchStatus("reco_protonMomentum",1);
