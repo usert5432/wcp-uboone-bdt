@@ -910,7 +910,7 @@ void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int
 
    	if (std::isnan(rel_weight_diff) || std::isinf(rel_weight_diff)) continue;
 	// seems to have extremely small cv weight
-	if (abs(rel_weight_diff)>100) continue;
+	if (fabs(rel_weight_diff)>100) continue;
 
 	if (num==1){
 	  if (flag_lee){
