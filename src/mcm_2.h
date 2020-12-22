@@ -239,7 +239,7 @@ void LEEana::CovMatrix::fill_xf_histograms(int num, int tot_num, int acc_no, int
      it->second->Reset();
    }
 
-  //std::cout << acc_no << " " << no << std::endl;
+  //  std::cout << acc_no << " " << no << std::endl;
   for (auto it = map_passed_events.begin(); it != map_passed_events.end(); it++){
     TString filename = it->first;
     // loop over events ...
@@ -258,9 +258,9 @@ void LEEana::CovMatrix::fill_xf_histograms(int num, int tot_num, int acc_no, int
 	int flag_lee = std::get<2>(map_histoname_infos[histoname]);
 
 	if (std::isnan(rel_weight_diff) || std::isinf(rel_weight_diff)) continue;
-    // seems to have extremely small cv weight
-    if (abs(rel_weight_diff)>100) continue;
-
+	// seems to have extremely small cv weight
+	if (fabs(rel_weight_diff)>100) continue;
+	
 
 	if (flag_lee){
 	  htemp->Fill(val, rel_weight_diff * weight * weight_lee);
@@ -1048,7 +1048,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	std::get<3>(event_info).push_back(weight.xsr_scc_Fa3_SCC->size());
 	for (size_t j=0; j!= weight.xsr_scc_Fa3_SCC->size(); j++){
 	    if (weight.weight_cv>0){
-	    std::get<2>(event_info).at(acc_no+j) = (weight.xsr_scc_Fa3_SCC->at(j) - weight.weight_cv)/weight.weight_cv;
+	      std::get<2>(event_info).at(acc_no+j) = weight.xsr_scc_Fa3_SCC->at(j)-1;//(weight.xsr_scc_Fa3_SCC->at(j) - weight.weight_cv)/weight.weight_cv;
 	  }else{
 	    std::get<2>(event_info).at(acc_no+j) = 0;
 	  }
@@ -1059,7 +1059,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	std::get<3>(event_info).push_back(weight.xsr_scc_Fv3_SCC->size());
 	for (size_t j=0; j!= weight.xsr_scc_Fv3_SCC->size(); j++){
 	    if (weight.weight_cv>0){
-	    std::get<2>(event_info).at(acc_no+j) = (weight.xsr_scc_Fv3_SCC->at(j) - weight.weight_cv)/weight.weight_cv;
+	      std::get<2>(event_info).at(acc_no+j) = weight.xsr_scc_Fv3_SCC->at(j)-1;//(weight.xsr_scc_Fv3_SCC->at(j) - weight.weight_cv)/weight.weight_cv;
 	  }else{
 	    std::get<2>(event_info).at(acc_no+j) = 0;
 	  }
