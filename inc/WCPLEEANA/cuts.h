@@ -733,6 +733,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     if (flag_numuCC && flag_FC) return true;
     else return false;
   }else if (ch_name == "numuCC_PC_bnb" || ch_name == "BG_numuCC_PC_ext" || ch_name == "BG_numuCC_PC_dirt"){
+    //if (flag_FC) return true; // quick hack test ...
     if (flag_numuCC && (!flag_FC)) return true;
     else return false;
   }else if (ch_name == "numuCC_signal_FC_overlay" || ch_name == "numuCC_signal_PC_overlay" || ch_name == "numuCC_background_FC_overlay" || ch_name == "numuCC_background_PC_overlay"){
