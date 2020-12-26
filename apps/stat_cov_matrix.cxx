@@ -46,7 +46,7 @@ int main( int argc, char** argv )
 
   TH1F *htemp;
   std::map<TString, TH1F*> map_histoname_hist;
-  std::map<int, TH1F*> map_covch_hist;
+  std::map<int, TH1F*> map_obsch_hist;
   
   for (auto it = map_inputfile_info.begin(); it!=map_inputfile_info.end(); it++){
     TString input_filename = it->first;
@@ -56,9 +56,7 @@ int main( int argc, char** argv )
     int file_no = std::get<4>(it->second);
 
     if (filetype !=5) continue;// only looking at data ...
-    
-    //    std::cout << filetype << " " << period << " " << out_filename << " " << file_no << std::endl;
-    
+    //    std::cout << filetype << " " << period << " " << out_filename << " " << file_no << std::endl;    
     if (period == run || run == 0){ // for a period ...
       //outfile_name = out_filename;
       std::vector< std::tuple<TString,  int, float, float, TString, TString, TString, TString > > histo_infos = cov.get_histograms(input_filename, 0);
@@ -73,14 +71,17 @@ int main( int argc, char** argv )
 	TString add_cut = std::get<6>(*it1);
 	TString weight = std::get<7>(*it1);
 	
-	//	std::cout << std::get<0>(*it1)  << " " << std::get<1>(*it1) << " " << std::get<4>(*it1) << " " << std::get<5>(*it1) << " " << std::get<6>(*it1) << " " << std::get<7>(*it1) << std::endl;
+	//std::cout << std::get<0>(*it1)  << " " << std::get<1>(*it1) << " " << std::get<4>(*it1) << " " << std::get<5>(*it1) << " " << std::get<6>(*it1) << " " << std::get<7>(*it1) << std::endl;
 	htemp = new TH1F(histoname, histoname, nbin, llimit, hlimit);
 	map_histoname_hist[histoname] = htemp;
 
-	int covch = cov.get_covch_name(ch_name);
-	if (map_covch_hist.find(covch) == map_covch_hist.end()){
-	  TH1F *htemp1 = (TH1F*)htemp->Clone(Form("pred_covch_%d",covch));
-	  map_covch_hist[covch] = htemp1;
+	
+	
+	int obsch = cov.get_obsch_name(ch_name);
+
+	if (map_obsch_hist.find(obsch) == map_obsch_hist.end()){
+	  TH1F *htemp1 = (TH1F*)htemp->Clone(Form("pred_obsch_%d",obsch));
+	  map_obsch_hist[obsch] = htemp1;
 	}
       }
       //  std::cout << input_filename << " " << filetype << " " << out_filename << std::endl; 
@@ -93,54 +94,53 @@ int main( int argc, char** argv )
   //  std::cout << mat_collapse->GetNrows() << " " << mat_collapse->GetNcols() << std::endl;
   
   // create a covariance matrix for bootstrapping ...
-  TMatrixD* cov_mat_bootstrapping = new TMatrixD(mat_collapse->GetNcols(), mat_collapse->GetNcols());
+  TMatrixD* cov_mat = new TMatrixD(mat_collapse->GetNcols(), mat_collapse->GetNcols());
   
   // create a covariance matrix for det systematics ...
   TVectorD* vec_mean = new TVectorD(mat_collapse->GetNcols());
   
-  cov.gen_data_stat_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, cov_mat_bootstrapping);
+  cov.gen_data_stat_cov_matrix(run, map_obsch_hist, map_histoname_hist, vec_mean, cov_mat);
 
-  /*
-  TMatrixD* frac_cov_det_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
-  for (size_t i=0; i!= frac_cov_det_mat->GetNrows(); i++){
+  
+  TMatrixD* frac_cov_mat = new TMatrixD(mat_collapse->GetNcols(), mat_collapse->GetNcols());
+  for (size_t i=0; i!= frac_cov_mat->GetNrows(); i++){
     double val_1 = (*vec_mean)(i);
-    for (size_t j=0; j!=frac_cov_det_mat->GetNrows();j++){
+    for (size_t j=0; j!=frac_cov_mat->GetNrows();j++){
       double val_2 = (*vec_mean)(j);
-      double val = (*cov_det_mat)(i,j);
+      double val = (*cov_mat)(i,j);
       if (val_1 ==0 && val_2 == 0){
-	(*frac_cov_det_mat)(i,j) = 0;
+	(*frac_cov_mat)(i,j) = 0;
       }else if (val_1 ==0 || val_2 ==0){
 	if (val !=0){
 	  if (i==j){
-	    (*frac_cov_det_mat)(i,j) = 1./16.; // 25% uncertainties ...
+	    (*frac_cov_mat)(i,j) = 1.; //
 	  }else{
-	    (*frac_cov_det_mat)(i,j) = 0;
+	    (*frac_cov_mat)(i,j) = 0;
 	  }
 	}else{
-	  (*frac_cov_det_mat)(i,j) = 0;
+	  (*frac_cov_mat)(i,j) = 0;
 	}
       }else{
-	(*frac_cov_det_mat)(i,j) = val/val_1/val_2;
+	(*frac_cov_mat)(i,j) = val/val_1/val_2;
       }
     }
   }
-  
+    
   
   TFile *file = new TFile(outfile_name,"RECREATE");
   vec_mean->Write(Form("vec_mean_%d",run));
-  vec_mean_diff->Write(Form("vec_mean_diff_%d",run));
   
-  cov_mat_bootstrapping->Write(Form("cov_mat_boostrapping_%d",run));
-  cov_det_mat->Write(Form("cov_det_mat_%d",run));
-  frac_cov_det_mat->Write(Form("frac_cov_det_mat_%d",run));
+  cov_mat->Write(Form("cov_mat_%d",run));
+
+  frac_cov_mat->Write(Form("frac_cov_mat_%d",run));
   
 
-  for (auto it = map_covch_hist.begin(); it != map_covch_hist.end(); it++){
+  for (auto it = map_obsch_hist.begin(); it != map_obsch_hist.end(); it++){
     ((TH1F*)it->second)->SetDirectory(file);
   }
   
   file->Write();
   file->Close();
 
-  */
+  
 }
