@@ -45,6 +45,7 @@ float leeweight(float Enu)
 #include "mcm_1.h"
 #include "mcm_2.h"
 #include "mcm_data_stat.h"
+#include "mcm_pred_stat.h"
 
 LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString file_filename){
   std::ifstream infile(cov_filename);
