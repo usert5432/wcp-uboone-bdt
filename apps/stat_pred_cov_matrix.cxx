@@ -126,12 +126,19 @@ int main( int argc, char** argv )
       }
     }
   }
-    
+  TMatrixD* mat_collapse = cov.get_mat_collapse();
+  TMatrixD mat_collapse_T(mat_collapse->GetNcols(), mat_collapse->GetNrows()); 
+  mat_collapse_T.Transpose(*mat_collapse);
+
+  TMatrixD cov_mat_collapse = mat_collapse_T * (*cov_mat) * (*mat_collapse);
+  TVectorD vec_mean_collapse = (mat_collapse_T)* (*vec_mean);
   
   TFile *file = new TFile(outfile_name,"RECREATE");
-  vec_mean->Write(Form("vec_mean_%d",run));  
-  cov_mat->Write(Form("cov_mat_%d",run));
-  frac_cov_mat->Write(Form("frac_cov_mat_%d",run));
+  vec_mean->Write(Form("full_vec_mean_%d",run));  
+  cov_mat->Write(Form("full_cov_mat_%d",run));
+  frac_cov_mat->Write(Form("frac_full_cov_mat_%d",run));
+  cov_mat_collapse.Write(Form("cov_mat_%d",run));
+  vec_mean_collapse.Write(Form("vec_mean_%d",run));  
   
 
   for (auto it = map_covch_hist.begin(); it != map_covch_hist.end(); it++){
