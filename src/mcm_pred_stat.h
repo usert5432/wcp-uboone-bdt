@@ -154,23 +154,7 @@ void LEEana::CovMatrix::gen_pred_stat_cov_matrix(int run, std::map<int, TH1F*>& 
       for (auto it1 = it->second.begin(); it1 != it->second.end(); it1++){
 	TH1F *htemp = (TH1F*)hpred->Clone("htemp");
 	htemp->Reset();
-	std::map<int, double> temp_map_mc_acc_pot;
 	
-	for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
-	  TString histoname = (*it2).first;
-	  TString input_filename = map_histogram_inputfile[histoname];
-	  auto it3 = map_inputfile_info.find(input_filename);
-	  int period = std::get<1>(it3->second);
-	  if (period != run && run != 0) continue;
-	  
-	  double mc_pot = map_filename_pot[input_filename];
-	  //std::cout << mc_pot << std::endl;
-	  if (temp_map_mc_acc_pot.find(period) == temp_map_mc_acc_pot.end()){
-	    temp_map_mc_acc_pot[period] = mc_pot;
-	  }else{
-	    temp_map_mc_acc_pot[period] += mc_pot;
-	  }
-	}
 	
 	for (auto it2 = it1->begin(); it2 != it1->end(); it2++){
 	  TString histoname = (*it2).first;
@@ -178,9 +162,7 @@ void LEEana::CovMatrix::gen_pred_stat_cov_matrix(int run, std::map<int, TH1F*>& 
 	  auto it3 = map_inputfile_info.find(input_filename);
 	  int period = std::get<1>(it3->second);
 	  if (period != run && run !=0) continue; // skip ...
-	  double data_pot = map_data_period_pot[period];
-	  double ratio = data_pot/temp_map_mc_acc_pot[period];
-	  
+	  	  
 	  TH1F *hmc = map_histoname_hist[histoname];
 	  htemp->Add(hmc, 1);
 	}

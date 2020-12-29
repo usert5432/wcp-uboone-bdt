@@ -47,6 +47,7 @@ int main( int argc, char** argv )
   TH1F *htemp;
   std::map<TString, TH1F*> map_histoname_hist;
   std::map<int, TH1F*> map_covch_hist;
+  std::map<int, TH1F*> map_obsch_hist;
   
   for (auto it = map_inputfile_info.begin(); it!=map_inputfile_info.end(); it++){
     TString input_filename = it->first;
@@ -82,6 +83,12 @@ int main( int argc, char** argv )
 	if (map_covch_hist.find(covch) == map_covch_hist.end()){
 	  TH1F *htemp1 = (TH1F*)htemp->Clone(Form("pred_covch_%d",covch));
 	  map_covch_hist[covch] = htemp1;
+	}
+
+	int obsch = cov.get_obsch_name(ch_name);
+	if (map_obsch_hist.find(obsch) == map_obsch_hist.end()){
+	  TH1F *htemp1 = (TH1F*)htemp->Clone(Form("pred_obsch_%d",obsch));
+	  map_obsch_hist[obsch] = htemp1;
 	}
       }
       //  std::cout << input_filename << " " << filetype << " " << out_filename << std::endl; 
@@ -142,7 +149,17 @@ int main( int argc, char** argv )
   
 
   for (auto it = map_covch_hist.begin(); it != map_covch_hist.end(); it++){
+    int covch = it->first;
+    TH1F *htemp = it->second;
+    int obsch = cov.get_obsch_fcov(covch);
+    TH1F *htemp1 = map_obsch_hist[obsch];
+    htemp1->Add(htemp);
+    
+    
     ((TH1F*)it->second)->SetDirectory(file);
+  }
+  for (auto it = map_obsch_hist.begin(); it != map_obsch_hist.end(); it++){
+     ((TH1F*)it->second)->SetDirectory(file);
   }
   
   file->Write();
