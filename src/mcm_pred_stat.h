@@ -270,12 +270,23 @@ void LEEana::CovMatrix::fill_pred_stat_histograms(std::map<TString, TH1D*> map_f
 
     double max_sum = 0;
     std::map<TString, double> map_histoname_sum;
+
+    std::map<double, double> map_ratio_sum;
+    
     for (auto it3 = it2->second.begin(); it3 != it2->second.end(); it3++){
       double ratio = it3->second;
       TString temp_histoname = it3->first;
-      double sum = gRandom->Poisson(hweight->GetSum() * ratio);
-      if (sum > max_sum) max_sum = sum;
-      map_histoname_sum[temp_histoname] = sum;
+      
+      auto it4 = map_ratio_sum.find(ratio);
+      if (it4 == map_ratio_sum.end()){
+	double sum = gRandom->Poisson(hweight->GetSum() * ratio);
+	if (sum > max_sum) max_sum = sum;
+	map_histoname_sum[temp_histoname] = sum;
+	map_ratio_sum[ratio] = sum;
+      }else{
+	double sum = it4->second;
+	map_histoname_sum[temp_histoname] = sum;
+      }
     }
     
     
