@@ -76,7 +76,7 @@ int main( int argc, char** argv )
   Int_t run, subrun, event;   
   std::string* file_type = new std::string;
   Float_t weight_cv, weight_spline, weight_lee;
-  auto mcweight = new std::map<std::string, std::vector<float>>;
+  auto mcweight = new std::map<std::string, std::vector<float> >;
   bool mcweight_filled;
 
   T_wgt->SetBranchAddress("run", &run);

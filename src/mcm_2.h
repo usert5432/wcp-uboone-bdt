@@ -783,7 +783,8 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 
   std::vector<int> max_lengths;
   std::vector<int> sup_lengths;
-
+  std::map<TString, int> map_knob_length;
+   
   for (size_t i=0;i!=T_eval->GetEntries();i++){
     T_BDTvars->GetEntry(i);
     T_eval->GetEntry(i);
@@ -794,6 +795,8 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
     std::tuple<float, float, std::vector<float>, std::vector<int>, std::set<std::pair<int, float> > > event_info;
     std::get<0>(event_info) = eval.weight_cv * eval.weight_spline;
     std::get<1>(event_info) = leeweight(eval.truth_nuEnergy);
+
+   
     
      for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
@@ -821,11 +824,22 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0;j!=weight.expskin_FluxUnisim->size();j++){
 	  std::get<2>(event_info).at(j) = weight.expskin_FluxUnisim->at(j) - 1.0; // relative ...
 	}
+	//std::cout << weight.expskin_FluxUnisim->size() << std::endl;
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.expskin_FluxUnisim->size();
+	else{
+	  if (weight.expskin_FluxUnisim->size() > it10->second) it10->second =  weight.expskin_FluxUnisim->size();
+	}
       }else if (option == "horncurrent_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.horncurrent_FluxUnisim->size());
 	std::get<3>(event_info).push_back(weight.horncurrent_FluxUnisim->size());
 	for (size_t j=0;j!= weight.horncurrent_FluxUnisim->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.horncurrent_FluxUnisim->at(j) - 1.0; // relative ...
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.horncurrent_FluxUnisim->size();
+	else{
+	  if (weight.horncurrent_FluxUnisim->size() > it10->second) it10->second =  weight.horncurrent_FluxUnisim->size();
 	}
       }else if (option == "kminus_PrimaryHadronNormalization"){
 	std::get<2>(event_info).resize(weight.kminus_PrimaryHadronNormalization->size());
@@ -833,11 +847,21 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0;j!= weight.kminus_PrimaryHadronNormalization->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.kminus_PrimaryHadronNormalization->at(j) - 1.0; 
 	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.kminus_PrimaryHadronNormalization->size();
+	else{
+	  if (weight.kminus_PrimaryHadronNormalization->size() > it10->second) it10->second =  weight.kminus_PrimaryHadronNormalization->size();
+	}
       }else if (option == "kplus_PrimaryHadronFeynmanScaling"){
 	std::get<2>(event_info).resize(weight.kplus_PrimaryHadronFeynmanScaling->size());
 	std::get<3>(event_info).push_back(weight.kplus_PrimaryHadronFeynmanScaling->size());
 	for (size_t j=0;j!=weight.kplus_PrimaryHadronFeynmanScaling->size();j++){
 	  std::get<2>(event_info).at(j) = weight.kplus_PrimaryHadronFeynmanScaling->at(j) - 1.0;
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.kplus_PrimaryHadronFeynmanScaling->size();
+	else{
+	  if (weight.kplus_PrimaryHadronFeynmanScaling->size() > it10->second) it10->second =  weight.kplus_PrimaryHadronFeynmanScaling->size();
 	}
       }else if (option == "kzero_PrimaryHadronSanfordWang"){
 	std::get<2>(event_info).resize(weight.kzero_PrimaryHadronSanfordWang->size());
@@ -845,11 +869,21 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0;j!=weight.kzero_PrimaryHadronSanfordWang->size();j++){
 	  std::get<2>(event_info).at(j) = weight.kzero_PrimaryHadronSanfordWang->at(j) - 1.0;
 	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.kzero_PrimaryHadronSanfordWang->size();
+	else{
+	  if (weight.kzero_PrimaryHadronSanfordWang->size() > it10->second) it10->second =  weight.kzero_PrimaryHadronSanfordWang->size();
+	}
       }else if (option == "nucleoninexsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.nucleoninexsec_FluxUnisim->size());
 	std::get<3>(event_info).push_back(weight.nucleoninexsec_FluxUnisim->size());
 	for (size_t j=0;j!=weight.nucleoninexsec_FluxUnisim->size();j++){
 	  std::get<2>(event_info).at(j) = weight.nucleoninexsec_FluxUnisim->at(j) - 1.0;
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.nucleoninexsec_FluxUnisim->size();
+	else{
+	  if (weight.nucleoninexsec_FluxUnisim->size() > it10->second) it10->second =  weight.nucleoninexsec_FluxUnisim->size();
 	}
       }else if (option == "nucleonqexsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.nucleonqexsec_FluxUnisim->size());
@@ -857,11 +891,21 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0; j!= weight.nucleonqexsec_FluxUnisim->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.nucleonqexsec_FluxUnisim->at(j) - 1.0;
 	}
+		auto it10 = map_knob_length.find(option);
+		if (it10 == map_knob_length.end()) map_knob_length[option] = weight.nucleonqexsec_FluxUnisim->size();
+	else{
+	  if (weight.nucleonqexsec_FluxUnisim->size() > it10->second) it10->second =  weight.nucleonqexsec_FluxUnisim->size();
+	}
       }else if (option == "nucleontotxsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.nucleontotxsec_FluxUnisim->size());
 	std::get<3>(event_info).push_back(weight.nucleontotxsec_FluxUnisim->size());
 	for (size_t j=0; j!= weight.nucleontotxsec_FluxUnisim->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.nucleontotxsec_FluxUnisim->at(j) - 1.0;
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.nucleontotxsec_FluxUnisim->size();
+	else{
+	  if (weight.nucleontotxsec_FluxUnisim->size() > it10->second) it10->second =  weight.nucleontotxsec_FluxUnisim->size();
 	}
       }else if (option == "piminus_PrimaryHadronSWCentralSplineVariation"){
 	std::get<2>(event_info).resize(weight.piminus_PrimaryHadronSWCentralSplineVariation->size());
@@ -869,11 +913,21 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0; j!= weight.piminus_PrimaryHadronSWCentralSplineVariation->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.piminus_PrimaryHadronSWCentralSplineVariation->at(j) - 1.0;
 	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.piminus_PrimaryHadronSWCentralSplineVariation->size();
+	else{
+	  if (weight.piminus_PrimaryHadronSWCentralSplineVariation->size() > it10->second) it10->second =  weight.piminus_PrimaryHadronSWCentralSplineVariation->size();
+	}
       }else if (option == "pioninexsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.pioninexsec_FluxUnisim->size());
 	std::get<3>(event_info).push_back(weight.pioninexsec_FluxUnisim->size());
 	for (size_t j=0;j!=weight.pioninexsec_FluxUnisim->size();j++){
 	  std::get<2>(event_info).at(j) = weight.pioninexsec_FluxUnisim->at(j) - 1.0;
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.pioninexsec_FluxUnisim->size();
+	else{
+	  if (weight.pioninexsec_FluxUnisim->size() > it10->second) it10->second =  weight.pioninexsec_FluxUnisim->size();
 	}
       }else if (option == "pionqexsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.pionqexsec_FluxUnisim->size());
@@ -881,17 +935,32 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 	for (size_t j=0;j!=weight.pionqexsec_FluxUnisim->size();j++){
 	  std::get<2>(event_info).at(j) = weight.pionqexsec_FluxUnisim->at(j) - 1.0;
 	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.pionqexsec_FluxUnisim->size();
+	else{
+	  if (weight.pionqexsec_FluxUnisim->size() > it10->second) it10->second =  weight.pionqexsec_FluxUnisim->size();
+	}
       }else if (option == "piontotxsec_FluxUnisim"){
 	std::get<2>(event_info).resize(weight.piontotxsec_FluxUnisim->size());
 	std::get<3>(event_info).push_back(weight.piontotxsec_FluxUnisim->size());
 	for (size_t j=0;j!=weight.piontotxsec_FluxUnisim->size();j++){
 	  std::get<2>(event_info).at(j) = weight.piontotxsec_FluxUnisim->at(j) - 1.0;
 	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.piontotxsec_FluxUnisim->size();
+	else{
+	  if (weight.piontotxsec_FluxUnisim->size() > it10->second) it10->second =  weight.piontotxsec_FluxUnisim->size();
+	}
       }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
 	std::get<2>(event_info).resize(weight.piplus_PrimaryHadronSWCentralSplineVariation->size());
 	std::get<3>(event_info).push_back(weight.piplus_PrimaryHadronSWCentralSplineVariation->size());
 	for (size_t j=0; j!= weight.piplus_PrimaryHadronSWCentralSplineVariation->size(); j++){
 	  std::get<2>(event_info).at(j) = weight.piplus_PrimaryHadronSWCentralSplineVariation->at(j) - 1.0;
+	}
+	auto it10 = map_knob_length.find(option);
+	if (it10 == map_knob_length.end()) map_knob_length[option] = weight.piplus_PrimaryHadronSWCentralSplineVariation->size();
+	else{
+	  if (weight.piplus_PrimaryHadronSWCentralSplineVariation->size() > it10->second) it10->second =  weight.piplus_PrimaryHadronSWCentralSplineVariation->size();
 	}
       }else if (option == "reinteractions_piminus_Geant4"){
 	std::get<2>(event_info).resize(weight.reinteractions_piminus_Geant4->size());
@@ -1082,31 +1151,44 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 
 
   if (option == "expskin_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "horncurrent_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "kminus_PrimaryHadronNormalization"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "kplus_PrimaryHadronFeynmanScaling"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "kzero_PrimaryHadronSanfordWang"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "nucleoninexsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "nucleonqexsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "nucleontotxsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "piminus_PrimaryHadronSWCentralSplineVariation"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "pioninexsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "pionqexsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "piontotxsec_FluxUnisim"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "piplus_PrimaryHadronSWCentralSplineVariation"){
-    sup_lengths.push_back(1000);
+    if (map_knob_length[option]!=0) sup_lengths.push_back(map_knob_length[option]);
+    else sup_lengths.push_back(1000);
   }else if (option == "reinteractions_piminus_Geant4"){
     sup_lengths.push_back(1000);
   }else if (option == "reinteractions_piplus_Geant4"){
