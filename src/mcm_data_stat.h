@@ -11,7 +11,7 @@ void LEEana::CovMatrix::gen_data_stat_cov_matrix(int run, std::map<int, TH1F*>& 
     int period = std::get<1>(it->second);
 
     if (period != run && run!=0) continue;
-    if (filetype != 5) continue;
+    if (filetype != 5 && filetype != 15) continue;
     
     TString out_filename = std::get<2>(it->second);
     int file_no = std::get<4>(it->second);
@@ -43,7 +43,7 @@ void LEEana::CovMatrix::gen_data_stat_cov_matrix(int run, std::map<int, TH1F*>& 
     int filetype = std::get<0>(it->second);
     int period = std::get<1>(it->second);
 
-    if (filetype !=5) continue;
+    if (filetype !=5 && filetype != 15) continue;
     if (period != run && run!=0) continue;
 
     get_data_events_info(input_filename, map_all_events, map_histoname_infos);      

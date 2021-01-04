@@ -749,7 +749,7 @@ void LEEana::CovMatrix::fill_data_histograms(int run, std::map<int, std::vector<
     TString out_filename = std::get<2>(it->second);
     int file_no = std::get<4>(it->second);
     if (period == run || run == 0){
-      if (filetype == 5){
+      if (filetype == 5 || filetype == 15){
 	std::vector< std::tuple<TString,  int, float, float, TString, TString, TString, TString > > histo_infos = get_histograms(input_filename,0);
 	for (auto it1 = histo_infos.begin(); it1 != histo_infos.end(); it1++){
 	  int obsch = get_obsch_name(std::get<5>(*it1));	

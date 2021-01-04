@@ -10,7 +10,7 @@ void LEEana::CovMatrix::gen_pred_stat_cov_matrix(int run, std::map<int, TH1F*>& 
     int filetype = std::get<0>(it->second);
     int period = std::get<1>(it->second);
 
-    if (filetype == 5)   continue; // if this is data ...
+    if (filetype == 5 || filetype == 15)   continue; // if this is data ...
 
     
     if (period != run && run!=0) continue;
@@ -48,7 +48,7 @@ void LEEana::CovMatrix::gen_pred_stat_cov_matrix(int run, std::map<int, TH1F*>& 
     int filetype = std::get<0>(it->second);
     int period = std::get<1>(it->second);
     
-    if (filetype == 5) {
+    if (filetype == 5 || filetype == 15) {
       map_data_period_pot[period] = get_ext_pot(input_filename);
       //      std::cout << period << " " << map_data_period_pot[period] << std::endl;
       continue; // skip data ...

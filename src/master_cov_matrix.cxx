@@ -78,7 +78,7 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
     map_ch_filetype[ch_no] = file_no;
     map_filetype_chs[file_no].push_back(ch_no);
 
-    if (file_no !=5) { // data
+    if (file_no !=5 && file_no != 15) { // data
       map_ch_systematics[ch_no] = std::make_tuple(flag_xs_flux, flag_det, flag_add, flag_same_mc_stat);
       if (flag_xs_flux == 1) xfs_filetypes.insert(file_no);
       if (flag_det == 1) det_filetypes.insert(file_no);
@@ -151,7 +151,7 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
   std::ifstream infile1(cv_filename);
   while(!infile1.eof()){
     infile1 >> filetype >> name >> period >> input_filename >> out_filename >> ext_pot >> file_no >> norm_pot >> norm_period;
-    //std::cout << filetype << " " << out_filename << std::endl;
+    //std::cout << filetype << " " << out_filename << " " << file_no << std::endl;
     
     if (filetype == -1) break;
     
@@ -203,7 +203,7 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
 	TString weight = std::get<5>(it3->second);
 	int lee_strength = std::get<7>(it3->second);
 
-	//	std::cout << name << " " << lee_strength << std::endl;
+	//std::cout << name << " " << lee_strength << std::endl;
 	
 	TString weight2 = weight + "_" + weight;
 	TString histo_name = name + Form("_%d_",file_no) + var_name + "_" + add_cut;

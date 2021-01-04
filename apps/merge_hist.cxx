@@ -65,6 +65,7 @@ int main( int argc, char** argv )
   // filetype, period, outfilename, external pot, fileno
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();
 
+  
   TFile *temp_file;
   TH1F *htemp;
   TTree *T;
@@ -87,7 +88,7 @@ int main( int argc, char** argv )
     T->SetBranchAddress("pot",&pot);
     T->GetEntry(0);
 
-    if (filetype==5){
+    if (filetype==5 || filetype == 15){
       map_data_period_pot[period] = pot;
     }
     
@@ -103,7 +104,9 @@ int main( int argc, char** argv )
     
     for (size_t i=0;i!=all_histo_infos.size();i++){
       htemp = (TH1F*)temp_file->Get(std::get<0>(all_histo_infos.at(i)));
-      //      std::cout << std::get<0>(all_histo_infos.at(i)) << " " << htemp->GetSum() << std::endl;
+      
+      //std::cout << out_filename << " " << std::get<0>(all_histo_infos.at(i)) << " " << htemp << std::endl;
+      //if (htemp == 0) continue;
       //      temp_histograms.push_back(htemp);
       map_name_histogram[std::get<0>(all_histo_infos.at(i))] = std::make_pair(htemp, pot);
     }
@@ -128,13 +131,16 @@ int main( int argc, char** argv )
     int period = std::get<1>(it->second);
     TString out_filename = std::get<2>(it->second);
     int file_no = std::get<4>(it->second);
-    if (filetype == 5){
+
+    if (filetype == 5 || filetype == 15){
       // name, nbin, lowlimit, highlimit, variable, channel cut, additional cut, weight
       std::vector< std::tuple<TString,  int, float, float, TString, TString, TString, TString > > histo_infos = cov.get_histograms(input_filename,0);
       for (auto it1 = histo_infos.begin(); it1 != histo_infos.end(); it1++){
 	int obsch = cov.get_obsch_name(std::get<5>(*it1));	
 	htemp = map_name_histogram[std::get<0>(*it1)].first;
-
+	//	if (htemp ==0 ) continue;
+	//	std::cout << filetype << " " << obsch << " " << htemp << std::endl;
+	
 	std::vector<TH1F*> vec_histos;
 	
 	TH1F *hdata = (TH1F*)htemp->Clone(Form("data_%d",obsch));
@@ -160,12 +166,16 @@ int main( int argc, char** argv )
 	//std::cout << std::get<5>(*it1) << " " << obsch << " " << htemp->GetSum() << std::endl;
       }
       
-      break;
+      //      break;
     }
   }
+
+
   
   // get data histograms ...
   cov.fill_data_histograms(run, map_obsch_histos, map_name_histogram);
+
+
   
   // get predictions and its uncertainties ...,
   cov.fill_pred_histograms(run, map_obsch_histos, map_obsch_bayes, map_obsch_infos, map_name_histogram, lee_strength, map_data_period_pot, flag_breakdown, map_obsch_subhistos);
@@ -176,6 +186,8 @@ int main( int argc, char** argv )
     /*         } */
     /* } */ 
 
+  
+  
   // get Bayesian errrors ...
 
   if (flag_err==2){
