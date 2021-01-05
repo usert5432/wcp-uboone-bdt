@@ -213,25 +213,6 @@ int main(int argc, char** argv)
     Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 8 );
   }
 
-  if( 0 ) {
-    vector<int>vc_target_chs;
-    for(int idx=1; idx<=26; idx++) vc_target_chs.push_back( idx -1 );
-    
-    vector<int>vc_support_chs;
-    for(int idx=1; idx<=26*3+11*3; idx++) vc_support_chs.push_back( 26 +idx -1 );
-  
-    Lee_test->Exe_Goodness_of_fit_detailed( vc_target_chs, vc_support_chs, 9 );
-  }
-
-  if( 0 ) {
-    vector<int>vc_target_chs;
-    for(int idx=3; idx<=10; idx++) vc_target_chs.push_back( idx -1 );
-    
-    vector<int>vc_support_chs;
-    
-    Lee_test->Exe_Goodness_of_fit_detailed( vc_target_chs, vc_support_chs, 9 );
-  }
-  
   ///////////////////////// gof
   
   if( flag_nueCC_LowE_FC_by_all ) {
@@ -247,7 +228,53 @@ int main(int argc, char** argv)
 
     Lee_test->Exe_Goodness_of_fit( 8, matrix_gof_trans.GetNcols()-8, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 7);
   }
+
   
+  if( 0 ) {
+    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 26*6 + 11*3 );// oldworld, newworld
+    for( int ibin=1; ibin<=26*6 + 11*3; ibin++) matrix_gof_trans(ibin-1, ibin-1) = 1;
+    
+    TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+    matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+    TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+    Lee_test->Exe_Goodness_of_fit( 8, matrix_gof_trans.GetNcols()-8, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 7);
+  }
+
+  
+  if( 0 ) {// first 6 bins--> 1 bin, constrained by others
+    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 1 + (26-6) + 26*3 + 11*3 );// oldworld, newworld
+    for( int ibin=1; ibin<=6; ibin++) matrix_gof_trans(ibin-1, 0) = 1;
+    for( int ibin=1; ibin<=26*4+11*3-6; ibin++) matrix_gof_trans(6+ibin-1, ibin) = 1;
+    
+    
+    TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+    matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+    TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+    Lee_test->Exe_Goodness_of_fit( 1, matrix_gof_trans.GetNcols()-1, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 201);
+  }  
+  
+  if( 0 ) {// first 6 bins, constrained by others
+    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 26*4 + 11*3 );// oldworld, newworld
+    for( int ibin=1; ibin<=26*4 + 11*3; ibin++) matrix_gof_trans(ibin-1, ibin-1) = 1;
+    
+    TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+    matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+    TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+    Lee_test->Exe_Goodness_of_fit( 6, matrix_gof_trans.GetNcols()-6, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 202);
+  }
+
   ///////////////////////// gof
   
   if( flag_nueCC_HghE_FC_by_numuCC_pi0_nueFC ) {
@@ -339,11 +366,22 @@ int main(int argc, char** argv)
 
     Lee_test->Minimization_Lee_strength_FullCov(2, 0);// (initial value, fix or not)
 
-    cout<<endl<<TString::Format(" ---> Best fit of Lee strength: chi2 %6.2f, %5.2f +/- %5.2f",
-                                Lee_test->minimization_chi2,
+    // cout<<endl<<TString::Format(" ---> Best fit of Lee strength: chi2 %6.3f, %5.3f +/- %5.3f",
+    //                             Lee_test->minimization_chi2,
+    //                             Lee_test->minimization_Lee_strength_val,
+    //                             Lee_test->minimization_Lee_strength_err
+    //                             )<<endl<<endl;
+
+    cout<<endl<<TString::Format(" ---> Best fit of Lee strength: %6.4f,  chi2 %6.3f",                          
                                 Lee_test->minimization_Lee_strength_val,
-                                Lee_test->minimization_Lee_strength_err
-                                )<<endl<<endl;
+				Lee_test->minimization_chi2
+                                )<<endl<<endl;    
+
+    cout<<endl<<TString::Format(" ---> Best fit of Lee strength: %6.4f +/- %6.4f,  chi2 %6.3f",                          
+                                Lee_test->minimization_Lee_strength_val,
+				Lee_test->minimization_Lee_strength_err,
+				Lee_test->minimization_chi2
+                                )<<endl<<endl;    
 
     /////////////////////////////////////////
     
@@ -390,13 +428,59 @@ int main(int argc, char** argv)
     lineB_dchi2at1->SetLineWidth(2);
     lineB_dchi2at1->SetLineColor(kBlue);
     lineB_dchi2at1->SetLineStyle(7);
-    auto *tt_text_data = new TLatex( 0.2, val_dchi2at1*1.1, Form("#Delta#chi^{2} = %3.2f", val_dchi2at1) );
+    auto *tt_text_data = new TLatex( 0.2, val_dchi2at1*1.1, Form("#Delta#chi^{2} = %4.3f", val_dchi2at1) );
     tt_text_data->SetTextAlign(11); tt_text_data->SetTextSize(0.05); tt_text_data->SetTextAngle(0);
     tt_text_data->SetTextFont(42);  tt_text_data->Draw(); tt_text_data->SetTextColor(kBlue);
 
     canv_gh_scan->SaveAs("canv_gh_scan.png");
     
   }
+  
+  ////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////// MicroBooNE suggested /////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////
+
+  if( config_Lee::flag_chi2_data_H0 ) {
+
+    Lee_test->Set_measured_data();// use the measured data as the input data for the fitting    
+    
+    Lee_test->scaleF_Lee = 0;
+    Lee_test->Set_Collapse();
+    
+    Lee_test->Minimization_Lee_strength_FullCov(0, 1);
+    
+    double chi2 = Lee_test->minimization_chi2;
+    int ndf = Lee_test->bins_newworld;
+    double p_value = TMath::Prob( chi2, ndf );
+    
+    cout<<Form(" ---> flag_chi2_data_H0, chi2/ndf %8.2f %3d %8.4f, p-value %f", chi2,ndf, chi2/ndf, p_value)<<endl;
+  }
+
+  
+  if( config_Lee::flag_dchi2_H0toH1 ) {
+    
+    Lee_test->Set_measured_data();// use the measured data as the input data for the fitting
+    
+    Lee_test->scaleF_Lee = 0;
+    Lee_test->Set_Collapse();
+
+    Lee_test->Minimization_Lee_strength_FullCov(0, 1);    
+    double chi2_H0 = Lee_test->minimization_chi2;
+    
+    Lee_test->Minimization_Lee_strength_FullCov(1, 1);    
+    double chi2_H1 = Lee_test->minimization_chi2;
+
+    double dchi2 = chi2_H0 - chi2_H1;
+    
+    int ndf = 1;
+    double p_value = TMath::Prob( dchi2, ndf );    
+    cout<<Form(" ---> flag_dchi2_H0toH1, chi2/ndf %8.2f %3d %8.4f, p-value %f", dchi2, ndf, dchi2/ndf, p_value)<<endl;
+
+    p_value = TMath::Prob( -dchi2, ndf );
+    cout<<Form(" ---> flag_dchi2_H1toH0, chi2/ndf %8.2f %3d %8.4f, p-value %f", -dchi2, ndf, -dchi2/ndf, p_value)<<endl;
+    
+  }
+
   
   ////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////// Advanced Statistics Analysis /////////////////////////////
@@ -467,7 +551,7 @@ int main(int argc, char** argv)
 
     double val_dchi2 = val_chi2_Lee - val_chi2_sm;
     
-    cout<<endl<<TString::Format(" ---> dchi2 = Lee - sm: %4.2f", val_dchi2)<<endl<<endl;
+    cout<<endl<<TString::Format(" ---> dchi2 = Lee - sm: %7.4f, LEE %7.4f, sm %7.4f", val_dchi2, val_chi2_Lee, val_chi2_sm)<<endl<<endl;
   }
 
   ////////////////////////////////////////////////////////// sensitivity calcualtion by FC
@@ -478,6 +562,7 @@ int main(int argc, char** argv)
     double chi2_null_null8Lee_true8Lee = 0;
     double chi2_gmin_null8Lee_true8Lee = 0;
     
+    TFile *file_out = new TFile(TString::Format("file_out_%03d.root", ifile), "recreate");
     TTree *tree = new TTree("tree", "tree");
     tree->Branch("chi2_null_null8sm_true8sm", &chi2_null_null8sm_true8sm, "chi2_null_null8sm_true8sm/D" );
     tree->Branch("chi2_gmin_null8sm_true8sm", &chi2_gmin_null8sm_true8sm, "chi2_gmin_null8sm_true8sm/D" );
@@ -508,7 +593,7 @@ int main(int argc, char** argv)
       Lee_test->Minimization_Lee_strength_FullCov(1, 0);
       chi2_gmin_null8sm_true8sm = Lee_test->minimization_chi2;
       status_fit += Lee_test->minimization_status;
-
+      
       /////////////////////////////////// null8Lee, true8Lee
       
       Lee_test->scaleF_Lee = 1;
@@ -528,8 +613,7 @@ int main(int argc, char** argv)
       if( status_fit!=0 ) continue;
       tree->Fill();
     }
-
-    TFile *file_out = new TFile(TString::Format("file_out_%03d.root", ifile), "recreate");
+    
     file_out->cd();
     tree->Write();
     file_out->Close();
@@ -568,38 +652,41 @@ int main(int argc, char** argv)
 
   if( 0 ) {
     
-    // Lee_test->Set_measured_data();    
-    // TMatrixD matrix_data_input_fc = Lee_test->matrix_data_newworld;
-    
     /////////////// range: [low, hgh] with step
     
-    // double Lee_true_low = 0;
-    // double Lee_true_hgh = 3;
-    // double Lee_step     = 0.02;
+    double Lee_true_low = 0;
+    double Lee_true_hgh = 3;
+    double Lee_step     = 0.02;
     
     /////////////// dchi2 distribution 
     
-    //int num_toy = 1;    
-    //Lee_test->Exe_Feldman_Cousins(Lee_true_low, Lee_true_hgh, Lee_step, num_toy, ifile);
+    // int num_toy = 2;    
+    // Lee_test->Exe_Feldman_Cousins(Lee_true_low, Lee_true_hgh, Lee_step, num_toy, ifile);
 
     /////////////// dchi2 of Asimov sample
     
-    //Lee_test->Exe_Fledman_Cousins_Asimov(Lee_true_low, Lee_true_hgh, Lee_step);
+    Lee_test->Exe_Fledman_Cousins_Asimov(Lee_true_low, Lee_true_hgh, Lee_step);
 
     /////////////// dchi2 of measured data
-    
-    //Lee_test->Exe_Fiedman_Cousins_Data( matrix_data_input_fc, Lee_true_low, Lee_true_hgh, Lee_step );
-    
+    /*
+    Lee_test->Set_measured_data();    
+    TMatrixD matrix_data_input_fc = Lee_test->matrix_data_newworld;    
+    Lee_test->Exe_Fiedman_Cousins_Data( matrix_data_input_fc, Lee_true_low, Lee_true_hgh, Lee_step );
+    */
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////
 
+  cout<<endl<<endl;
+  cout<<" ---> Finish all the program"<<endl;
+  cout<<endl<<endl;
+  
   if( config_Lee::flag_display_graphics ) {
     cout<<endl<<" Entrer Ctrl+c to end the program"<<endl;
     cout<<" Entrer Ctrl+c to end the program"<<endl<<endl;
     
     theApp.Run();
   }
-
+  
   return 0;
 }

@@ -1,4 +1,4 @@
-#include "draw.icc"
+#include "./src/draw.icc"
 
 void plot_null_true()
 {  
@@ -22,14 +22,34 @@ void plot_null_true()
   gStyle->SetEndErrorSize(0);
 
   ////////////////////////////////////////////////////////////////////////////////////////
-  
+
   TString roostr = "";
 
-  int color_fill = kRed;
+  // roostr = "./new_results_open5e19/file_exLEE_simple.root";
+  // double dchi2_data = 5.0884;// opendata, at LEE = 1
+
+  /// fake5, 7ch
+  roostr = "./new_results_fake5/file_exLEE_exSM.root";
+  //double dchi2_data = 8.4120;// LEE=1
+  //double dchi2_data = 3.1704;// LEE=0
+
+  /// fake5, 9ch
+  roostr = "./new_results_fake5_ch9/file_exLEE_exSM.root";
+  double dchi2_data = 7.2006;// LEE=1
+  //double dchi2_data = 3.6410;// LEE=0
+
+  /// fake7, 7ch
+  //roostr = "./new_results_fake7/file_exLEE_exSM.root";
+  //double dchi2_data = 5.0879;// LEE=1
+  //double dchi2_data = 0.0623;// LEE=0
+
+  //////////////////////////////
   
-  roostr = "file_null8Lee_true8Lee.root";
-  roostr = "file_null8Lee_true8sm.root";
-  roostr = "file_out_001.root";
+  bool flag_exSM = 0;
+
+  int color_fill = 0;
+  if( flag_exSM ) color_fill = kRed;
+  else color_fill = kBlue;
   
   TFile *file_out = new TFile(roostr, "read");
   TTree *tree = (TTree*)file_out->Get("tree");
@@ -62,16 +82,20 @@ void plot_null_true()
     if( ientry%max(entries/10,1)==0 ) cout<<TString::Format(" ---> processing : %4.2f, %6d", ientry*1./entries, ientry)<<endl;
     tree->GetEntry(ientry);
 
-    // user defined
-    double dchi2_null8Lee_true8Lee = chi2_null_null8sm_true8sm - chi2_gmin_null8sm_true8sm;
+    double dchi2_null8Lee_true8Lee = 0;
+
+    if( flag_exSM ) dchi2_null8Lee_true8Lee = chi2_null_null8sm_true8sm - chi2_gmin_null8sm_true8sm;
+    else dchi2_null8Lee_true8Lee = chi2_null_null8Lee_true8Lee - chi2_gmin_null8Lee_true8Lee;
+
+    //dchi2_null8Lee_true8Lee =  chi2_gmin_null8sm_true8sm - chi2_null_null8sm_true8sm;
+    
+    if( dchi2_null8Lee_true8Lee<0 && fabs(dchi2_null8Lee_true8Lee)<1e-6 ) dchi2_null8Lee_true8Lee = 0;
     vc_dchi2_null8Lee_true8Lee.push_back( dchi2_null8Lee_true8Lee );
   }
 
   int size_vc = vc_dchi2_null8Lee_true8Lee.size();
   sort( vc_dchi2_null8Lee_true8Lee.begin(), vc_dchi2_null8Lee_true8Lee.end() );
 
-  // user defined
-  double dchi2_data = 1.5;
   int line_eff = 0;
 
   for(int idx=0; idx<size_vc; idx++) {
@@ -79,17 +103,19 @@ void plot_null_true()
     if( val_dchi2>dchi2_data ) line_eff++;      
   }
 
-  double pValue = line_eff*1./size_vc;// double side pValue
-  double val_sigma = sqrt( TMath::ChisquareQuantile( 1-pValue, 1 ) );
-  //val_sigma = sqrt( TMath::ChisquareQuantile( 1-pValue*2, 1 ) );
+  double pValue = line_eff*1./size_vc;
+  double val_sigma = sqrt( TMath::ChisquareQuantile( 1-pValue, 1 ) );// two sides
+  //double val_sigma = sqrt( TMath::ChisquareQuantile( 1-pValue*2, 1 ) );// one side --> two sides
 
   
-  cout<<endl<<TString::Format(" ---> pValue %6.4f, #sigma %4.2f, chi2 %4.2f", pValue, val_sigma, val_sigma*val_sigma)<<endl<<endl;
+  cout<<endl<<TString::Format(" ---> pValue %6.4f, #sigma %4.2f, chi2 %4.2f",
+			      pValue, val_sigma, val_sigma*val_sigma)<<endl<<endl;
   
   ////////////////////////////////////////////
 
-  TH1D *h1_dchi2 = new TH1D("h1_dchi2", "", 100, vc_dchi2_null8Lee_true8Lee.at(int(size_vc*0.01)), vc_dchi2_null8Lee_true8Lee.at(int(size_vc*1)-1) + 5 );
-
+  //TH1D *h1_dchi2 = new TH1D("h1_dchi2", "", 100, -20, 20);    
+  TH1D *h1_dchi2 = new TH1D("h1_dchi2", "", 100, 0, 20);
+  
   for(int idx=0; idx<size_vc; idx++) {
     double val_dchi2 = vc_dchi2_null8Lee_true8Lee.at(idx);
     h1_dchi2->Fill( val_dchi2 );
@@ -128,15 +154,16 @@ void plot_null_true()
   // tt_text_data->SetTextFont(42);  tt_text_data->Draw(); tt_text_data->SetTextColor(kBlack);
   
   
-  //TPaveText *pt = new TPaveText( dchi2_data+0.5, y2*0.35, dchi2_data+0.5, y2*0.6,"l");
-  TPaveText *pt = new TPaveText( x2*0.3, y2*0.35, x2*0.3, y2*0.6,"l");
+  //TPaveText *pt = new TPaveText( x2*0.3, y2*0.35, x2*0.3, y2*0.6,"l");
+  //TPaveText *pt = new TPaveText( 5.5, y2*0.35, x2*0.3, y2*0.6,"l");
+  TPaveText *pt = new TPaveText( x2*0.6, y2*0.65, x2*0.8, y2*0.88,"l");
   
   pt->SetTextSize(0.05);
   pt->SetTextFont(42);
   pt->SetTextAlign(11);
   pt->SetBorderSize(0);
   pt->SetFillStyle(0);
-  pt->AddText( Form("#Delta#chi^{2} = %4.2f", dchi2_data) );
+  pt->AddText( Form("#Delta#chi^{2} = %5.3f", dchi2_data) );
   //((TText*)pt->GetListOfLines()->Last())->SetTextColor(kBlack);
   pt->AddText( Form("#rightarrow p-value = %5.3f", pValue) );
   pt->AddText( Form("#rightarrow %3.2f#sigma", val_sigma) );
@@ -144,6 +171,7 @@ void plot_null_true()
   pt->Draw();
 
   h1_dchi2->Draw("same axis");
+    
   //canv_h1_dchi2->SaveAs("canv_h1_null8Lee_true8Lee.png");
   //canv_h1_dchi2->SaveAs("canv_h1_null8Lee_true8sm.png");
   canv_h1_dchi2->SaveAs("canv_h1_true8sm_Lee2sm.png");
