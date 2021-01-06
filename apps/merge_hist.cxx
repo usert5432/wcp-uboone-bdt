@@ -208,6 +208,7 @@ int main( int argc, char** argv )
 	Bayes bayes;
 	//	if (i!=0) continue;
 	//double temp = 0, temp1=0;
+	//std::cout << bayes_inputs.size() << std::endl;
 	for (auto it1 = bayes_inputs.begin(); it1!=bayes_inputs.end(); it1++){
 	  bayes.add_meas_component(std::get<0>((*it1).at(i)), std::get<1>((*it1).at(i)), std::get<2>((*it1).at(i)));
 	  // temp += std::get<0>((*it1).at(i));
