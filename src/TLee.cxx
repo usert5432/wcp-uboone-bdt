@@ -1620,9 +1620,9 @@ void TLee::Set_Spectra_MatrixCov()
   // map_input_spectrum_ch_str[23]= "ch23";
   // map_input_spectrum_ch_str[24]= "ch24";
 
-  /// flag for LEE channels corresponding to the cov_input.txt
-  //map_Lee_ch[8] = 1;
-  //map_Lee_ch[9] = 1;
+  // flag for LEE channels corresponding to the cov_input.txt
+  map_Lee_ch[8] = 1;
+  map_Lee_ch[9] = 1;
   
   /////////////////////////////////////// case: fake data
   /*
