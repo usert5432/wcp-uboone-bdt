@@ -35,14 +35,14 @@ namespace config_Lee
   /* TString detector_directory = "./new_TLee_input_fakeset5_myself/det/"; */
   /* TString mc_directory = "./new_TLee_input_fakeset5_myself/mc_stat/"; */
 
-  int channels_observation = 7;// data channels (=hdata_obsch_# in spectra_file above)
+  int channels_observation = 8;// data channels (=hdata_obsch_# in spectra_file above)
                                // which is equal to the channels after collapse
 
   int syst_cov_flux_Xs_begin = 1;// files in flux_Xs_directory above
   int syst_cov_flux_Xs_end   = 17;
  
   int syst_cov_mc_stat_begin = 0;// files in mc_directory above
-  int syst_cov_mc_stat_end   = 99;
+  int syst_cov_mc_stat_end   = 0;
    
   /*
   /// some places may need to be changed when use different file-formats
@@ -54,7 +54,7 @@ namespace config_Lee
   
   ////////// display graphics flag
 
-  bool flag_display_graphics = 0;
+  bool flag_display_graphics = 1;
   
   ////////// systematics flag
   
@@ -71,7 +71,7 @@ namespace config_Lee
   
   double Lee_strength_for_GoF      = 0;
 
-  bool flag_GoF_output2file_default_0 = 0;
+  bool flag_GoF_output2file_default_0 = 1;
   
   bool flag_both_numuCC            = 0;// 1
   bool flag_CCpi0_FC_by_numuCC     = 0;// 2
@@ -84,7 +84,7 @@ namespace config_Lee
 
   ////////// Lee strength fitting -- data
 
-  bool flag_Lee_strength_data = 1;
+  bool flag_Lee_strength_data = 0;
 
   ////////// MicroBooNE suggested
 
