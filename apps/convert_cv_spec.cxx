@@ -438,6 +438,15 @@ int main( int argc, char** argv )
     }
     
   }
+  if (pfeval_cv.flag_showerMomentum){
+    T_PFeval_cv->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval_cv->SetBranchStatus("reco_Nproton",1);
+    if (!flag_data){
+      T_PFeval_cv->SetBranchStatus("truth_showerMomentum",1);
+      T_PFeval_cv->SetBranchStatus("truth_nuScatType",1);
+    }
+  }
+  
   
 
   std::map<std::tuple<int, int, int>, int> map_re_entry_cv;

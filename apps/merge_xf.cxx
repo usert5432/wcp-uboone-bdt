@@ -522,6 +522,12 @@ int main( int argc, char** argv )
       T_PFeval->SetBranchStatus("truth_NCDelta",1);
       T_PFeval->SetBranchStatus("truth_NprimPio",1);
   }
+  if (pfeval.flag_showerMomentum){
+    T_PFeval->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval->SetBranchStatus("reco_Nproton",1);
+    T_PFeval->SetBranchStatus("truth_showerMomentum",1);
+    T_PFeval->SetBranchStatus("truth_nuScatType",1);
+  }
 
   std::map<std::pair<int, int>, int> map_re_entry;
   std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re;

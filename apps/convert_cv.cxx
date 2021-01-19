@@ -442,7 +442,14 @@ int main( int argc, char** argv )
       T_PFeval_cv->SetBranchStatus("truth_NCDelta",1);
       T_PFeval_cv->SetBranchStatus("truth_NprimPio",1);
     }
-    
+  }
+  if (pfeval_cv.flag_showerMomentum){
+    T_PFeval_cv->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval_cv->SetBranchStatus("reco_Nproton",1);
+    if (!flag_data){
+      T_PFeval_cv->SetBranchStatus("truth_showerMomentum",1);
+      T_PFeval_cv->SetBranchStatus("truth_nuScatType",1);
+    }
   }
   
 

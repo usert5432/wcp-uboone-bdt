@@ -237,6 +237,14 @@ int main( int argc, char** argv )
           T_PFeval->SetBranchStatus("truth_NprimPio",1);
       }
   }
+  if (pfeval.flag_showerMomentum){
+    T_PFeval->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval->SetBranchStatus("reco_Nproton",1);
+    if (!flag_data){
+      T_PFeval->SetBranchStatus("truth_showerMomentum",1);
+      T_PFeval->SetBranchStatus("truth_nuScatType",1);
+    }
+  }
 
   std::cout << "Total entries: " << T_eval->GetEntries() << std::endl;
 

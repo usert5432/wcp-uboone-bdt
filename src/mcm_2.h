@@ -696,7 +696,12 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       T_PFeval->SetBranchStatus("truth_NCDelta",1);
       T_PFeval->SetBranchStatus("truth_NprimPio",1);
   }
-
+  if (pfeval.flag_showerMomentum){
+    T_PFeval->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval->SetBranchStatus("reco_Nproton",1);
+    T_PFeval->SetBranchStatus("truth_showerMomentum",1);
+    T_PFeval->SetBranchStatus("truth_nuScatType",1);
+  }
 
   WeightInfo weight;
   TTree *T_weight = (TTree*)file->Get("wcpselection/T_weight");

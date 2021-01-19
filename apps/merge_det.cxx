@@ -727,6 +727,12 @@ int main( int argc, char** argv )
       T_PFeval_cv->SetBranchStatus("truth_NCDelta",1);
       T_PFeval_cv->SetBranchStatus("truth_NprimPio",1);
   }
+  if (pfeval_cv.flag_showerMomentum){
+    T_PFeval_cv->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval_cv->SetBranchStatus("reco_Nproton",1);
+    T_PFeval_cv->SetBranchStatus("truth_showerMomentum",1);
+    T_PFeval_cv->SetBranchStatus("truth_nuScatType",1);
+  }
 
 
   T_BDTvars_det->SetBranchStatus("*",0);
@@ -828,7 +834,12 @@ int main( int argc, char** argv )
       T_PFeval_det->SetBranchStatus("truth_NCDelta",1);
       T_PFeval_det->SetBranchStatus("truth_NprimPio",1);
   }
-  
+  if (pfeval_det.flag_showerMomentum){
+    T_PFeval_det->SetBranchStatus("reco_showerMomentum",1);
+    T_PFeval_det->SetBranchStatus("reco_Nproton",1);
+    T_PFeval_det->SetBranchStatus("truth_showerMomentum",1);
+    T_PFeval_det->SetBranchStatus("truth_nuScatType",1);
+  }
 
   std::map<std::pair<int, int>, int> map_re_entry_cv;
   std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re_cv;
