@@ -69,6 +69,74 @@ struct PFevalInfo{
 
 void set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
 void put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
+ void clear_pfeval_info(PFevalInfo& tagger_info);
+}
+
+void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
+  tagger_info.flag_NCDelta = false;
+  tagger_info.flag_showerMomentum = false;
+  
+
+  tagger_info.neutrino_type=0;
+  tagger_info.reco_nuvtxX=0;
+  tagger_info.reco_nuvtxY=0;
+  tagger_info.reco_nuvtxZ=0;
+  tagger_info.reco_showervtxX=0;
+  tagger_info.reco_showervtxY=0;
+  tagger_info.reco_showervtxZ=0;
+  tagger_info.reco_showerKE=0;
+  tagger_info.reco_muonvtxX=0;
+  tagger_info.reco_muonvtxY=0;
+  tagger_info.reco_muonvtxZ=0;
+  
+  
+  
+  tagger_info.nuvtx_diff=0;
+  tagger_info.showervtx_diff=0;
+  tagger_info.muonvtx_diff=0;
+  
+  tagger_info.truth_corr_nuvtxX=0;
+  tagger_info.truth_corr_nuvtxY=0;
+  tagger_info.truth_corr_nuvtxZ=0;
+  tagger_info.truth_corr_showervtxX=0;
+  tagger_info.truth_corr_showervtxY=0;
+  tagger_info.truth_corr_showervtxZ=0;
+  tagger_info.truth_showerKE=0;
+  tagger_info.truth_corr_muonvtxX=0;
+  tagger_info.truth_corr_muonvtxY=0;
+  tagger_info.truth_corr_muonvtxZ=0;
+  tagger_info.truth_muonvtxX=0;
+  tagger_info.truth_muonvtxY=0;
+  tagger_info.truth_muonvtxZ=0;
+  tagger_info.truth_muonendX=0;
+  tagger_info.truth_muonendY=0;
+  tagger_info.truth_muonendZ=0;
+  
+  tagger_info.truth_nuEnergy=0;
+  tagger_info.truth_energyInside=0;
+  tagger_info.truth_electronInside=0;
+  tagger_info.truth_nuPdg=0;
+  tagger_info.truth_isCC=0;
+  tagger_info.truth_vtxX=0;
+  tagger_info.truth_vtxY=0;
+  tagger_info.truth_vtxZ=0;
+  tagger_info.truth_nuTime=0;
+  tagger_info.truth_nuIntType=0;
+
+  //
+  tagger_info.truth_NprimPio=0;
+  tagger_info.truth_pio_energy_1=0;
+  tagger_info.truth_pio_energy_2=0;
+  tagger_info.truth_pio_angle=0;
+  tagger_info.truth_NCDelta=0;
+
+  for (Int_t i=0;i!=4;i++){
+    tagger_info.truth_showerMomentum[i]=0;
+    tagger_info.reco_muonMomentum[i]=0;
+    tagger_info.reco_showerMomentum[i]=0;
+    tagger_info.truth_muonMomentum[i]=0;
+    tagger_info.reco_protonMomentum[i]=0;
+  }
 }
 
 void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){

@@ -73,9 +73,11 @@ namespace LEEana{
   
 };
 
-void set_tree_address(TTree *tree0, EvalInfo& eval_info, int flag = 1);
-void put_tree_address(TTree *tree0, EvalInfo& eval_info, int flag = 1);
+ void set_tree_address(TTree *tree0, EvalInfo& eval_info, int flag = 1);
+ void put_tree_address(TTree *tree0, EvalInfo& eval_info, int flag = 1);
 }
+
+
  
 void LEEana::set_tree_address(TTree *tree0, EvalInfo& eval_info, int flag){
   eval_info.is_match_found_int = false;

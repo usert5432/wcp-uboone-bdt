@@ -40,6 +40,7 @@ namespace LEEana{
   
   bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger);
   bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger);
+  bool is_LEE_signal(KineInfo& kine, TaggerInfo& tagger);
   
   // numuCC cuts
   // TCut numuCC_cut = "numu_cc_flag >=0 && numu_score > 0.9";
@@ -826,6 +827,13 @@ bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger){
   if (kine.kine_reco_Enu < 800 && tagger.nue_score>0 && (kine.kine_reco_Enu>=600 || tagger.nue_score<=7)) flag = true;
   
   return flag ;
+}
+
+bool LEEana::is_LEE_signal(KineInfo& kine, TaggerInfo& tagger){
+  bool flag = false;
+
+  if (kine.kine_reco_Enu < 600 && tagger.nue_score>7) flag = true;
+  return flag;
 }
 
 

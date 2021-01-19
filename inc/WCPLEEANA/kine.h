@@ -25,6 +25,28 @@ struct KineInfo{
 
 void set_tree_address(TTree *tree0, KineInfo& tagger_info);
 void put_tree_address(TTree *Tsig, KineInfo& tagger_info);
+ void clear_kine_info(KineInfo& tagger_info);
+}
+
+void LEEana::clear_kine_info(KineInfo& tagger_info){
+  tagger_info.kine_reco_Enu=0;
+  tagger_info.kine_reco_add_energy=0;
+  tagger_info.kine_energy_particle->clear();
+  tagger_info.kine_energy_info->clear(); 
+  tagger_info.kine_particle_type->clear();
+  tagger_info.kine_energy_included->clear();
+  tagger_info.kine_pio_mass=0;
+  tagger_info.kine_pio_flag=0;
+  tagger_info.kine_pio_vtx_dis=0;
+  tagger_info.kine_pio_energy_1=0;
+  tagger_info.kine_pio_theta_1=0;
+  tagger_info.kine_pio_phi_1=0;
+  tagger_info.kine_pio_dis_1=0;
+  tagger_info.kine_pio_energy_2=0;
+  tagger_info.kine_pio_theta_2=0;
+  tagger_info.kine_pio_phi_2=0;
+  tagger_info.kine_pio_dis_2=0;
+  tagger_info.kine_pio_angle=0;
 }
 
 void LEEana::set_tree_address(TTree *tree0, KineInfo& tagger_info){
