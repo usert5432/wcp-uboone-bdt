@@ -363,7 +363,8 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("mip_energy",1);
   T_BDTvars_cv->SetBranchStatus("mip_angle_beam",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
-  
+  T_BDTvars_cv->SetBranchStatus("spt_angle_beam",1);
+  T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
 
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("match_isFC",1);

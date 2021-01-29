@@ -658,7 +658,9 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("mip_quality_n_tracks",1);
   T_BDTvars_cv->SetBranchStatus("mip_quality_n_showers",1);
   T_BDTvars_cv->SetBranchStatus("gap_n_bad",1);
-
+  T_BDTvars_cv->SetBranchStatus("spt_angle_beam",1);
+  T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
+  
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("match_energy",1);
   T_eval_cv->SetBranchStatus("match_isFC",1);
@@ -766,7 +768,9 @@ int main( int argc, char** argv )
   T_BDTvars_det->SetBranchStatus("mip_quality_n_tracks",1);
   T_BDTvars_det->SetBranchStatus("mip_quality_n_showers",1);
   T_BDTvars_det->SetBranchStatus("gap_n_bad",1);
-
+  T_BDTvars_det->SetBranchStatus("spt_angle_beam",1);
+  T_BDTvars_det->SetBranchStatus("spt_angle_vertical",1);
+  
   T_eval_det->SetBranchStatus("*",0);
   T_eval_det->SetBranchStatus("match_energy",1);
   T_eval_det->SetBranchStatus("match_isFC",1);

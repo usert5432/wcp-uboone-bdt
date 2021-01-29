@@ -1342,7 +1342,9 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   T_BDTvars->SetBranchStatus("mip_quality_n_tracks",1);
   T_BDTvars->SetBranchStatus("mip_quality_n_showers",1);
   T_BDTvars->SetBranchStatus("gap_n_bad",1);
-
+  T_BDTvars->SetBranchStatus("spt_angle_beam",1);
+  T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+  
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("run",1);
   T_eval->SetBranchStatus("subrun",1);
