@@ -38,14 +38,15 @@ using namespace LEEana;
 int main( int argc, char** argv )
 {
   if (argc < 4) {
-    std::cout << "numi_filter #input_file #prefix_outfile -r[#run_filter]" << std::endl;
+    std::cout << "numi_filter #input_file #prefix_outfile -f[#filter_level] -r[#run_filter]" << std::endl;
     
     return -1;
   }
 
   TString input_file = argv[1];
   TString prefix_out = argv[2];
-  
+
+  Int_t filter_level = 1;
   Int_t run_filter = 0;
   
   for (Int_t i=1;i!=argc;i++){
@@ -53,13 +54,23 @@ int main( int argc, char** argv )
     case 'r':
       run_filter = atoi(&argv[i][2]);
       break;
+    case 'f':
+      filter_level = atoi(&argv[i][2]);
+      break;
     }
   }
   TString outfile_name;
 
-  outfile_name = prefix_out + "_FHC.root";
+  
   
   if (run_filter != 1) return 0;
+  if (filter_level == 1){
+    std::cout << "FHC mode" << std::endl;
+    outfile_name = prefix_out + "_FHC.root";
+  }else{
+    std::cout << "RHC mode" << std::endl;
+    outfile_name = prefix_out + "_RHC.root";
+  }
   
   bool flag_data = true;
 
@@ -381,8 +392,8 @@ int main( int argc, char** argv )
     T_PFeval->GetEntry(i);
 
     
-    if (eval.run > 6748 && eval.run <=7001) continue;
-    
+    if (filter_level==1 && eval.run > 6748 && eval.run <=7001) continue;
+    if (filter_level!=1 && eval.run <=6748) continue;
     // if (flag_remove){
     //   clear_tagger_info(tagger);
     //   clear_kine_info(kine);
@@ -398,8 +409,8 @@ int main( int argc, char** argv )
   for (Int_t i=0;i!=T_pot->GetEntries();i++){
     T_pot->GetEntry(i);
 
-    if (pot.runNo > 6748 && pot.runNo <=7001) continue;
-    
+    if (filter_level==1 && pot.runNo > 6748 && pot.runNo <=7001) continue;
+    if (filter_level!=1 && pot.runNo <=6748) continue;
     t2->Fill();
   }
 
