@@ -714,8 +714,8 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
 
 
 std::pair<double, double> LEEana::CovMatrix::get_bayes_errors(double num){
-  if (num > hlimit) return std::make_pair(sqrt(num), sqrt(num));
-  else if (num < llimit) num = llimit;
+  if (num > g_hlimit) return std::make_pair(sqrt(num), sqrt(num));
+  else if (num < g_llimit) num = g_llimit;
 
   //  std::cout << num << " " << gl->Eval(num) << " " << gh->Eval(num) << std::endl;
   

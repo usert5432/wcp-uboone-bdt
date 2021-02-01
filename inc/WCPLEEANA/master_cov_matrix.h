@@ -126,7 +126,7 @@ namespace LEEana{
     
   private:
     TGraph *gl, *gh;
-    int llimit, hlimit;
+    int g_llimit, g_hlimit;
     
     TMatrixD* mat_collapse;
     TMatrixD* mat_add_cov;

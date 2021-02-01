@@ -198,8 +198,8 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
 	TString name = std::get<0>(it3->second);
 	TString var_name = std::get<1>(it3->second);
 	int nbin = std::get<2>(it3->second);
-	int llimit = std::get<3>(it3->second);
-	int hlimit = std::get<4>(it3->second);
+	float llimit = std::get<3>(it3->second);
+	float hlimit = std::get<4>(it3->second);
 	TString weight = std::get<5>(it3->second);
 	int lee_strength = std::get<7>(it3->second);
 
@@ -235,8 +235,8 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
 	  TString name1 = std::get<0>(it3->second);
 	  TString var_name1 = std::get<1>(it3->second);
 	  int nbin1 = std::get<2>(it3->second);
-	  int llimit1 = std::get<3>(it3->second);
-	  int hlimit1 = std::get<4>(it3->second);
+	  float llimit1 = std::get<3>(it3->second);
+	  float hlimit1 = std::get<4>(it3->second);
 	  TString weight1 = std::get<5>(it3->second);
 	  TString histo_name1 = name1 + Form("_%d_",file_no) + var_name1 + "_" + add_cut;
 	  
@@ -246,8 +246,8 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
 	    TString name2 = std::get<0>(it4->second);
 	    TString var_name2 = std::get<1>(it4->second);
 	    int nbin2 = std::get<2>(it4->second);
-	    int llimit2 = std::get<3>(it4->second);
-	    int hlimit2 = std::get<4>(it4->second);
+	    float llimit2 = std::get<3>(it4->second);
+	    float hlimit2 = std::get<4>(it4->second);
 	    TString weight2 = std::get<5>(it4->second);
 	    TString histo_name2 = name2 + Form("_%d_",file_no) + var_name2 + "_" + add_cut;
 	    TString histo_name = name1 + "_" + name2 + "_" + add_cut + Form("_%d",file_no);
@@ -303,8 +303,8 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
   //   }
   // }
 
-  llimit = 0;
-  hlimit = 100;
+  g_llimit = 0;
+  g_hlimit = 100;
   
   Double_t x1[101]={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 		    11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
