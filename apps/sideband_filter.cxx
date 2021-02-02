@@ -416,14 +416,17 @@ int main( int argc, char** argv )
       // numuCC filter
       if (flag_far_sideband && (flag_numuCC || flag_pi0 && flag_NC) || tagger.numu_cc_flag==-1)
 	flag_remove = false;
+      if (flag_near_sideband || flag_LEE_signal) continue;
     }else if (filter_level == 2){
       // far sideband
       if (flag_far_sideband || tagger.numu_cc_flag==-1)
 	flag_remove = false;
+      if (flag_near_sideband || flag_LEE_signal) continue;
     }else if (filter_level == 3){
       // near sideband
       if (flag_far_sideband || flag_near_sideband || tagger.numu_cc_flag==-1)
 	flag_remove = false;
+      if (flag_LEE_signal) continue;
     }else if (filter_level == 4){
       // signal region
       if (flag_far_sideband || flag_near_sideband || flag_LEE_signal || tagger.numu_cc_flag==-1)
