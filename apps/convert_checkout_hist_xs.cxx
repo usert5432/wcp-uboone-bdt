@@ -216,6 +216,9 @@ int main( int argc, char** argv )
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
   T_KINEvars->SetBranchStatus("kine_energy_particle",1);
   T_KINEvars->SetBranchStatus("kine_particle_type",1);
+  T_KINEvars->SetBranchStatus("kine_energy_info",1);
+  T_KINEvars->SetBranchStatus("kine_energy_included",1);
+  T_KINEvars->SetBranchStatus("kine_reco_add_energy",1);
   T_KINEvars->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
@@ -285,7 +288,7 @@ int main( int argc, char** argv )
       TString weight = std::get<7>(*it);
 
       // get kinematics variable ...
-      double val = get_kine_var(kine, eval, pfeval, tagger, var_name);
+      double val = get_kine_var(kine, eval, pfeval, tagger, flag_data, var_name);
       // get pass or not
       bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, pfeval, tagger, kine);
       int signal_bin = -1;

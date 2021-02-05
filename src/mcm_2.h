@@ -667,6 +667,9 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
   T_KINEvars->SetBranchStatus("kine_energy_particle",1);
   T_KINEvars->SetBranchStatus("kine_particle_type",1);
+  T_KINEvars->SetBranchStatus("kine_energy_info",1);
+  T_KINEvars->SetBranchStatus("kine_energy_included",1);
+  T_KINEvars->SetBranchStatus("kine_reco_add_energy",1);
   T_KINEvars->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
@@ -818,7 +821,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       auto it3 = disabled_ch_names.find(ch_name);
       if (it3 != disabled_ch_names.end()) continue;
       
-      float val = get_kine_var(kine, eval, pfeval, tagger, var_name);
+      float val = get_kine_var(kine, eval, pfeval, tagger, false, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval, pfeval, tagger, kine);
 
       if (flag_pass) std::get<4>(event_info).insert(std::make_pair(no, val));

@@ -405,11 +405,11 @@ int main( int argc, char** argv )
     // always remove ...
     flag_remove = true;
     
-    bool flag_far_sideband = LEEana::is_far_sideband(kine, tagger);
-    bool flag_near_sideband = LEEana::is_near_sideband(kine,tagger);
-    bool flag_LEE_signal = LEEana::is_LEE_signal(kine,tagger);
+    bool flag_far_sideband = LEEana::is_far_sideband(kine, tagger, flag_data);
+    bool flag_near_sideband = LEEana::is_near_sideband(kine,tagger, flag_data);
+    bool flag_LEE_signal = LEEana::is_LEE_signal(kine,tagger, flag_data);
     bool flag_numuCC = LEEana::is_numuCC(tagger);
-    bool flag_pi0 = LEEana::is_pi0(kine);
+    bool flag_pi0 = LEEana::is_pi0(kine, flag_data);
     bool flag_NC = LEEana::is_NC(tagger);
     
     if (filter_level==1){

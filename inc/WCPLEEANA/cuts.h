@@ -18,8 +18,15 @@
 #include <algorithm>
 
 namespace LEEana{
+  // this is for the real data, for fake data this should be 1 ...
+  double em_charge_scale = 0.95;
+  //double em_charge_scale = 1.0;
 
-  double get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name="kine_reco_Enu");
+  // correct reco neutrino energy ...
+  double get_reco_Enu_corr(KineInfo& kine, bool flag_data);
+  
+  double get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, bool flag_data, TString var_name="kine_reco_Enu");
+  
   bool get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine);
   double get_weight(TString weight_name, EvalInfo& eval);
 
@@ -38,25 +45,25 @@ namespace LEEana{
   bool is_nueCC(TaggerInfo& tagger_info);
   bool is_loosenueCC(TaggerInfo& tagger_info);
   
-  bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger);
-  bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger);
-  bool is_LEE_signal(KineInfo& kine, TaggerInfo& tagger);
+  bool is_far_sideband(KineInfo& kine, TaggerInfo& tagger, bool flag_data);
+  bool is_near_sideband(KineInfo& kine, TaggerInfo& tagger, bool flag_data);
+  bool is_LEE_signal(KineInfo& kine, TaggerInfo& tagger, bool flag_data);
   
   // numuCC cuts
   // TCut numuCC_cut = "numu_cc_flag >=0 && numu_score > 0.9";
   bool is_numuCC(TaggerInfo& tagger_info);
   bool is_numuCC_tight(TaggerInfo& tagger_info, PFevalInfo& pfeval);
   bool is_numuCC_1mu0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
-  bool is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
+  bool is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval, bool flag_data);
   bool is_numuCC_cutbased(TaggerInfo& tagger_info);
   
   // pio cuts (with and without vertex)
   // TCut pi0_cut = "(kine_pio_flag==1 && kine_pio_vtx_dis < 9 || kine_pio_flag ==2) && kine_pio_energy_1 > 40 && kine_pio_energy_2 > 25 && kine_pio_dis_1 < 110 && kine_pio_dis_2 < 120 && kine_pio_angle > 0  && kine_pio_angle < 174 && kine_pio_mass > 22 && kine_pio_mass < 300";
-  bool is_pi0(KineInfo& kine);
+  bool is_pi0(KineInfo& kine, bool flag_data);
   
   // must be with vertex ...
   // TCut cc_pi0_cut = "(kine_pio_flag==1 && kine_pio_vtx_dis < 9 || kine_pio_flag ==2) && kine_pio_energy_1 > 40 && kine_pio_energy_2 > 25 && kine_pio_dis_1 < 110 && kine_pio_dis_2 < 120 && kine_pio_angle > 0  && kine_pio_angle < 174 && kine_pio_mass > 22 && kine_pio_mass < 300";
-  bool is_cc_pi0(KineInfo& kine);
+  bool is_cc_pi0(KineInfo& kine, bool flag_data);
   
   
 
@@ -76,6 +83,26 @@ namespace LEEana{
   // TCut truth_numuCC_inside = "abs(truth_nuPdg)==14 && truth_isCC==1 && truth_vtxInside==1";
   bool is_truth_nueCC_inside(EvalInfo& eval);
   bool is_truth_numuCC_inside(EvalInfo& eval);
+}
+
+
+double LEEana::get_reco_Enu_corr(KineInfo& kine, bool flag_data){
+  double reco_Enu_corr = 0;
+  if (kine.kine_reco_Enu > 0){
+    if (flag_data){
+      for ( size_t j=0;j!= kine.kine_energy_particle->size();j++){
+  	if (kine.kine_energy_info->at(j) == 2 && kine.kine_particle_type->at(j) == 11){
+  	  reco_Enu_corr +=  kine.kine_energy_particle->at(j) * em_charge_scale;
+  	}else{
+  	  reco_Enu_corr +=  kine.kine_energy_particle->at(j);
+  	}
+  	//	std::cout << "p: " << kine.kine_energy_particle->at(j) << " " << kine.kine_energy_info->at(j) << " " << kine.kine_particle_type->at(j) << " " << kine.kine_energy_included->at(j) << std::endl;
+      }
+      reco_Enu_corr += kine.kine_reco_add_energy;
+      return reco_Enu_corr;
+    }
+  }
+  return kine.kine_reco_Enu;
 }
 
 double LEEana::get_weight(TString weight_name, EvalInfo& eval){
@@ -99,9 +126,12 @@ double LEEana::get_weight(TString weight_name, EvalInfo& eval){
   return 1;
 }
 
-double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, TString var_name ){
+double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, bool flag_data , TString var_name){
+  //  if (var_name == "kine_reco_Enu"){
+  //  return kine.kine_reco_Enu;
+  //  }else
   if (var_name == "kine_reco_Enu"){
-    return kine.kine_reco_Enu;
+    return get_reco_Enu_corr(kine, flag_data);
   }else if (var_name == "match_energy"){
     return eval.match_energy;
   }else if (var_name == "pi0_energy"){
@@ -109,7 +139,20 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     double alpha = fabs(kine.kine_pio_energy_1 - kine.kine_pio_energy_2)/(kine.kine_pio_energy_1 + kine.kine_pio_energy_2);
     return pi0_mass * (sqrt(2./(1-alpha*alpha)/(1-cos(kine.kine_pio_angle/180.*3.1415926)))-1);
   }else if (var_name == "pi0_mass"){
-    return kine.kine_pio_mass;
+    if (kine.kine_pio_mass >0){
+      //      TLorentzVector p1(kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Cos(kine.kine_pio_theta_1/180.*3.1415926), kine.kine_pio_energy_1);
+      //TLorentzVector p2(kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Cos(kine.kine_pio_theta_2/180.*3.1415926), kine.kine_pio_energy_2);
+      // TLorentzVector pio = p1 + p2;
+      if (flag_data) {
+	return kine.kine_pio_mass * em_charge_scale;
+      }else{
+	return kine.kine_pio_mass;
+      }
+    }else{
+      return kine.kine_pio_mass;
+    }
+    //  }else if (var_name == "pi0_mass"){
+    // return kine.kine_pio_mass;
   }else if (var_name == "nue_score"){
     return tagger.nue_score;
   }else if (var_name == "numu_score"){
@@ -203,6 +246,8 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       TLorentzVector protonMomentum(pfeval.reco_protonMomentum[0], pfeval.reco_protonMomentum[1], pfeval.reco_protonMomentum[2], pfeval.reco_protonMomentum[3]);
       return protonMomentum.Phi()/TMath::Pi()*180.;
   }else if (var_name == "Ehadron"){
+    return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+    //  }else if (var_name == "Ehadron"){
       /* Float_t Ehadron = kine.kine_reco_Enu; */
       /* for(size_t i=0; i<kine.kine_energy_particle->size(); i++) */
       /* { */
@@ -210,23 +255,39 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       /*     if(abs(pdgcode)==13) Ehadron = Ehadron - kine.kine_energy_particle->at(i) - 105.658; */ 
       /*     //if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); */ 
       /* } */
-      return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
+    // return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
   }else if (var_name == "Q2"){
-      Float_t Enu = kine.kine_reco_Enu;
-      Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
-      Float_t Ehadron = Enu - Emu;
-      Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
-      TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
-      Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
-      return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(1000.*1000.); // GeV^2
+    Float_t Enu = get_reco_Enu_corr(kine, flag_data);
+    Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+    Float_t Ehadron = Enu - Emu;
+    Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+    TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+    return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(1000.*1000.); // GeV^2
+    //  }else if (var_name == "Q2"){
+    // Float_t Enu = kine.kine_reco_Enu;
+    //Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+    //Float_t Ehadron = Enu - Emu;
+    //Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+    //TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    //Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+    //return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(1000.*1000.); // GeV^2
   }else if (var_name == "x_Bjorken"){
-      Float_t Enu = kine.kine_reco_Enu;
-      Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
-      Float_t Ehadron = Enu - Emu;
-      Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
-      TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
-      Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
-      return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(2*938.272*Ehadron);
+    Float_t Enu = get_reco_Enu_corr(kine, flag_data);
+    Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+    Float_t Ehadron = Enu - Emu;
+    Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+    TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+    return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(2*938.272*Ehadron);
+    //  }else if (var_name == "x_Bjorken"){
+    // Float_t Enu = kine.kine_reco_Enu;
+    // Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
+    // Float_t Ehadron = Enu - Emu;
+    // Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
+    // TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    // Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
+    // return (2*Enu*(Emu-Pmu*cosTheta)-105.658*105.658)/(2*938.272*Ehadron);
   }else if (var_name == "N_tracks"){
       int N_tracks = 0;
       for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
@@ -380,15 +441,18 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
 
 bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine){
 
+
+  float reco_Enu = get_reco_Enu_corr(kine, flag_data);
+  
   bool flag_truth_inside = false; // in the active volume
   if (eval.truth_vtxX > -1 && eval.truth_vtxX <= 254.3 &&  eval.truth_vtxY >-115.0 && eval.truth_vtxY<=117.0 && eval.truth_vtxZ > 0.6 && eval.truth_vtxZ <=1036.4) flag_truth_inside = true;
 
   // definition of additional cuts
   std::map<std::string, bool> map_cuts_flag;
-  if(is_far_sideband(kine, tagger)) map_cuts_flag["farsideband"] = true; 
+  if(is_far_sideband(kine, tagger, flag_data)) map_cuts_flag["farsideband"] = true; 
   else map_cuts_flag["farsideband"] = false; 
   
-  if(is_near_sideband(kine, tagger)) map_cuts_flag["nearsideband"] = true; 
+  if(is_near_sideband(kine, tagger, flag_data)) map_cuts_flag["nearsideband"] = true; 
   else map_cuts_flag["nearsideband"] = false; 
  
   if(is_nueCC(tagger)) map_cuts_flag["nueCC"] = true;
@@ -485,12 +549,12 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_numuCC = is_numuCC(tagger);
   bool flag_numuCC_tight = is_numuCC_tight(tagger, pfeval);
   bool flag_numuCC_1mu0p = is_numuCC_1mu0p(tagger, kine, pfeval);
-  bool flag_numuCC_lowEhad = is_numuCC_lowEhad(tagger, kine, pfeval);
+  bool flag_numuCC_lowEhad = is_numuCC_lowEhad(tagger, kine, pfeval, flag_data);
   bool flag_numuCC_cutbased = is_numuCC_cutbased(tagger);
   bool flag_nueCC = is_nueCC(tagger);
   bool flag_nueCC_loose = is_loosenueCC(tagger);
-  bool flag_pi0 = is_pi0(kine);
-  bool flag_cc_pi0 = is_cc_pi0(kine);
+  bool flag_pi0 = is_pi0(kine, flag_data);
+  bool flag_cc_pi0 = is_cc_pi0(kine, flag_data);
   bool flag_NC = is_NC(tagger);
   bool flag_FC = is_FC(eval);
 
@@ -568,41 +632,41 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
  // Janet's requests: <600 MeV numuCC PC, FC for three variables = 6 obs channels 
   }else if (ch_name == "numuCC_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_600MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
   }else if (ch_name == "numuCC_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_600MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
   }else if (ch_name == "numuCC2_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_600MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
   }else if (ch_name == "numuCC2_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_600MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
   }else if (ch_name == "numuCC3_600MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_600MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_600MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_600MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
   }else if (ch_name == "numuCC3_600MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_600MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_600MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_600MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=0 && kine.kine_reco_Enu<600) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=0 && reco_Enu<600) return true;
     else return false;
 
   }else if (ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
   }else if (ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC_600t1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
   }else if (ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC2_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC2_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
   }else if (ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC2_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC2_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC2_600t1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
   }else if (ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC3_600t1500MeV_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC3_600t1500MeV_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_FC_bnb"){
-    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
   }else if (ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_PC_overlay" || ch_name == "BG_numuCC3_600t1500MeV_nopi0_nonueCC_PC_ext" || ch_name =="BG_numuCC3_600t1500MeV_nopi0_nonueCC_PC_dirt" || ch_name == "numuCC3_600t1500MeV_nopi0_nonueCC_PC_bnb"){
-    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && kine.kine_reco_Enu>=600 && kine.kine_reco_Enu<1500) return true;
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (!flag_cc_pi0) && reco_Enu>=600 && reco_Enu<1500) return true;
     else return false;
 
   }else if (ch_name == "numuCC_extra_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_extra_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_extra_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_extra_nopi0_nonueCC_FC_bnb"){
@@ -776,21 +840,21 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 	    || ch_name == "numuCC1_FC_bnb_L800MeV" || ch_name == "BG_numuCC1_FC_ext_L800MeV" || ch_name == "BG_numuCC1_FC_dirt_L800MeV"
 	    || ch_name == "numuCC2_FC_bnb_L800MeV" || ch_name == "BG_numuCC2_FC_ext_L800MeV" || ch_name == "BG_numuCC2_FC_dirt_L800MeV"
 	    ){
-    if (flag_numuCC && flag_FC && kine.kine_reco_Enu<800) return true;
+    if (flag_numuCC && flag_FC && reco_Enu<800) return true;
     else return false;
   }else if (ch_name == "numuCC_PC_bnb_L800MeV" || ch_name == "BG_numuCC_PC_ext_L800MeV" || ch_name == "BG_numuCC_PC_dirt_L800MeV"
 	    || ch_name == "numuCC1_PC_bnb_L800MeV" || ch_name == "BG_numuCC1_PC_ext_L800MeV" || ch_name == "BG_numuCC1_PC_dirt_L800MeV"
 	    || ch_name == "numuCC2_PC_bnb_L800MeV" || ch_name == "BG_numuCC2_PC_ext_L800MeV" || ch_name == "BG_numuCC2_PC_dirt_L800MeV"
 	    ){
-    if (flag_numuCC && (!flag_FC) && kine.kine_reco_Enu<800) return true;
+    if (flag_numuCC && (!flag_FC) && reco_Enu<800) return true;
     else return false;
   }else if (ch_name == "numuCC_FC_overlay_L800MeV" || ch_name == "numuCC_PC_overlay_L800MeV" 
 	    || ch_name == "numuCC1_FC_overlay_L800MeV" || ch_name == "numuCC1_PC_overlay_L800MeV" 
 	    || ch_name == "numuCC2_FC_overlay_L800MeV" || ch_name == "numuCC2_PC_overlay_L800MeV"   ){
     if (ch_name == "numuCC_FC_overlay_L800MeV" || ch_name == "numuCC1_FC_overlay_L800MeV" || ch_name == "numuCC2_FC_overlay_L800MeV"){
-      if (flag_numuCC && flag_FC && kine.kine_reco_Enu<800) return true;
+      if (flag_numuCC && flag_FC && reco_Enu<800) return true;
     }else if (ch_name == "numuCC_PC_overlay_L800MeV" || ch_name == "numuCC1_PC_overlay_L800MeV" || ch_name == "numuCC2_PC_overlay_L800MeV" ){
-      if (flag_numuCC && (!flag_FC) && kine.kine_reco_Enu<800) return true;
+      if (flag_numuCC && (!flag_FC) && reco_Enu<800) return true;
     }
     return false;
   }else if (ch_name == "numuCC_FC_overlay" || ch_name == "numuCC_PC_overlay" 
@@ -810,29 +874,33 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 }
 
 
-bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger){
+bool LEEana::is_far_sideband(KineInfo& kine, TaggerInfo& tagger, bool flag_data){
   bool flag = false;
 
   bool flag_numuCC = is_numuCC(tagger);
-  bool flag_pi0 = is_pi0(kine);
-  bool flag_cc_pi0 = is_cc_pi0(kine);
+  bool flag_pi0 = is_pi0(kine, flag_data);
+  bool flag_cc_pi0 = is_cc_pi0(kine, flag_data);
   bool flag_NC = is_NC(tagger);
 
-  if ((kine.kine_reco_Enu>=800 && tagger.nue_score >=0) ||
+  double reco_Enu = get_reco_Enu_corr(kine, flag_data);
+  
+  if ((reco_Enu>=800 && tagger.nue_score >=0) ||
       (tagger.nue_score<=0 && (flag_numuCC || (flag_pi0 && flag_NC) ))) flag = true;
   return flag;
 }
-bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger){
+bool LEEana::is_near_sideband(KineInfo& kine, TaggerInfo& tagger, bool flag_data){
   bool flag = false;
-  if (kine.kine_reco_Enu < 800 && tagger.nue_score>0 && (kine.kine_reco_Enu>=600 || tagger.nue_score<=7)) flag = true;
+  double reco_Enu = get_reco_Enu_corr(kine, flag_data);
+  
+  if (reco_Enu < 800 && tagger.nue_score>0 && (reco_Enu>=600 || tagger.nue_score<=7)) flag = true;
   
   return flag ;
 }
 
-bool LEEana::is_LEE_signal(KineInfo& kine, TaggerInfo& tagger){
+bool LEEana::is_LEE_signal(KineInfo& kine, TaggerInfo& tagger, bool flag_data){
   bool flag = false;
-
-  if (kine.kine_reco_Enu < 600 && tagger.nue_score>7) flag = true;
+  double reco_Enu = get_reco_Enu_corr(kine, flag_data);
+  if (reco_Enu < 600 && tagger.nue_score>7) flag = true;
   return flag;
 }
 
@@ -867,23 +935,48 @@ bool LEEana::is_FC(EvalInfo& eval){
   }
 }
 
-bool LEEana::is_cc_pi0(KineInfo& kine){
+bool LEEana::is_cc_pi0(KineInfo& kine, bool flag_data){
+
   bool flag = false;
-
-  if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 ) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && kine.kine_pio_mass > 22 && kine.kine_pio_mass < 300)
-    flag = true;
-
+  
+  if (flag_data){
+    if (kine.kine_pio_mass>0){
+      //     TLorentzVector p1(kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Cos(kine.kine_pio_theta_1/180.*3.1415926), kine.kine_pio_energy_1);
+      // TLorentzVector p2(kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Cos(kine.kine_pio_theta_2/180.*3.1415926), kine.kine_pio_energy_2);
+      //TLorentzVector pio = p1 + p2;
+      //pio *= em_charge_scale;
+      double pio_mass = kine.kine_pio_mass * em_charge_scale;
+      
+      if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 ) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && pio_mass > 22 && pio_mass < 300)
+	flag = true;
+    }
+  }else{
+    if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 ) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && kine.kine_pio_mass > 22 && kine.kine_pio_mass < 300)
+      flag = true;
+  }
   
   return flag;
 }
 
 
-bool LEEana::is_pi0(KineInfo& kine){
+bool LEEana::is_pi0(KineInfo& kine, bool flag_data){
   bool flag = false;
 
-  if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 || kine.kine_pio_flag==2) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && kine.kine_pio_mass > 22 && kine.kine_pio_mass < 300)
-    flag = true;
-
+  if (flag_data){
+    if (kine.kine_pio_mass>0){
+      //      TLorentzVector p1(kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Sin(kine.kine_pio_theta_1/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_1/180.*3.1415926), kine.kine_pio_energy_1*TMath::Cos(kine.kine_pio_theta_1/180.*3.1415926), kine.kine_pio_energy_1);
+      //TLorentzVector p2(kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Cos(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Sin(kine.kine_pio_theta_2/180.*3.1415926)*TMath::Sin(kine.kine_pio_phi_2/180.*3.1415926), kine.kine_pio_energy_2*TMath::Cos(kine.kine_pio_theta_2/180.*3.1415926), kine.kine_pio_energy_2);
+      // TLorentzVector pio = p1 + p2;
+      // pio *= em_charge_scale;
+      double pio_mass = kine.kine_pio_mass * em_charge_scale;
+      
+      if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 || kine.kine_pio_flag==2) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && pio_mass > 22 && pio_mass < 300)
+	flag = true;
+    }
+  }else{
+    if ((kine.kine_pio_flag==1 && kine.kine_pio_vtx_dis < 9 || kine.kine_pio_flag==2) && kine.kine_pio_energy_1 > 40 && kine.kine_pio_energy_2 > 25 && kine.kine_pio_dis_1 < 110 && kine.kine_pio_dis_2 < 120 && kine.kine_pio_angle > 0 && kine.kine_pio_angle < 174  && kine.kine_pio_mass > 22 && kine.kine_pio_mass < 300)
+      flag = true;
+  }
   
   return flag;
 }
@@ -939,14 +1032,17 @@ bool LEEana::is_numuCC_1mu0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo
 }
 
 
-bool LEEana::is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval){
+bool LEEana::is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval, bool flag_data){
     bool flag = false;
    
-    if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9 && pfeval.reco_muonMomentum[3]>0){ 
-        Float_t Ehadron = kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
-        if(Ehadron<200) // MeV
+    if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9 && pfeval.reco_muonMomentum[3]>0){
+
+      double reco_Enu = get_reco_Enu_corr(kine, flag_data);
+      
+      Float_t Ehadron = reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
+      if(Ehadron<200) // MeV
         {
-            flag = true;
+	  flag = true;
         }
     }
     return flag;

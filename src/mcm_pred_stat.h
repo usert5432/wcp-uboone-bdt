@@ -737,6 +737,9 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
   T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
   T_KINEvars->SetBranchStatus("kine_energy_particle",1);
   T_KINEvars->SetBranchStatus("kine_particle_type",1);
+  T_KINEvars->SetBranchStatus("kine_energy_info",1);
+  T_KINEvars->SetBranchStatus("kine_energy_included",1);
+  T_KINEvars->SetBranchStatus("kine_reco_add_energy",1);
   T_KINEvars->SetBranchStatus("kine_pio_mass",1);
   T_KINEvars->SetBranchStatus("kine_pio_flag",1);
   T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
@@ -815,7 +818,7 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
       TString ch_name = std::get<5>(*it);
       TString add_cut = std::get<6>(*it);
 
-      double val = get_kine_var(kine, eval, pfeval, tagger, var_name);
+      double val = get_kine_var(kine, eval, pfeval, tagger, flag_data, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, pfeval, tagger, kine);
 
       if (flag_pass) std::get<4>(vec_events.at(i)).insert(std::make_tuple(no, val, flag_pass));

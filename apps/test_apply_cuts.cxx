@@ -407,8 +407,8 @@ int main( int argc, char** argv )
     bool flag_numuCC = is_numuCC(tagger);
     bool flag_nueCC = is_nueCC(tagger);
     bool flag_FC = is_FC(eval);
-    bool flag_pi0 = is_pi0(kine);
-    bool flag_cc_pi0 = is_cc_pi0(kine);
+    bool flag_pi0 = is_pi0(kine, flag_data);
+    bool flag_cc_pi0 = is_cc_pi0(kine, flag_data);
     bool flag_NC = is_NC(tagger);
 
     // numuCC
