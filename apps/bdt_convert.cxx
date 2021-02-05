@@ -1543,8 +1543,10 @@ int main( int argc, char** argv )
     if (flag_data){
       if (good_runlist_set.find(eval.run) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(eval.run) != low_lifetime_set.end()) continue;
-      // bad run in run 1
-      //      if (eval.run <= 5367 && eval.run > 5320) continue;
+      // bad run in run 1 due to beam filter bnb
+      if (eval.run <= 5367 && eval.run >= 5320) continue;
+      // ext bnb in run 1, high rate
+      if (eval.run <=7070 && eval.run>=7004) continue;
     }
     
     t4->Fill();
@@ -1561,8 +1563,10 @@ int main( int argc, char** argv )
     if (flag_data){
       if (good_runlist_set.find(pot.runNo) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(pot.runNo) != low_lifetime_set.end()) continue;
-      // bad run in run 1
-      //  if (pot.runNo <= 5367 && pot.runNo > 5320) continue;
+      //bad run in run 1 due to beam filter bnb
+      if (pot.runNo <= 5367 && pot.runNo >= 5320) continue;
+      // ext bnb in run 1, high rate
+      if (eval.run <=7070 && eval.run>=7004) continue;
     }
     t2->Fill();
   }
