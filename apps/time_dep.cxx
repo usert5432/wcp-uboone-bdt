@@ -49,7 +49,7 @@ int main(int argc, char** argv){
       if (run >0)
 	map_bnb_infos[std::make_pair(run,subrun)] = std::make_pair(trigger_no, pot);
     }
-    std::cout << "finish initilization bnb pot files" << std::endl;
+    //    std::cout << "finish initilization bnb pot files" << std::endl;
     TFile *file1 = new TFile(bnb_file);
     TTree *T_pot = (TTree*)file1->Get("wcpselection/T_pot");
     TTree *T_eval = (TTree*)file1->Get("wcpselection/T_eval");
@@ -110,7 +110,9 @@ int main(int argc, char** argv){
       T_KINEvars->GetEntry(i);
 
       // generic neutrino ...
-      if (numu_cc_flag>=0){
+      if (numu_cc_flag>=0
+	  //	  && match_energy < 300
+	  ){
 	auto it1 = map_run_pte.find(run);
 	std::get<2>(it1->second) ++;
       } 
@@ -181,7 +183,9 @@ int main(int argc, char** argv){
       T_KINEvars->GetEntry(i);
 
       // generic neutrino ...
-      if (numu_cc_flag>=0){
+      if (numu_cc_flag>=0
+	  //	  && match_energy < 300
+	  ){
 	num_events ++;
       } 
     }
