@@ -49,6 +49,8 @@ int main( int argc, char** argv )
 
   TString training_list = "";
   string global_file_type = "";
+  int skip_cut = 0;
+  
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'c':
@@ -62,6 +64,9 @@ int main( int argc, char** argv )
       break;
     case 'g':
       global_file_type = &argv[i][2];
+      break;
+    case 's':
+      skip_cut = atoi(&argv[i][2]);
       break;
     }
   }
@@ -87,8 +92,11 @@ int main( int argc, char** argv )
   }
 
   
-  
-  
+  if (skip_cut == 0)
+    std::cout << "Skip runs for BNB side " << std::endl;
+  else
+    std::cout << "Do not skip runs  " << std::endl;
+    
   bool flag_data = true;
   //std::cout << input_file << " " << out_file << std::endl;
 
@@ -1540,7 +1548,7 @@ int main( int argc, char** argv )
       eval.weight_change = true;
     }
 
-    if (flag_data){
+    if (flag_data && skip_cut == 0){
       if (good_runlist_set.find(eval.run) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(eval.run) != low_lifetime_set.end()) continue;
       // bad run in run 1 due to beam filter bnb
@@ -1560,7 +1568,7 @@ int main( int argc, char** argv )
     
     if (remove_set.find(std::make_pair(pot.runNo, pot.subRunNo)) != remove_set.end()) continue;
 
-    if (flag_data){
+    if (flag_data && skip_cut == 0){
       if (good_runlist_set.find(pot.runNo) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(pot.runNo) != low_lifetime_set.end()) continue;
       //bad run in run 1 due to beam filter bnb
