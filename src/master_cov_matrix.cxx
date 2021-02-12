@@ -18,7 +18,7 @@
 //#include "WCPLEEANA/tagger.h"
 
 
-
+#include <algorithm>
 
 
 using namespace LEEana;
@@ -368,7 +368,9 @@ void LEEana::CovMatrix::init_spec_weights(int num, int num1, double strength){
   for (int i=0;i!=num;i++){
     spec_weights.at(i).resize(num1,0);
     for (int j=0;j!=num1;j++){
-      spec_weights.at(i).at(j) = gRandom->Gaus(0,strength);
+      float temp = gRandom->Gaus(0,strength);
+      if (temp < -1) temp = -1;
+      spec_weights.at(i).at(j) = temp;
     }
   } 
 }
