@@ -1,10 +1,7 @@
 #include "WCPLEEANA/master_cov_matrix.h"
 
-#include <iostream>
-#include <fstream>
 
-#include "TFile.h"
-#include "TTree.h"
+
 #include "TPrincipal.h"
 #include "TRandom.h"
 #include "TH1D.h"
@@ -12,11 +9,10 @@
 #include "TMatrixDSymEigen.h"
 #include "TRandom3.h"
 
-#include "WCPLEEANA/cuts.h"
-#include "WCPLEEANA/pot.h"
-#include "WCPLEEANA/pfeval.h"
-#include "WCPLEEANA/weights.h"
-
+//#include "WCPLEEANA/cuts.h"
+//#include "WCPLEEANA/pot.h"
+//#include "WCPLEEANA/weights.h"
+//#include "WCPLEEANA/pfeval.h"
 //#include "WCPLEEANA/eval.h"
 //#include "WCPLEEANA/kine.h"
 //#include "WCPLEEANA/tagger.h"
@@ -346,7 +342,10 @@ LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString 
   
   gl = new TGraph(101,x1,yl);
   gh = new TGraph(101,x1,yh);
-  
+
+
+  flag_spec_weights = false;
+  //init_spec_weights(2800,1000,0.15); // binning 25 neutrino energy, 7 cos theta, 20, muon energy ...
 }
 
 
@@ -360,6 +359,88 @@ LEEana::CovMatrix::~CovMatrix(){
 
   //  std::cout << "hehe " << std::endl;
 }
+
+
+void LEEana::CovMatrix::init_spec_weights(int num, int num1, double strength){
+  flag_spec_weights = true;
+  std::cout << "initialize special weights" << std::endl;
+  spec_weights.resize(num);
+  for (int i=0;i!=num;i++){
+    spec_weights.at(i).resize(num1,0);
+    for (int j=0;j!=num1;j++){
+      spec_weights.at(i).at(j) = gRandom->Gaus(0,strength);
+    }
+  } 
+}
+
+std::vector<float> LEEana::CovMatrix::get_spec_weight(LEEana::EvalInfo& eval, LEEana::PFevalInfo& pfeval){
+  //std::cout << eval.truth_isCC << " " << eval.truth_nuPdg << " " << spec_weights.at(0).at(0) << " " << spec_weights.at(0).at(1) << std::endl;
+  if (eval.truth_isCC==1 && fabs(eval.truth_nuPdg)==14 ){
+    double Enu = eval.truth_nuEnergy;
+    double Pmu = sqrt(pow(pfeval.truth_muonMomentum[0],2) + pow(pfeval.truth_muonMomentum[1],2) + pow(pfeval.truth_muonMomentum[2],2));
+    double costheta = 1.;
+    if (Pmu>0)
+      costheta = pfeval.truth_muonMomentum[2]/Pmu;
+    
+    int index_Enu = 0, index_Pmu = 0, index_costheta = 0;
+    if (Enu < 200){   // 17 bins ...
+    }else if (Enu < 300){ index_Enu = 1;
+    }else if (Enu < 400){ index_Enu = 2;
+    }else if (Enu < 500){ index_Enu = 3;
+    }else if (Enu < 600){ index_Enu = 4;
+    }else if (Enu < 700){ index_Enu = 5;
+    }else if (Enu < 800){ index_Enu = 6;
+    }else if (Enu < 900){ index_Enu = 7;
+    }else if (Enu < 1000){ index_Enu = 8;
+    }else if (Enu < 1200){ index_Enu = 9;
+    }else if (Enu < 1400){ index_Enu = 10;
+    }else if (Enu < 1600){ index_Enu = 11;
+    }else if (Enu < 1800){ index_Enu = 12;
+    }else if (Enu < 2000){ index_Enu = 13;
+    }else if (Enu < 2200){ index_Enu = 14;
+    }else if (Enu < 2500){ index_Enu = 15;
+    }else{ index_Enu = 16;
+    }
+
+    if (costheta < -0.5){  // 8 of them ...
+    }else if (costheta < 0.){  index_costheta = 1;
+    }else if (costheta < 0.2){ index_costheta = 2;
+    }else if (costheta < 0.4){ index_costheta = 3;
+    }else if (costheta < 0.6){ index_costheta = 4;
+    }else if (costheta < 0.8){ index_costheta = 5;
+    }else if (costheta < 0.9){ index_costheta = 6;
+    }else{index_costheta = 7;
+    }
+
+    if (Pmu < 100){ // 14 ...
+    }else if (Pmu < 200){ index_Pmu = 1;
+    }else if (Pmu < 300){ index_Pmu = 2;
+    }else if (Pmu < 400){ index_Pmu = 3;
+    }else if (Pmu < 500){ index_Pmu = 4;
+    }else if (Pmu < 600){ index_Pmu = 5;
+    }else if (Pmu < 700){ index_Pmu = 6;
+    }else if (Pmu < 800){ index_Pmu = 7;
+    }else if (Pmu < 1000){ index_Pmu = 8;
+    }else if (Pmu < 1200){ index_Pmu = 9;
+    }else if (Pmu < 1400){ index_Pmu = 10;
+    }else if (Pmu < 1600){ index_Pmu = 11;
+    }else if (Pmu < 2000){ index_Pmu = 12;
+    }else{ index_Pmu = 13;
+    }
+
+    int index = index_Enu * 8 * 14 + index_costheta * 14 + index_Pmu;
+
+    //    std::cout << index << " " << spec_weights.at(index).at(0) << std::endl;
+    
+    return spec_weights.at(index);
+    
+  }else{
+    std::vector<float> abc;
+    abc.resize(spec_weights.front().size(),0);
+    return abc;
+  }
+}
+
 
 
 void LEEana::CovMatrix::add_xs_config(TString xs_ch_filename , TString xs_real_bin_filename ){

@@ -26,11 +26,15 @@ int main( int argc, char** argv )
   if (argc < 2){
     std::cout << "./xf_cov_matrix -r[#sys 1-14]" << std::endl;
   }
-  int run = 1; // run 1 ...
+  int run = 1; // run 1 ..
+  int flag_spec_weights = 0;
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
       run = atoi(&argv[i][2]); // which run period
+      break;
+    case 's':
+      flag_spec_weights = atoi(&argv[i][2]);
       break;
     }
   }
@@ -40,7 +44,9 @@ int main( int argc, char** argv )
   // cov.add_disabled_ch_name("BG_nueCC_PC_overlay");
   // cov.add_disabled_ch_name("BG_nueCC_FC_dirt");
   // cov.add_disabled_ch_name("BG_nueCC_PC_dirt");
-  
+
+  // special weights ...
+  if (flag_spec_weights)    cov.init_spec_weights(2000,1000,0.2);
   
   // Get the file based on runno ...
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();

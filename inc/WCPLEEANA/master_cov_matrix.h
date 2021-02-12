@@ -1,13 +1,25 @@
 #ifndef LEEANAC_MASTER_COV_MATRIX
 #define LEEANAC_MASTER_COV_MATRIX
 
+#include "TFile.h"
 #include "TString.h"
 #include "TMatrixD.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TTree.h"
 #include "TGraph.h"
 #include <map>
 #include <set>
+
+#include <iostream>
+#include <fstream>
+
+// #include "WCPLEEANA/eval.h"
+// #include "WCPLEEANA/pfeval.h"
+#include "WCPLEEANA/cuts.h"
+#include "WCPLEEANA/pot.h"
+#include "WCPLEEANA/weights.h"
+#include "WCPLEEANA/pfeval.h"
 
 namespace LEEana{
   class CovMatrix{
@@ -123,6 +135,9 @@ namespace LEEana{
     int get_cut_file(){return cut_file;};
 
     std::map<TString, int>& get_map_cut_xs_bin(){return map_cut_xs_bin;};
+
+    void init_spec_weights(int num, int num1 = 1000, double strength = 0.1);
+    std::vector<float> get_spec_weight(LEEana::EvalInfo& eval, LEEana::PFevalInfo& pfeval);
     
   private:
     TGraph *gl, *gh;
@@ -213,6 +228,11 @@ namespace LEEana{
     std::map<TString, int> map_cut_xs_bin;
     std::map<int, double> map_xs_bin_constant;
     std::map<int, std::pair<double, double> > map_xs_bin_errs;
+
+
+    // special weights ...
+    bool flag_spec_weights;
+    std::vector<std::vector<float> > spec_weights;
     
   };
 }

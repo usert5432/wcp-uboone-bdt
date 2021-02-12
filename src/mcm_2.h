@@ -987,8 +987,18 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       }else if (option == "reinteractions_proton_Geant4"){
 	std::get<2>(event_info).resize(weight.reinteractions_proton_Geant4->size());
 	std::get<3>(event_info).push_back(weight.reinteractions_proton_Geant4->size());
-	for (size_t j=0; j!= weight.reinteractions_proton_Geant4->size(); j++){
-	  std::get<2>(event_info).at(j) = weight.reinteractions_proton_Geant4->at(j) - 1.0;
+
+
+	if (flag_spec_weights){
+	  std::vector<float> temp_vec = get_spec_weight(eval, pfeval);
+	  //std::cout << temp_vec.at(0) << std::endl;
+	  for (size_t j=0; j!= weight.reinteractions_proton_Geant4->size(); j++){
+	    std::get<2>(event_info).at(j) = weight.reinteractions_proton_Geant4->at(j) - 1.0 + temp_vec.at(j);
+	  }
+	}else{
+	  for (size_t j=0; j!= weight.reinteractions_proton_Geant4->size(); j++){
+	    std::get<2>(event_info).at(j) = weight.reinteractions_proton_Geant4->at(j) - 1.0;
+	  }
 	}
       }else if (option == "UBGenieFluxSmallUni"){
 	int acc_no = 0;
