@@ -246,7 +246,10 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       TLorentzVector protonMomentum(pfeval.reco_protonMomentum[0], pfeval.reco_protonMomentum[1], pfeval.reco_protonMomentum[2], pfeval.reco_protonMomentum[3]);
       return protonMomentum.Phi()/TMath::Pi()*180.;
   }else if (var_name == "Ehadron"){
-    return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+    if (pfeval.reco_muonMomentum[3]>0)
+      return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+    else
+      return -1000;
     //  }else if (var_name == "Ehadron"){
       /* Float_t Ehadron = kine.kine_reco_Enu; */
       /* for(size_t i=0; i<kine.kine_energy_particle->size(); i++) */
@@ -433,7 +436,87 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
           std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }       
     }
-    
+    else if (cut_file == 4){
+      if (cut_name == "numuCC.inside.Enu.le.540"){ // recommended range: 200 - 540
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=540) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.705.gt.540"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=705 && eval.truth_nuEnergy>540) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.805.gt.705"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=805 && eval.truth_nuEnergy>705) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.920.gt.805"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=920 && eval.truth_nuEnergy>805) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1050.gt.920"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1050 && eval.truth_nuEnergy>920) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1200.gt.1050"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>1050) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1375.gt.1200"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1375 && eval.truth_nuEnergy>1200) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.1570.gt.1375"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1570 && eval.truth_nuEnergy>1375) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.2050.gt.1570"){
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=2050 && eval.truth_nuEnergy>1570) return number;
+      }else if (cut_name == "numuCC.inside.Enu.gt.2050"){ // recommended range: 2050 - 4000
+  if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy>2050) return number;
+      }else{
+           std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
+    else if (cut_file == 5) {
+      if (cut_name == "numuCC.inside.Emuon.le.226.gt.106"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=226 && Emuon>105.7) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.296.gt.226"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=296 && Emuon>226) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.386.gt.296"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=386 && Emuon>296) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.505.gt.386"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=505 && Emuon>386) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.577.gt.505"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=577 && Emuon>505) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.659.gt.577"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=659 && Emuon>577) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.753.gt.659"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=753 && Emuon>659) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.861.gt.753"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=861 && Emuon>753) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.984.gt.861"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=984 && Emuon>861) return number;
+      }else if (cut_name == "numuCC.inside.Emuon.le.1285.gt.984"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=1285 && Emuon>984) return number;
+      }
+      else if (cut_name == "numuCC.inside.Emuon.gt.1285"){ // 1285 - 2506, only 1% > 2506 MeV
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon>1285) return number;
+      }else{
+          std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
+    else if (cut_file == 6) {
+      if (cut_name == "numuCC.inside.Ehadron.le.100"){ // 30 MeV - 100 MeV
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=100) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.150.gt.100"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=150 && Ehadron>100) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.225.gt.150"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=225 && Ehadron>150) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.275.gt.225"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=275 && Ehadron>225) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.336.gt.275"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=336 && Ehadron>275) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.411.gt.336"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=411 && Ehadron>336) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.502.gt.411"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=502 && Ehadron>411) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.614.gt.502"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=614 && Ehadron>502) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.750.gt.614"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=750 && Ehadron>614) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.1120.gt.750"){
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=1120 && Ehadron>750) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.gt.1120"){ // 1120 - 2500 MeV
+        if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron>1120) return number;
+      }else{
+          std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
+
   }
   
   return -1;

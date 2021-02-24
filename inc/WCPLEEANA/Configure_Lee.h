@@ -6,11 +6,16 @@ namespace config_Lee
   /* TString flux_Xs_directory = "./data_framework_Doc33131/flux_Xs/"; */
   /* TString detector_directory = "./data_framework_Doc33131/det_both/"; */
   /* TString mc_directory = "./data_framework_Doc33131/mc_stat/"; */
-  
+
   TString spectra_file = "./new_TLee_input_opendata5e19/merge.root";
   TString flux_Xs_directory = "./new_TLee_input_opendata5e19/flux_Xs/";
   TString detector_directory = "./new_TLee_input_opendata5e19/det/";
   TString mc_directory = "./new_TLee_input_opendata5e19/mc_stat/";
+  
+  // TString spectra_file = "./merge.root"; // wgu
+  // TString flux_Xs_directory = "./hist_rootfiles/XsFlux/";
+  // TString detector_directory = "./hist_rootfiles/DetVar/";
+  // TString mc_directory = "./mc_stat/";
 
   //TString detector_directory = "/home/xji/data0/work/505_TLee/TLee_for_data_5e19/data_framework/det_11stat/";
   //TString detector_directory = "/home/xji/data0/work/505_TLee/TLee_for_data_5e19/data_framework/det_norandom/";  

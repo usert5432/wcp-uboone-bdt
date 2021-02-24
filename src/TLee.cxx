@@ -1804,7 +1804,8 @@ void TLee::Set_Spectra_MatrixCov()
     map_matrix_detector_frac[idx] = (TMatrixD*)map_file_detector_frac[idx]->Get(TString::Format("frac_cov_det_mat_%d", idx));
     // cout<<TString::Format(" ---> check: detector, %2d  ", idx)<<roostr<<endl;
 
-    matrix_detector_frac += (*map_matrix_detector_frac[idx]);
+    matrix_detector_frac += (*map_matrix_detector_frac[idx]); // to disable detsys, comment this line
+                                                              // also, set flag_syst_detector = 0 in Configure_TLee.h
 
     matrix_detector_sub_frac[idx].Clear();
     matrix_detector_sub_frac[idx].ResizeTo(bins_oldworld, bins_oldworld);
