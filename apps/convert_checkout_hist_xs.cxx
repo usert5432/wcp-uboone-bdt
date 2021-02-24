@@ -275,7 +275,7 @@ int main( int argc, char** argv )
     T_KINEvars->GetEntry(i);
     T_PFeval->GetEntry(i);
     
-    if (!is_preselection(eval)) continue;
+    //    if (!is_preselection(eval)) continue;
 
     for (auto it = all_histo_infos.begin(); it != all_histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
