@@ -118,6 +118,16 @@ double LEEana::get_weight(TString weight_name, EvalInfo& eval){
     return pow(eval.weight_lee * eval.weight_cv * eval.weight_spline,2);
   }else if (weight_name == "lee_cv_spline_cv_spline" || weight_name == "cv_spline_lee_cv_spline"){
     return eval.weight_lee * pow(eval.weight_cv * eval.weight_spline,2);
+  }else if (weight_name == "spline"){
+    return eval.weight_spline;
+  }else if (weight_name == "spline_spline"){
+    return pow(eval.weight_spline,2);
+  }else if (weight_name == "lee_spline"){
+    return (eval.weight_lee * eval.weight_spline);
+  }else if (weight_name == "lee_spline_lee_spline"){
+    return pow(eval.weight_lee * eval.weight_spline,2);
+  }else if (weight_name == "lee_spline_spline" || weight_name == "spline_lee_spline"){
+    return eval.weight_lee * pow( eval.weight_spline,2);
   }else{
     std::cout <<"Unknown weights: " << weight_name << std::endl;
   }
