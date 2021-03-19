@@ -113,7 +113,7 @@ int main( int argc, char** argv )
 
   
   if (T_eval->GetBranch("weight_cv")) flag_data =false;
-  if (T_eval->GetBranch("file_type")) flag_use_global_file_type = false;
+  //  if (T_eval->GetBranch("file_type")) flag_use_global_file_type = false;
 
   // std::cout << flag_use_global_file_type << " " << flag_check_run_subrun << std::endl;
   // return 0;
