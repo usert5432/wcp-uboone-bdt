@@ -1552,9 +1552,17 @@ int main( int argc, char** argv )
       if (good_runlist_set.find(eval.run) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(eval.run) != low_lifetime_set.end()) continue;
       // bad run in run 1 due to beam filter bnb
-      if (eval.run <= 5367 && eval.run >= 5320) continue;
+      // if (eval.run <= 5367 && eval.run >= 5320) continue;
       // ext bnb in run 1, high rate
-      if (eval.run <=7070 && eval.run>=7004) continue;
+      if (eval.run>=7004 && eval.run <=7070) continue;
+      // ext bnb in run 2, high rate not in good list anyway
+      //      if ((eval.run>=10287 && eval.run <= 10304) || (eval.run>=12277 && eval.run <=12350)) continue;
+      // ext bnb in run 2, low rate not in good list anyway
+      // if ((eval.run>=9768 && eval.run <= 10070) || (eval.run>=10102 && eval.run <=10246)) continue;
+      // bnb run 2 high rate
+      if (eval.run >= 8321 && eval.run <=8404) continue;
+      // bnb run 3 high rate
+      if (eval.run >=15369 && eval.run <= 15402) continue;
     }
     
     t4->Fill();
@@ -1571,10 +1579,19 @@ int main( int argc, char** argv )
     if (flag_data && skip_cut == 0){
       if (good_runlist_set.find(pot.runNo) == good_runlist_set.end()) continue;
       if (low_lifetime_set.find(pot.runNo) != low_lifetime_set.end()) continue;
+
       //bad run in run 1 due to beam filter bnb
-      if (pot.runNo <= 5367 && pot.runNo >= 5320) continue;
+      //if (pot.runNo <= 5367 && pot.runNo >= 5320) continue;
       // ext bnb in run 1, high rate
-      if (eval.run <=7070 && eval.run>=7004) continue;
+      if (pot.runNo >=7004 && pot.runNo <=7070) continue;
+      // ext bnb in run 2, high rate not in good list anyway
+      //if ((pot.runNo>=10287 && pot.runNo <= 10304) || (pot.runNo>=12277 && pot.runNo <=12350)) continue;
+      // ext bnb in run 2, low rate not in good list anyway
+      //if ((pot.runNo>=9768 && pot.runNo <= 10070) || (pot.runNo>=10102 && pot.runNo <=10246)) continue;
+      // bnb run 2 high rate
+      if (pot.runNo >= 8321 && pot.runNo <=8404) continue;
+      // bnb run 3 high rate
+      if (pot.runNo >=15369 && pot.runNo <= 15402) continue;
     }
     t2->Fill();
   }

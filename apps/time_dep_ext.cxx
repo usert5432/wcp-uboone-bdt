@@ -121,7 +121,7 @@ int main(int argc, char** argv){
     int run = it->first;
     float ntrigger = std::get<0>(it->second);
     float nobs = std::get<1>(it->second);
-    
+    if (run >=4000  && run <= 50000)
       std::cout << run << " " << ntrigger << " " << nobs  << std::endl;
     }
     //    std::cout << "EXTBNB: total trigger: " << total_extbnb_trigger_no << std::endl;
