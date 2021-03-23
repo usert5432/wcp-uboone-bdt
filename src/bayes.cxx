@@ -69,6 +69,7 @@ void LEEana::Bayes::add_meas_component(double meas, double sigma2, double weight
   TF1 *f1 = new TF1(Form("f_test_%d",num_component), Prop_Poisson_Pdf, tmp_llimit, tmp_hlimit, 5);
   f1->SetParameters(meas_vec.back(), sig2_vec.back(), weight_vec.back(), tmp_llimit, tmp_hlimit);
   f1->SetNpx(60000);
+  //f1->SetNpx(100000);
   f_test_vec.push_back(f1);
   
   // g1 = new TGraph();
@@ -306,15 +307,21 @@ double LEEana::Bayes::get_covariance(){
     }
     double corr = 0;
     if (mean != 0)
-      corr= 1./pow(x/mean, num_component-1);
+      corr= exp(-(num_component-1.)*log(x/mean));//1./pow(x/mean, num_component-1);
     else
-      corr= 1./pow(x, num_component-1);
-    
+      corr= exp(-(num_component-1.)*log(x));//1./pow(x, num_component-1);
+
     if (std::isinf(corr) || std::isnan(corr)) corr = 0;
-    // corr = 1;
+
+    //    corr = 1;
+    
+    // std::cout << x << " " << val << " " << corr << std::endl;
     
     sum  += val * pow(x-mean,2) *corr;
     sum1 += val * corr;
+
+    // sum  += val * pow(x-mean,2) ;
+    // sum1 += val ;
   }
   
   //  std::cout << std::endl;
@@ -337,12 +344,21 @@ double LEEana::Bayes::get_covariance_mc(){
     for (int i=0;i!=f_test_vec.size();i++){
       x += f_test_vec.at(i)->GetRandom();
     }
-    double corr;
+    double corr=1;
     if (mean !=0)
-      corr = 1./pow(x/mean,num_component-1);
+      corr = exp(-(num_component-1.)*log(x/mean)); //1./pow(x/mean,num_component-1);
     else
-      corr = 1./pow(x,num_component-1);
+      corr = exp(-(num_component-1.)*log(x)); //1./pow(x,num_component-1);
     if (std::isnan(corr) || std::isinf(corr)) corr = 0;    
+
+    // if ( corr > 1e6) {
+    //  std::cout << j << " " << corr << std::endl;
+    //  corr = 0;
+    // }
+    
+    //    std::cout << corr << " " << x << " " << mean << " " << sum/sum1 << std::endl;
+
+    // corr=1;
     
     sum += pow(x-mean,2) * corr;
     sum1 += corr;
@@ -384,7 +400,7 @@ double LEEana::Prop_Poisson_Pdf(double *x, double *par){
   
   double result = 0;
 
-  if (mu > llimit && mu < hlimit){
+  if (mu >= llimit && mu <= hlimit){
     if(mu >=0){
       if (eff_meas >0)
 	result = std::exp(eff_meas - mu/eff_weight/weight + eff_meas * std::log(mu/eff_weight/eff_meas/weight));

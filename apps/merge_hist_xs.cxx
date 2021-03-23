@@ -211,12 +211,26 @@ int main( int argc, char** argv )
 	Bayes bayes;
 	//	if (i!=0) continue;
 	//double temp = 0, temp1=0;
+	double zero_weight = 0, zero_count = 0;
+	double nonzero_meas = 0, nonzero_sigma2 = 0, nonzero_weight = 0;
 	for (auto it1 = bayes_inputs.begin(); it1!=bayes_inputs.end(); it1++){
-	  bayes.add_meas_component(std::get<0>((*it1).at(i)), std::get<1>((*it1).at(i)), std::get<2>((*it1).at(i)));
+	  //bayes.add_meas_component(std::get<0>((*it1).at(i)), std::get<1>((*it1).at(i)), std::get<2>((*it1).at(i)));
 	  // temp += std::get<0>((*it1).at(i));
 	  // temp1 += std::get<1>((*it1).at(i));
 	  //std::cout << i << " " << std::get<0>((*it1).at(i)) << " " << std::get<1>((*it1).at(i)) << " " << std::get<2>((*it1).at(i)) << " " << std::endl;
+	  // approximation for zeros ...
+	  if (std::get<0>((*it1).at(i)) == 0){
+	    zero_weight += std::get<2>((*it1).at(i));
+	    zero_count ++;
+	  }else{
+	    nonzero_meas += std::get<0>((*it1).at(i));
+	    nonzero_sigma2 += std::get<1>((*it1).at(i));
+	    nonzero_weight += std::get<2>((*it1).at(i));
+	  }
 	}
+	if (zero_count != 0)	bayes.add_meas_component(0,0,zero_weight/zero_count);
+	if (nonzero_meas != 0)  bayes.add_meas_component(nonzero_meas, nonzero_sigma2, nonzero_weight);
+	
 	bayes.do_convolution();
 	
 	double cov = bayes.get_covariance();
