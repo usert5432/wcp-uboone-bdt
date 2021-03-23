@@ -28,6 +28,8 @@ namespace LEEana{
     ~CovMatrix();
 
     void add_xs_config(TString xs_ch_filename = "./configurations/xs_ch.txt", TString xs_real_bin_filename = "./configurations/xs_real_bin.txt");
+    void add_osc_config(TString osc_ch_filename = "./configurations/osc_ch.txt", TString osc_pars_filename = "./configurations/osc_parameter.txt");
+    
     
     void print_ch_info();
     void print_filetype_info();
@@ -229,7 +231,13 @@ namespace LEEana{
     std::map<int, double> map_xs_bin_constant;
     std::map<int, std::pair<double, double> > map_xs_bin_errs;
 
+    // Osc related
+    bool flag_osc;
+    std::set<TString> osc_signal_ch_names;
+    double osc_par_delta_m2_eV2;
+    double osc_par_sin22theta_ee;
 
+    
     // special weights ...
     bool flag_spec_weights;
     std::vector<std::vector<float> > spec_weights;

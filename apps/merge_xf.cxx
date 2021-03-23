@@ -532,6 +532,11 @@ int main( int argc, char** argv )
     T_PFeval->SetBranchStatus("reco_Nproton",1);
     T_PFeval->SetBranchStatus("truth_showerMomentum",1);
     T_PFeval->SetBranchStatus("truth_nuScatType",1);
+    // oscillation formula ...
+    T_PFeval->SetBranchStatus("truth_nu_momentum",1);
+    T_PFeval->SetBranchStatus("neutrino_type",1);
+    T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
+    T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
   std::map<std::pair<int, int>, int> map_re_entry;

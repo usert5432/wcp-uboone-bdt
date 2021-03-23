@@ -737,6 +737,11 @@ int main( int argc, char** argv )
     T_PFeval_cv->SetBranchStatus("reco_Nproton",1);
     T_PFeval_cv->SetBranchStatus("truth_showerMomentum",1);
     T_PFeval_cv->SetBranchStatus("truth_nuScatType",1);
+    // oscillation formula ...
+    T_PFeval_cv->SetBranchStatus("truth_nu_momentum",1);
+    T_PFeval_cv->SetBranchStatus("neutrino_type",1);
+    T_PFeval_cv->SetBranchStatus("mcflux_dk2gen",1);
+    T_PFeval_cv->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
 
@@ -849,6 +854,11 @@ int main( int argc, char** argv )
     T_PFeval_det->SetBranchStatus("reco_Nproton",1);
     T_PFeval_det->SetBranchStatus("truth_showerMomentum",1);
     T_PFeval_det->SetBranchStatus("truth_nuScatType",1);
+    // oscillation formula ...
+    T_PFeval_det->SetBranchStatus("truth_nu_momentum",1);
+    T_PFeval_det->SetBranchStatus("neutrino_type",1);
+    T_PFeval_det->SetBranchStatus("mcflux_dk2gen",1);
+    T_PFeval_det->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
   std::map<std::pair<int, int>, int> map_re_entry_cv;

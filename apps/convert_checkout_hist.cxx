@@ -24,10 +24,20 @@ int main( int argc, char** argv )
 
   bool flag_data = true;
 
+  bool flag_osc = false;
+  for (Int_t i=1;i!=argc;i++){
+    switch(argv[i][1]){
+    case 'o':
+      flag_osc = atoi(&argv[i][2]); // run oscillation
+      break;
+    }
+  }
+  
+  
   TFile *file = new TFile(input_filename,"READ");
   
   CovMatrix cov;
-  
+  if (flag_osc) cov.add_osc_config();
   
 
 

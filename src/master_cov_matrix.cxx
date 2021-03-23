@@ -44,6 +44,8 @@ float leeweight(float Enu)
 #include "mcm_pred_stat.h"
 
 LEEana::CovMatrix::CovMatrix(TString cov_filename, TString cv_filename, TString file_filename){
+  flag_osc = false;
+  
   std::ifstream infile(cov_filename);
   TString name, var_name;
   Int_t bin_num;
@@ -443,6 +445,24 @@ std::vector<float> LEEana::CovMatrix::get_spec_weight(LEEana::EvalInfo& eval, LE
   }
 }
 
+
+void LEEana::CovMatrix::add_osc_config(TString osc_ch_filename, TString osc_pars_filename ){
+  flag_osc = true;
+  std::ifstream infile1(osc_ch_filename);
+  TString temp;
+  while(!infile1.eof()){
+    infile1 >> temp;
+    if (temp == "End") break;
+    osc_signal_ch_names.insert(temp);
+  }
+  std::ifstream infile2(osc_pars_filename);
+  infile2 >> osc_par_delta_m2_eV2 >> osc_par_sin22theta_ee;
+
+  std::cout << "Oscillation Mode: " << std::endl;
+  std::cout << "Dm2: " << osc_par_delta_m2_eV2 << " eV2 " << std::endl;
+  std::cout << "sin22theta_ee: " << osc_par_sin22theta_ee << std::endl;
+  
+}
 
 
 void LEEana::CovMatrix::add_xs_config(TString xs_ch_filename , TString xs_real_bin_filename ){

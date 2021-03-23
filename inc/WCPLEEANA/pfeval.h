@@ -82,6 +82,10 @@ struct PFevalInfo{
   Float_t truth_pio_angle;
   Int_t truth_NCDelta;
   Float_t reco_protonMomentum[4];
+
+
+  
+  
   
 };
 
