@@ -28,6 +28,7 @@ int main( int argc, char** argv )
   }
   int run = 1; // run 1 ..
   int flag_spec_weights = 0;
+  bool flag_osc = false;
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
@@ -35,6 +36,9 @@ int main( int argc, char** argv )
       break;
     case 's':
       flag_spec_weights = atoi(&argv[i][2]);
+      break;
+    case 'o':
+      flag_osc = atoi(&argv[i][2]);
       break;
     }
   }
@@ -44,7 +48,8 @@ int main( int argc, char** argv )
   // cov.add_disabled_ch_name("BG_nueCC_PC_overlay");
   // cov.add_disabled_ch_name("BG_nueCC_FC_dirt");
   // cov.add_disabled_ch_name("BG_nueCC_PC_dirt");
-
+  if (flag_osc) cov.add_osc_config();
+  
   // special weights ...
   if (flag_spec_weights)    cov.init_spec_weights(2000,1000,0.2);
   

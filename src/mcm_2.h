@@ -811,7 +811,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
     std::get<0>(event_info) = eval.weight_cv * eval.weight_spline;
     std::get<1>(event_info) = leeweight(eval.truth_nuEnergy);
 
-   
+    double osc_weight = 1.0;
     
     for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
@@ -829,8 +829,15 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       float val = get_kine_var(kine, eval, pfeval, tagger, false, var_name);
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval, pfeval, tagger, kine);
 
-      if (flag_pass) std::get<4>(event_info).insert(std::make_pair(no, val));
+      if (flag_pass) {
+	std::get<4>(event_info).insert(std::make_pair(no, val));
+	if (flag_osc && is_osc_channel(ch_name) ){
+	  osc_weight = get_osc_weight(eval, pfeval);
+	}
+      }
     }
+    // apply oscillation ...
+    std::get<0>(event_info) *= osc_weight;
     
     if (std::get<4>(event_info).size()>0){
       if (option == "expskin_FluxUnisim"){
