@@ -228,7 +228,7 @@ int main( int argc, char** argv )
 	    nonzero_weight += std::get<2>((*it1).at(i));
 	  }
 	}
-	if (zero_count != 0)	bayes.add_meas_component(0,0,zero_weight/zero_count);
+	if (zero_count != 0)	bayes.add_meas_component(0,0,sqrt(zero_weight/zero_count));
 	if (nonzero_meas != 0)  bayes.add_meas_component(nonzero_meas, nonzero_sigma2, nonzero_weight);
 	
 	bayes.do_convolution();
