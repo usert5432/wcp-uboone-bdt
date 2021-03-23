@@ -706,6 +706,11 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
     T_PFeval->SetBranchStatus("reco_Nproton",1);
     T_PFeval->SetBranchStatus("truth_showerMomentum",1);
     T_PFeval->SetBranchStatus("truth_nuScatType",1);
+    // oscillation formula ...
+    T_PFeval->SetBranchStatus("truth_nu_momentum",1);
+    T_PFeval->SetBranchStatus("neutrino_type",1);
+    T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
+    T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
   WeightInfo weight;
@@ -808,9 +813,9 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 
    
     
-     for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
+    for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
-
+      
       auto it2 = map_histoname_infos.find(histoname);
       int no = std::get<0>(it2->second);
       
@@ -825,7 +830,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       bool flag_pass = get_cut_pass(ch_name, add_cut, false, eval, pfeval, tagger, kine);
 
       if (flag_pass) std::get<4>(event_info).insert(std::make_pair(no, val));
-     }
+    }
     
     if (std::get<4>(event_info).size()>0){
       if (option == "expskin_FluxUnisim"){

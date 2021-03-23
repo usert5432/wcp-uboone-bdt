@@ -140,6 +140,10 @@ namespace LEEana{
 
     void init_spec_weights(int num, int num1 = 1000, double strength = 0.1);
     std::vector<float> get_spec_weight(LEEana::EvalInfo& eval, LEEana::PFevalInfo& pfeval);
+
+    bool get_osc_flag(){return flag_osc;};
+    bool is_osc_channel(TString ch_name);
+    double get_osc_weight(EvalInfo& eval, PFevalInfo& pfeval);
     
   private:
     TGraph *gl, *gh;

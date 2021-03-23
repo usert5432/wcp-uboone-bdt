@@ -464,6 +464,22 @@ void LEEana::CovMatrix::add_osc_config(TString osc_ch_filename, TString osc_pars
   
 }
 
+bool LEEana::CovMatrix::is_osc_channel(TString ch_name){
+  if (osc_signal_ch_names.find(ch_name) == osc_signal_ch_names.end())
+    return false;
+  else
+    return true;
+}
+
+double LEEana::CovMatrix::get_osc_weight(EvalInfo& eval, PFevalInfo& pfeval){
+  double weight = 1.0;
+  // only support nueCC disappearance now ...
+  if (fabs(eval.truth_nuPdg)==12){
+    weight = 1 - osc_par_sin22theta_ee * pow(TMath::Sin(1.267 * osc_par_delta_m2_eV2 * (pfeval.mcflux_gen2vtx + pfeval.mcflux_dk2gen)/pfeval.truth_nu_momentum[3]/1000.),2);
+  }
+  return weight;
+}
+
 
 void LEEana::CovMatrix::add_xs_config(TString xs_ch_filename , TString xs_real_bin_filename ){
   std::ifstream infile1(xs_ch_filename);

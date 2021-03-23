@@ -243,6 +243,7 @@ int main( int argc, char** argv )
       T_PFeval->SetBranchStatus("muonvtx_diff",1);
       T_PFeval->SetBranchStatus("truth_nuIntType",1);
       T_PFeval->SetBranchStatus("truth_muonMomentum",1);
+      
   }
   if (pfeval.flag_NCDelta){
       T_PFeval->SetBranchStatus("reco_protonMomentum",1);
@@ -257,6 +258,11 @@ int main( int argc, char** argv )
     if (!flag_data){
       T_PFeval->SetBranchStatus("truth_showerMomentum",1);
       T_PFeval->SetBranchStatus("truth_nuScatType",1);
+      // oscillation formula ...
+      T_PFeval->SetBranchStatus("truth_nu_momentum",1);
+      T_PFeval->SetBranchStatus("neutrino_type",1);
+      T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
+      T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
     }
   }
 
@@ -287,10 +293,22 @@ int main( int argc, char** argv )
       // get pass or not
       bool flag_pass = get_cut_pass(ch_name, add_cut, flag_data, eval, pfeval, tagger, kine);
 
+      double osc_weight = 1.0;
+
+     
+      
       // std::cout << weight << std::endl;
       // get weight ...
       double weight_val = get_weight(weight, eval);
 
+      if (flag_osc && cov.is_osc_channel(ch_name) && (!flag_data)){
+	osc_weight = cov.get_osc_weight(eval, pfeval);
+	weight_val *= osc_weight;
+	if (weight == "cv_spline_cv_spline" || weight == "unity_unity" ||
+	    weight == "spline_spline" )
+	  weight_val *= osc_weight;
+      }
+      
       if (flag_pass)
 	htemp->Fill(val,weight_val);
     }
