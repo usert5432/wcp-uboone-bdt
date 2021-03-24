@@ -27,10 +27,14 @@ int main( int argc, char** argv )
     std::cout << "./det_cov_matrix -r[#sys 1-10]" << std::endl;
   }
   int run = 1; // run 1 ...
+  bool flag_osc = false;
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
       run = atoi(&argv[i][2]); // which run period
+      break;
+    case 'o':
+      flag_osc = atoi(&argv[i][2]); // which run period
       break;
     }
   }
@@ -44,7 +48,7 @@ int main( int argc, char** argv )
   cov.add_disabled_ch_name("BG_nueCC3_PC_overlay");
   cov.add_disabled_ch_name("BG_nueCC_extra_FC_overlay");
   cov.add_disabled_ch_name("BG_nueCC_extra_PC_overlay");
-  
+  if (flag_osc) cov.add_osc_config();
 
   // Get the file based on runno ...
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();

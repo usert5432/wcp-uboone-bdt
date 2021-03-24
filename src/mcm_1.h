@@ -545,6 +545,11 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
     T_PFeval_cv->SetBranchStatus("reco_Nproton",1);
     T_PFeval_cv->SetBranchStatus("truth_showerMomentum",1);
     T_PFeval_cv->SetBranchStatus("truth_nuScatType",1);
+    // oscillation formula ...
+    T_PFeval_cv->SetBranchStatus("truth_nu_momentum",1);
+    T_PFeval_cv->SetBranchStatus("neutrino_type",1);
+    T_PFeval_cv->SetBranchStatus("mcflux_dk2gen",1);
+    T_PFeval_cv->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
   
@@ -685,6 +690,9 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
     //    std::get<3>(vec_events.at(i)) = eval_cv.weight_lee;
     // hack for now ...
     std::get<3>(vec_events.at(i)) = leeweight(eval_cv.truth_nuEnergy);
+
+    double osc_weight = 1.0;
+    bool flag_updated = false;
     
     for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
@@ -705,9 +713,19 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
 
       double val1 = get_kine_var(kine_det, eval_det, pfeval_det, tagger_det, false, var_name);
       bool flag_pass1 = get_cut_pass(ch_name, add_cut, false, eval_det, pfeval_det, tagger_det, kine_det);
-      if (flag_pass || flag_pass1) 	std::get<4>(vec_events.at(i) ).insert(std::make_tuple(no, val, flag_pass, val1, flag_pass1));
+      if (flag_pass || flag_pass1) {
+	std::get<4>(vec_events.at(i) ).insert(std::make_tuple(no, val, flag_pass, val1, flag_pass1));
+      }
+
+      if (flag_osc && is_osc_channel(ch_name) && (!flag_updated)){
+	osc_weight = get_osc_weight(eval_cv, pfeval_cv);
+	flag_updated = true;
+      }
       
     }
+    std::get<2>(vec_events.at(i)) *= osc_weight;
+    
+    
     //std::cout << std::get<0>(vec_events.at(i)) << " " << std::get<1>(vec_events.at(i)) << " " << std::get<2>(vec_events.at(i)) << " " << std::get<3>(vec_events.at(i))  << " " << std::get<4>(vec_events.at(i) ).size() << std::endl;
   }
   

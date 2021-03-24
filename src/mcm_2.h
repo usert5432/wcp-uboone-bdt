@@ -812,6 +812,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
     std::get<1>(event_info) = leeweight(eval.truth_nuEnergy);
 
     double osc_weight = 1.0;
+    bool flag_updated = false;
     
     for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
@@ -831,8 +832,9 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 
       if (flag_pass) {
 	std::get<4>(event_info).insert(std::make_pair(no, val));
-	if (flag_osc && is_osc_channel(ch_name) ){
+	if (flag_osc && is_osc_channel(ch_name) && (!flag_updated)){
 	  osc_weight = get_osc_weight(eval, pfeval);
+	  flag_updated = true;
 	}
       }
     }
