@@ -27,16 +27,21 @@ int main( int argc, char** argv )
     std::cout << "./stat_cov_matrix -r[run period]" << std::endl;
   }
   int run = 1; // run 1 ...
+  bool flag_osc = false;
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
       run = atoi(&argv[i][2]); // which run period
       break;
+    case 'o':
+      flag_osc = atoi(&argv[i][2]); // which run period
+      break;
     }
   }
   
   CovMatrix cov;
- 
+  if (flag_osc) cov.add_osc_config();
+  
   // Get the file based on runno ...
   std::map<TString, std::tuple<int, int, TString, float, int, double, int> > map_inputfile_info = cov.get_map_inputfile_info();
   // Construct the histogram ...

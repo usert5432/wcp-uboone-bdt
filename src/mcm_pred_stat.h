@@ -781,6 +781,11 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
     if (!flag_data){
       T_PFeval->SetBranchStatus("truth_showerMomentum",1);
       T_PFeval->SetBranchStatus("truth_nuScatType",1);
+      // oscillation formula ...
+      T_PFeval->SetBranchStatus("truth_nu_momentum",1);
+      T_PFeval->SetBranchStatus("neutrino_type",1);
+      T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
+      T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
     }
   }
 
@@ -807,6 +812,9 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
       std::get<2>(vec_events.at(i)) = 1;
       std::get<3>(vec_events.at(i)) = 0;
     }
+
+    double osc_weight = 1.0;
+    bool flag_updated = false;
     
     for (auto it = histo_infos.begin(); it != histo_infos.end(); it++){
       TString histoname = std::get<0>(*it);
@@ -823,7 +831,14 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
 
       if (flag_pass) std::get<4>(vec_events.at(i)).insert(std::make_tuple(no, val, flag_pass));
       
+      if (flag_osc && is_osc_channel(ch_name) && (!flag_updated)){
+	osc_weight = get_osc_weight(eval, pfeval);
+	flag_updated = true;
+      }
     }
+    if (!flag_data)
+      std::get<2>(vec_events.at(i)) *= osc_weight;
+    
   }
 
   map_all_events[input_filename] = vec_events;
