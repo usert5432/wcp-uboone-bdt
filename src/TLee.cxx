@@ -1607,10 +1607,10 @@ void TLee::Set_Spectra_MatrixCov()
   map_input_spectrum_ch_str[10]= "nueCC_FC_ext";
   map_input_spectrum_ch_str[11]= "nueCC_PC_ext";
   map_input_spectrum_ch_str[12]= "numuCC_FC_ext";
-  // map_input_spectrum_ch_str[13]= "numuCC_PC_ext";
-  // map_input_spectrum_ch_str[14]= "CCpi0_FC_ext";
-  // map_input_spectrum_ch_str[15]= "CCpi0_PC_ext";
-  // map_input_spectrum_ch_str[16]= "NCpi0_ext";
+  map_input_spectrum_ch_str[13]= "numuCC_PC_ext";
+  map_input_spectrum_ch_str[14]= "CCpi0_FC_ext";
+  map_input_spectrum_ch_str[15]= "CCpi0_PC_ext";
+  map_input_spectrum_ch_str[16]= "NCpi0_ext";
   // map_input_spectrum_ch_str[17]= "ch17";
   // map_input_spectrum_ch_str[18]= "ch18";
   // map_input_spectrum_ch_str[19]= "ch19";
@@ -1621,8 +1621,8 @@ void TLee::Set_Spectra_MatrixCov()
   // map_input_spectrum_ch_str[24]= "ch24";
 
   // flag for LEE channels corresponding to the cov_input.txt
-  // map_Lee_ch[8] = 1;
-  // map_Lee_ch[9] = 1;
+  map_Lee_ch[8] = 1;
+  map_Lee_ch[9] = 1;
   
   /////////////////////////////////////// case: fake data
   /*
@@ -1894,7 +1894,7 @@ void TLee::Set_Spectra_MatrixCov()
     
     gbins_mc_stat = count_check -1;
     if( gbins_mc_stat!=bins_newworld ) {
-      cout<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<<endl;
+      cout<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<< " " << gbins_mc_stat << " " << bins_newworld << endl;
       cerr<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<<endl;
       exit(1);
     }
