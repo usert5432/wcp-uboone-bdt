@@ -490,6 +490,7 @@ int main( int argc, char** argv )
     //if (eval_cv.run == 7486 && eval_cv.event==3964) std::cout << flag_presel << " " << tagger_cv.numu_cc_flag << std::endl;
     
     map_re_entry_cv[std::make_tuple(eval_cv.run, eval_cv.subrun, eval_cv.event)] = i;
+    //    num_check++;
   }
 
   //  std::cout << num_check << std::endl;
@@ -522,7 +523,7 @@ int main( int argc, char** argv )
     map_rs_failed[it->first] = failed_num;
   }
   
-
+  //  std::cout << map_rs_failed.size() << " " << map_re_entry_cv.size() << " " << T_eval_cv->GetEntries() << " " << num_check << std::endl;
   
 
   TFile *file3 = new TFile(out_file,"RECREATE");

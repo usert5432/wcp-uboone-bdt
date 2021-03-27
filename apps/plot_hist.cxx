@@ -1339,11 +1339,11 @@ int main( int argc, char** argv )
         gratio_mc2[obschannel-1]->GetYaxis()->SetRangeUser(0,int(1.5*maxratio)<3?int(1.5*maxratio):3);
         gratio_mc2[obschannel-1]->GetXaxis()->SetRangeUser(hmc->GetXaxis()->GetXmin(),hmc->GetXaxis()->GetXmax());
         }
-        /* if(obschannel>=5) //hard coded at this moment */
-        /* { */
-        /*     gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco #pi^{0} energy [MeV]"); */
-        /* } */
-        /* else gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino energy [MeV]"); */
+        // if(obschannel>=5) //hard coded at this moment
+        // {
+        //     gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco #pi^{0} energy [MeV]");
+        // }
+        // else gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino energy [MeV]");
         ///hack
         /* if(obschannel<=2) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco electron shower energy [MeV]"); */ 
         /* else if(obschannel==3) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("nue BDT score"); */ 
@@ -1351,9 +1351,9 @@ int main( int argc, char** argv )
         /* else if(obschannel==5) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to beam [degree]"); */ 
         /* else if(obschannel==6) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower angle to vertical [degree]"); */ 
         /* else if(obschannel==7) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Shower vertex position in drift direction [cm]"); */
-        // if(obschannel==1) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in X-axis [cm]");
-        // if(obschannel==2) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in X-axis [cm]");
-        // if(obschannel==3) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in Y-axis [cm]");
+	if(obschannel<=4) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in X-axis [cm]");
+	//	if(obschannel==2) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in X-axis [cm]");
+         if(obschannel>4) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in Y-axis [cm]");
         // if(obschannel==4) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in Y-axis [cm]");
         // if(obschannel==5) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in Z-axis [cm]");
         // if(obschannel==6) gratio_mc[obschannel-1]->GetXaxis()->SetTitle("Reco neutrino vtx in Z-axis [cm]");
