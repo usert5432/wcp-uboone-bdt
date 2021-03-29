@@ -459,7 +459,10 @@ int main( int argc, char** argv )
     }
   }
   
-  
+  T_eval_cv->SetBranchStatus("*",1);
+  T_PFeval_cv->SetBranchStatus("*",1);
+  T_BDTvars_cv->SetBranchStatus("*",1);
+  T_KINEvars_cv->SetBranchStatus("*",1);
 
   std::map<std::tuple<int, int, int>, int> map_re_entry_cv;
   std::map<std::pair<int, int>, std::set<std::tuple<int, int, int> > > map_rs_re_cv;

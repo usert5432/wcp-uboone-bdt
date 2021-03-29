@@ -539,6 +539,12 @@ int main( int argc, char** argv )
     T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
   }
 
+  T_eval->SetBranchStatus("*",1);
+  T_PFeval->SetBranchStatus("*",1);
+  T_BDTvars->SetBranchStatus("*",1);
+  T_KINEvars->SetBranchStatus("*",1);
+
+  
   std::map<std::pair<int, int>, int> map_re_entry;
   std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re;
 

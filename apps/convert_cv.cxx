@@ -460,7 +460,11 @@ int main( int argc, char** argv )
       T_PFeval_cv->SetBranchStatus("mcflux_gen2vtx",1);
     }
   }
-  
+
+  T_eval_cv->SetBranchStatus("*",1);
+  T_PFeval_cv->SetBranchStatus("*",1);
+  T_BDTvars_cv->SetBranchStatus("*",1);
+  T_KINEvars_cv->SetBranchStatus("*",1);
 
   std::map<std::pair<int, int>, int> map_re_entry_cv;
   std::map<std::pair<int, int>, std::set<std::pair<int, int> > > map_rs_re_cv;
