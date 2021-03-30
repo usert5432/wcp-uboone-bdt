@@ -425,37 +425,37 @@ int main( int argc, char** argv )
 
   T_BDTvars->SetBranchStatus("*",0);
   T_BDTvars->SetBranchStatus("numu_cc_flag",1);
-  T_BDTvars->SetBranchStatus("numu_score",1);
-  T_BDTvars->SetBranchStatus("nue_score",1);
-  T_BDTvars->SetBranchStatus("cosmict_flag",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_0",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_1",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_2",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_3",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_4",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_5",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_6",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_7",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_8",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_9",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_10",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_11",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_12",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_13",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_14",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_15",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_16",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_17",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_18",1);
-  T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_19",1);
-  T_BDTvars->SetBranchStatus("mip_energy",1);
-  T_BDTvars->SetBranchStatus("mip_angle_beam",1);
-  T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
-  T_BDTvars->SetBranchStatus("mip_quality_n_tracks",1);
-  T_BDTvars->SetBranchStatus("mip_quality_n_showers",1);
-  T_BDTvars->SetBranchStatus("gap_n_bad",1);
-  T_BDTvars->SetBranchStatus("spt_angle_beam",1);
-  T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+  // T_BDTvars->SetBranchStatus("numu_score",1);
+  // T_BDTvars->SetBranchStatus("nue_score",1);
+  // T_BDTvars->SetBranchStatus("cosmict_flag",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_0",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_1",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_2",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_3",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_4",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_5",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_6",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_7",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_8",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_9",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_10",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_11",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_12",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_13",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_14",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_15",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_16",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_17",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_18",1);
+  // T_BDTvars->SetBranchStatus("mip_vec_dQ_dx_19",1);
+  // T_BDTvars->SetBranchStatus("mip_energy",1);
+  // T_BDTvars->SetBranchStatus("mip_angle_beam",1);
+  // T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+  // T_BDTvars->SetBranchStatus("mip_quality_n_tracks",1);
+  // T_BDTvars->SetBranchStatus("mip_quality_n_showers",1);
+  // T_BDTvars->SetBranchStatus("gap_n_bad",1);
+  // T_BDTvars->SetBranchStatus("spt_angle_beam",1);
+  // T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
   
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("match_energy",1);
@@ -490,59 +490,56 @@ int main( int argc, char** argv )
   T_eval->SetBranchStatus("truth_energyInside",1);
   
   T_KINEvars->SetBranchStatus("*",0);
-  T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
-  T_KINEvars->SetBranchStatus("kine_energy_particle",1);
-  T_KINEvars->SetBranchStatus("kine_particle_type",1);
-  T_KINEvars->SetBranchStatus("kine_energy_info",1);
-  T_KINEvars->SetBranchStatus("kine_energy_included",1);
-  T_KINEvars->SetBranchStatus("kine_reco_add_energy",1);
-  T_KINEvars->SetBranchStatus("kine_pio_mass",1);
-  T_KINEvars->SetBranchStatus("kine_pio_flag",1);
-  T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
-  T_KINEvars->SetBranchStatus("kine_pio_energy_1",1);
-  T_KINEvars->SetBranchStatus("kine_pio_theta_1",1);
-  T_KINEvars->SetBranchStatus("kine_pio_phi_1",1);
-  T_KINEvars->SetBranchStatus("kine_pio_dis_1",1);
-  T_KINEvars->SetBranchStatus("kine_pio_energy_2",1);
-  T_KINEvars->SetBranchStatus("kine_pio_theta_2",1);
-  T_KINEvars->SetBranchStatus("kine_pio_phi_2",1);
-  T_KINEvars->SetBranchStatus("kine_pio_dis_2",1);
-  T_KINEvars->SetBranchStatus("kine_pio_angle",1);
+  // T_KINEvars->SetBranchStatus("kine_reco_Enu",1);
+  // T_KINEvars->SetBranchStatus("kine_energy_particle",1);
+  // T_KINEvars->SetBranchStatus("kine_particle_type",1);
+  // T_KINEvars->SetBranchStatus("kine_energy_info",1);
+  // T_KINEvars->SetBranchStatus("kine_energy_included",1);
+  // T_KINEvars->SetBranchStatus("kine_reco_add_energy",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_mass",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_flag",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_vtx_dis",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_energy_1",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_theta_1",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_phi_1",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_dis_1",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_energy_2",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_theta_2",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_phi_2",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_dis_2",1);
+  // T_KINEvars->SetBranchStatus("kine_pio_angle",1);
 
   T_PFeval->SetBranchStatus("*",0);
-  T_PFeval->SetBranchStatus("reco_nuvtxX",1);
-  T_PFeval->SetBranchStatus("reco_nuvtxY",1);
-  T_PFeval->SetBranchStatus("reco_nuvtxZ",1);
-  T_PFeval->SetBranchStatus("reco_showervtxX",1);
-  T_PFeval->SetBranchStatus("reco_showervtxY",1);
-  T_PFeval->SetBranchStatus("reco_showervtxZ",1);
-  T_PFeval->SetBranchStatus("reco_muonMomentum",1);
-  T_PFeval->SetBranchStatus("reco_showerKE",1);
-  T_PFeval->SetBranchStatus("nuvtx_diff",1);
-  T_PFeval->SetBranchStatus("showervtx_diff",1);
-  T_PFeval->SetBranchStatus("muonvtx_diff",1);
-  T_PFeval->SetBranchStatus("truth_muonMomentum",1);
-  if (pfeval.flag_NCDelta){
-      T_PFeval->SetBranchStatus("reco_protonMomentum",1);
-      T_PFeval->SetBranchStatus("truth_NCDelta",1);
-      T_PFeval->SetBranchStatus("truth_NprimPio",1);
-  }
-  if (pfeval.flag_showerMomentum){
-    T_PFeval->SetBranchStatus("reco_showerMomentum",1);
-    T_PFeval->SetBranchStatus("reco_Nproton",1);
-    T_PFeval->SetBranchStatus("truth_showerMomentum",1);
-    T_PFeval->SetBranchStatus("truth_nuScatType",1);
-    // oscillation formula ...
-    T_PFeval->SetBranchStatus("truth_nu_momentum",1);
-    T_PFeval->SetBranchStatus("neutrino_type",1);
-    T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
-    T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
-  }
+  // T_PFeval->SetBranchStatus("reco_nuvtxX",1);
+  // T_PFeval->SetBranchStatus("reco_nuvtxY",1);
+  // T_PFeval->SetBranchStatus("reco_nuvtxZ",1);
+  // T_PFeval->SetBranchStatus("reco_showervtxX",1);
+  // T_PFeval->SetBranchStatus("reco_showervtxY",1);
+  // T_PFeval->SetBranchStatus("reco_showervtxZ",1);
+  // T_PFeval->SetBranchStatus("reco_muonMomentum",1);
+  // T_PFeval->SetBranchStatus("reco_showerKE",1);
+  // T_PFeval->SetBranchStatus("nuvtx_diff",1);
+  // T_PFeval->SetBranchStatus("showervtx_diff",1);
+  // T_PFeval->SetBranchStatus("muonvtx_diff",1);
+  // T_PFeval->SetBranchStatus("truth_muonMomentum",1);
+  // if (pfeval.flag_NCDelta){
+  //     T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+  //     T_PFeval->SetBranchStatus("truth_NCDelta",1);
+  //     T_PFeval->SetBranchStatus("truth_NprimPio",1);
+  // }
+  // if (pfeval.flag_showerMomentum){
+  //   T_PFeval->SetBranchStatus("reco_showerMomentum",1);
+  //   T_PFeval->SetBranchStatus("reco_Nproton",1);
+  //   T_PFeval->SetBranchStatus("truth_showerMomentum",1);
+  //   T_PFeval->SetBranchStatus("truth_nuScatType",1);
+  //   // oscillation formula ...
+  //   T_PFeval->SetBranchStatus("truth_nu_momentum",1);
+  //   T_PFeval->SetBranchStatus("neutrino_type",1);
+  //   T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
+  //   T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
+  // }
 
-  T_eval->SetBranchStatus("*",1);
-  T_PFeval->SetBranchStatus("*",1);
-  T_BDTvars->SetBranchStatus("*",1);
-  T_KINEvars->SetBranchStatus("*",1);
+  
 
   
   std::map<std::pair<int, int>, int> map_re_entry;
@@ -599,14 +596,28 @@ int main( int argc, char** argv )
     }
   }
 
+
+  T_eval->SetBranchStatus("*",1);
+  T_PFeval->SetBranchStatus("*",1);
+  T_BDTvars->SetBranchStatus("*",1);
+  T_KINEvars->SetBranchStatus("*",1);
+
+
+  std::map<int, int> map_cv_weight_index;
+  
+  
   for (auto it = map_re_entry.begin(); it != map_re_entry.end(); it++){
     auto it1 = map_re_weight_entry.find(it->first);
     if (it1 != map_re_weight_entry.end()){
-      T_BDTvars->GetEntry(it->second);
-      T_eval->GetEntry(it->second);
-      T_KINEvars->GetEntry(it->second);
-      T_PFeval->GetEntry(it->second);
-      T->GetEntry(it1->second);
+      map_cv_weight_index[it->second] = it1->second;
+    }
+  }
+  for (auto it = map_cv_weight_index.begin(); it!= map_cv_weight_index.end(); it++){
+      T_BDTvars->GetEntry(it->first);
+      T_eval->GetEntry(it->first);
+      T_KINEvars->GetEntry(it->first);
+      T_PFeval->GetEntry(it->first);
+      T->GetEntry(it->second);
     
 
       t1->Fill();
@@ -614,7 +625,7 @@ int main( int argc, char** argv )
       t4->Fill();
       t5->Fill();
       t6->Fill();
-    }
+    
   }
 
   double cv_pot = 0;
