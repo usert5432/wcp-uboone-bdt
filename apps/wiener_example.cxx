@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     Int_t C_type; 
     Float_t Norm_type;
 
-    Int_t flag_WienerFilter = 1;
+    Float_t flag_WienerFilter = 1.0;
     
     if( argc <5 )
     {
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         outputfile = argv[2];
         C_type = atoi(argv[3]);
         Norm_type = atof(argv[4]);
-	if (argc==6) flag_WienerFilter = atoi(argv[5]);
+	if (argc==6) flag_WienerFilter = atof(argv[5]);
     }
     
     std::cout<<"Derivative matrix type: "<<C_type<<std::endl;
