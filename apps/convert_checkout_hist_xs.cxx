@@ -296,7 +296,6 @@ int main( int argc, char** argv )
 	signal_bin = get_xs_signal_no(cov.get_cut_file(), cov.get_map_cut_xs_bin(), eval, pfeval, tagger, kine);
 
       if (!((signal_bin != -1) || flag_pass)) continue;
-      
       // get weight ...
       double weight_val = get_weight(weight, eval);
 
@@ -306,7 +305,6 @@ int main( int argc, char** argv )
       TH1F *h2 = std::get<1>(tmp_hists);
       TH2F *h3 = std::get<2>(tmp_hists);
       int num = std::get<3>(tmp_hists);
-      
       if (num==1){
        	if (flag_pass) h1->Fill(val,  weight_val);
       }else{
@@ -315,7 +313,7 @@ int main( int argc, char** argv )
        	  h2->Fill(signal_bin, weight_val);
        	  if (flag_pass) h3->Fill(val, signal_bin, weight_val);
        	}else{
-       	  std::cout << "Something wrong: cut/channel mismatch !" << std::endl;
+       	  std::cout << "[convt-hist-xs] Something wrong: cut/channel mismatch !" << std::endl;
        	}
       } // else
  
