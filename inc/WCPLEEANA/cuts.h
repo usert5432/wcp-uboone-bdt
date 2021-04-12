@@ -545,6 +545,44 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
         std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }
     }
+    else if (cut_file == 8){
+      if (cut_name == "numuCC.inside.Enu.le.4000.gt.200"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy>200) return number;
+      }else{
+        std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
+    else if (cut_file == 9){
+      if (cut_name == "numuCC.inside.Enu.le.1200.gt.200"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>200) return number;
+      }else if (cut_name == "numuCC.inside.Enu.le.4000.gt.1200"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy>1200) return number;
+      }
+      else{
+        std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
+    else if (cut_file == 10) { 
+      if (cut_name == "numuCC.inside.Ehadron.le.150.gt.30"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=150 && Ehadron>30) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.275.gt.150"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=275 && Ehadron>150) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.411.gt.275"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=411 && Ehadron>275) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.502.gt.411"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=502 && Ehadron>411) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.614.gt.502"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=614 && Ehadron>502) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.750.gt.614"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=750 && Ehadron>614) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.1120.gt.750"){
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron<=1120 && Ehadron>750) return number;
+      }else if (cut_name == "numuCC.inside.Ehadron.le.2500.gt.1120"){ // 1120 - 2500 MeV
+        if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron>1120 && Ehadron<= 2500) return number;
+      }else{
+  std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
 
   }
   
@@ -984,6 +1022,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   } else if (ch_name == "numuCC_signal_Enu_FC_overlay" || ch_name == "numuCC_signal_Enu_PC_overlay" || ch_name == "numuCC_background_Enu_FC_overlay" || ch_name == "numuCC_background_Enu_PC_overlay"
 	     || ch_name == "numuCC1_signal_Enu_FC_overlay" || ch_name == "numuCC1_signal_Enu_PC_overlay" || ch_name == "numuCC1_background_Enu_FC_overlay" || ch_name == "numuCC1_background_Enu_PC_overlay"
 	     || ch_name == "numuCC2_signal_Enu_FC_overlay" || ch_name == "numuCC2_signal_Enu_PC_overlay" || ch_name == "numuCC2_background_Enu_FC_overlay" || ch_name == "numuCC2_background_Enu_PC_overlay"
+       || ch_name == "numuCC_signal_Enu_overlay" || ch_name == "numuCC_background_Enu_overlay"
 	    ){
     if (ch_name == "numuCC_signal_Enu_FC_overlay" || ch_name == "numuCC1_signal_Enu_FC_overlay" || ch_name == "numuCC2_signal_Enu_FC_overlay"){
       if (flag_numuCC && flag_FC && map_cuts_flag["Xs_Enu_numuCCinFV"]) return true;
@@ -993,6 +1032,10 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       if (flag_numuCC && flag_FC && (!map_cuts_flag["Xs_Enu_numuCCinFV"])) return true;
     }else if (ch_name == "numuCC_background_Enu_PC_overlay" || ch_name == "numuCC1_background_Enu_PC_overlay" || ch_name == "numuCC2_background_Enu_PC_overlay"){
       if (flag_numuCC && (!flag_FC) && (!map_cuts_flag["Xs_Enu_numuCCinFV"])) return true;
+    }else if (ch_name == "numuCC_signal_Enu_overlay"){
+      if (flag_numuCC && map_cuts_flag["Xs_Enu_numuCCinFV"]) return true;
+    }else if (ch_name == "numuCC_background_Enu_overlay"){
+      if (flag_numuCC && (!map_cuts_flag["Xs_Enu_numuCCinFV"])) return true;
     }
     return false;
     
