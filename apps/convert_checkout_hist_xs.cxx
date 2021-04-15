@@ -193,6 +193,10 @@ int main( int argc, char** argv )
   T_eval->SetBranchStatus("stm_STM",1);
   T_eval->SetBranchStatus("stm_FullDead",1);
   T_eval->SetBranchStatus("stm_clusterlength",1);
+
+  // T_eval->SetBranchStatus("run",1);
+  // T_eval->SetBranchStatus("subrun",1);
+  // T_eval->SetBranchStatus("event",1);
   
   if (!flag_data){
     T_eval->SetBranchStatus("weight_spline",1);
@@ -299,6 +303,9 @@ int main( int argc, char** argv )
       // get weight ...
       double weight_val = get_weight(weight, eval);
 
+      //  if (ch_name == "numuCC_signal_Enu_FC_overlay" && weight == "cv_spline") std::cout << "Xin: " << " " << flag_pass << " " << signal_bin << " " << weight_val << " " <<eval.run << " " << eval.subrun << " " << eval.event << std::endl;
+      
+      
       //     htemp = map_histoname_hist[histoname];
       auto tmp_hists = map_histoname_hists[histoname];
       TH1F *h1 = std::get<0>(tmp_hists);

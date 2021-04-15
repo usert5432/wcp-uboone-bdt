@@ -40,6 +40,20 @@ int main( int argc, char** argv )
   TString out_file = argv[3];
   TString option = argv[4];
 
+  // bool flag_spec = false;
+  // for (Int_t i=1;i!=argc;i++){
+  //   switch(argv[i][1]){
+  //   case 's':
+  //     flag_spec = atoi(&argv[i][2]);
+  //     break;
+  //   }
+  // }
+  // // only work for the Xs ones ...
+  // if (!(flag_spec && option == "UBGenieFluxSmallUni"))
+  //   flag_spec = false;
+  // std::cout << "flag_spec: " << flag_spec << std::endl;
+  
+  
   TFile *file1 = new TFile(input_file_cv);
   TTree *T_BDTvars = (TTree*)file1->Get("wcpselection/T_BDTvars");
   TTree *T_eval = (TTree*)file1->Get("wcpselection/T_eval");
@@ -126,6 +140,7 @@ int main( int argc, char** argv )
   }else if (option == "reinteractions_proton_Geant4"){
     T = (TTree*)file2->Get("reinteractions_proton_Geant4");
   }
+
 
   
   TFile *file3 = new TFile(out_file,"RECREATE");
@@ -562,11 +577,20 @@ int main( int argc, char** argv )
     if (tmp_match_found != 0 && eval.stm_eventtype != 0 && eval.stm_lowenergy ==0 && eval.stm_LM ==0 && eval.stm_TGM ==0 && eval.stm_STM==0 && eval.stm_FullDead == 0 && eval.stm_clusterlength >0) {
       flag_presel = true; // preselection ...
     }
-    
+
+
+    // if (flag_spec){
+    //   // include ...
+    //   if ((tmp_match_found == -1  || (tmp_match_found == 1 && eval.stm_lowenergy == -1) || (flag_presel && tagger.numu_cc_flag == -1)) && (!eval.truth_vtxInside)) {
+    // 	num_check ++;
+    // 	continue;
+    //   }
+    // }else{
     if (tmp_match_found == -1  || (tmp_match_found == 1 && eval.stm_lowenergy == -1) || (flag_presel && tagger.numu_cc_flag == -1)) {
       num_check ++;
       continue;
     }
+    // }
 
     //if (eval.run == 7486 && eval.event==3964) std::cout << flag_presel << " " << tagger.numu_cc_flag << std::endl;
     

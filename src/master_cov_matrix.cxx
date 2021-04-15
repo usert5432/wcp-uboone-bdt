@@ -824,13 +824,16 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
 	  htemp1->Add(hmc1,ratio);
 	  htemp2->Add(hmc2,ratio);
 	  htemp3->Add(hmc3,ratio);
+	  //std::cout << hmc1->GetSum() << " " << ratio << std::endl;
 	}
+	
      	//	std::cout << covch << " " << histoname << " " << ratio << " " << data_pot << std::endl;
       }
       
       hpred->Add(htemp);
       delete htemp;
       if (num != 1){
+	//	std::cout << num << " " << htemp1->GetSum() << std::endl;
 	hsigma->Add(htemp1);
 	hsigmabar->Add(htemp2);
 	hR->Add(htemp3);
@@ -955,7 +958,7 @@ void LEEana::CovMatrix::fill_pred_R_signal(int run, TMatrixD* mat_R, TVectorD* v
       	double data_pot = map_data_period_pot[period];
       	double ratio = data_pot/temp_map_mc_acc_pot[period];
 
-	
+	//	std::cout << h1->GetSum() << " " << ratio << std::endl;
       	hsigma->Add(h1, ratio);
 	hR->Add(h2, ratio);
       	//	std::cout << covch << " " << histoname << " " << ratio << " " << data_pot << std::endl;
@@ -1107,6 +1110,8 @@ void LEEana::CovMatrix::fill_xs_histograms(std::map<TString, std::set<std::tuple
 	int num = std::get<4>(tmp_hists);
 	int flag_lee = std::get<2>(map_histoname_infos[histoname]);
 
+	//	if (no==0) std::cout << "Xin: " << " " << flag_pass << " " << nsignal_bin << " " << weight << " " << std::endl;
+	
 	if (num==1){
 	  if (flag_lee){
 	    if (flag_pass) h1->Fill(val, weight * weight_lee);
@@ -1138,6 +1143,19 @@ void LEEana::CovMatrix::fill_xs_histograms(std::map<TString, std::set<std::tuple
       }
     }
   }
+
+  // for (auto it = map_histoname_hists.begin(); it != map_histoname_hists.end(); it++){
+  //   int num = std::get<4>(it->second);
+  //   TH1F *h1 = std::get<0>(it->second);
+  //   TH1F *h2 = std::get<1>(it->second);
+  //   TH1F *h3 = std::get<2>(it->second);
+  //   TH2F *h4 = std::get<3>(it->second);
+  //   //    if (num==4)
+  //   //  std::cout << h1->GetSum() << " " << h2->GetSum() << " " << h3->GetSum() << " " << h4->GetSum() << std::endl;
+     
+  // }
+
+
   
 }
 
@@ -1628,6 +1646,8 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
   std::vector<int> max_lengths;
   std::vector<int> sup_lengths;
 
+  int temp_sum = 0;
+  
   for (size_t i=0;i!=T_eval->GetEntries();i++){
     T_BDTvars->GetEntry(i);
     T_eval->GetEntry(i);
@@ -1644,6 +1664,8 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
 
       auto it2 = map_histoname_infos.find(histoname);
       int no = std::get<0>(it2->second);
+
+      //std::cout << no << " " << histoname << std::endl;
       
       TString var_name = std::get<4>(*it);
       TString ch_name = std::get<5>(*it);
@@ -1658,8 +1680,13 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       if (xs_signal_ch_names.find(ch_name) != xs_signal_ch_names.end()){
 	signal_bin = get_xs_signal_no(cut_file, map_cut_xs_bin, eval, pfeval, tagger, kine);
       }
-      //std::cout << flag_pass << " " << signal_bin << " " << no << std::endl;
-      if (flag_pass || signal_bin !=-1) std::get<4>(event_info).insert(std::make_tuple(no, val, flag_pass, signal_bin));
+
+      //  std::cout << flag_pass << " " << signal_bin << " " << no << std::endl;
+      if (flag_pass || signal_bin !=-1) {
+	std::get<4>(event_info).insert(std::make_tuple(no, val, flag_pass, signal_bin));
+	//	if (no == 0) std::cout << "Xin: " << " " << flag_pass << " " << signal_bin << " " << eval.weight_cv * eval.weight_spline << " " <<eval.run << " " << eval.subrun << " " << eval.event << std::endl;
+      }
+      //if (flag_pass || (signal_bin !=-1 && is_preselection(eval))) std::get<4>(event_info).insert(std::make_tuple(no, val, flag_pass, signal_bin));
      }
     
     if (std::get<4>(event_info).size()>0){
@@ -1923,9 +1950,12 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
       }
       
       set_events.insert(event_info);
+      //  temp_sum ++;
     }
     
   }
+
+  // std::cout << temp_sum << " " << set_events.size() << std::endl;
 
 
 
