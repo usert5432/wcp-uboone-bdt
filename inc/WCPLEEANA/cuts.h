@@ -685,26 +685,32 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   if (eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_isCC==0 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio>0) map_cuts_flag["NCpi0inFV"] = true;
   else map_cuts_flag["NCpi0inFV"] = false;
 
-  if(pfeval.truth_nuIntType == 1000) map_cuts_flag["MEC"] = true; // 10% of this type from unclassified res?
-  else map_cuts_flag["MEC"] = false;
+  if(pfeval.truth_nuScatType==10 && eval.truth_isCC==1 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["CCMEC"] = true;
+  else map_cuts_flag["CCMEC"] = false;
   
-  if(pfeval.truth_nuIntType == 1001) map_cuts_flag["CCQE"] = true;
+  if(pfeval.truth_nuScatType==10 && eval.truth_isCC==0 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["NCMEC"] = true;
+  else map_cuts_flag["NCMEC"] = false;
+  
+  if(pfeval.truth_nuScatType==1 && eval.truth_isCC==1 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["CCQE"] = true;
   else map_cuts_flag["CCQE"] = false;
 
-  if(pfeval.truth_nuIntType == 1002) map_cuts_flag["NCQE"] = true;
+  if(pfeval.truth_nuScatType==1 && eval.truth_isCC==0 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["NCQE"] = true;
   else map_cuts_flag["NCQE"] = false;
 
-  if(pfeval.truth_nuIntType >= 1003 && pfeval.truth_nuIntType<=1090 && !(pfeval.truth_nuIntType>=1006 && pfeval.truth_nuIntType<=1009) && !(pfeval.truth_nuIntType>=1013 && pfeval.truth_nuIntType<=1016)) map_cuts_flag["CCRES"] = true;
+  if(pfeval.truth_nuScatType==4 && eval.truth_isCC==1 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["CCRES"] = true;
   else map_cuts_flag["CCRES"] = false;
 
-  if((pfeval.truth_nuIntType>=1006 && pfeval.truth_nuIntType<=1009) || (pfeval.truth_nuIntType>=1013 && pfeval.truth_nuIntType<=1016)) map_cuts_flag["NCRES"] = true;
+  if(pfeval.truth_nuScatType==4 && eval.truth_isCC==0 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["NCRES"] = true;
   else map_cuts_flag["NCRES"] = false;
 
-  if(pfeval.truth_nuIntType == 1091 || pfeval.truth_nuIntType == 1092) map_cuts_flag["DIS"] = true;
-  else map_cuts_flag["DIS"] = false;
+  if(pfeval.truth_nuScatType==3 && eval.truth_isCC==1 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["CCDIS"] = true;
+  else map_cuts_flag["CCDIS"] = false;
 
-  if(pfeval.truth_nuIntType<1000 || pfeval.truth_nuIntType>1092) map_cuts_flag["otherXs"] = true;
-  else map_cuts_flag["otherXs"] = false;
+  if(pfeval.truth_nuScatType==3 && eval.truth_isCC==0 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["NCDIS"] = true;
+  else map_cuts_flag["NCDIS"] = false;
+  
+  if(pfeval.truth_nuScatType!=10 && pfeval.truth_nuScatType!=1 && pfeval.truth_nuScatType!=3 && pfeval.truth_nuScatType!=4 && eval.match_completeness_energy>0.1*eval.truth_energyInside) map_cuts_flag["OTHER"] = true;
+  else map_cuts_flag["OTHER"] = false;
 
 
   // figure out additional cuts and flag_data ...
