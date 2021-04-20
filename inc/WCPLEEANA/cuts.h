@@ -54,6 +54,7 @@ namespace LEEana{
   bool is_numuCC(TaggerInfo& tagger_info);
   bool is_numuCC_tight(TaggerInfo& tagger_info, PFevalInfo& pfeval);
   bool is_numuCC_1mu0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
+  bool is_0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval);
   bool is_numuCC_lowEhad(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval, bool flag_data);
   bool is_numuCC_cutbased(TaggerInfo& tagger_info);
   
@@ -748,7 +749,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_cc_pi0 = is_cc_pi0(kine, flag_data);
   bool flag_NC = is_NC(tagger);
   bool flag_FC = is_FC(eval);
-
+  bool flag_0p = is_0p(tagger, kine, pfeval);
+  
   if (ch_name == "LEE_FC_nueoverlay"  || ch_name == "nueCC_FC_nueoverlay"){
     if (flag_nueCC && flag_FC && flag_truth_inside) return true;
     else return false;
@@ -940,6 +942,28 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   }else if (ch_name == "BG_nueCC_extra_overlay"){
     if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
     else return false;
+    
+    // FC and Np
+  }else if (ch_name == "nueCC_extra_nueoverlay_fc_np"){
+    if (flag_nueCC && flag_truth_inside && flag_FC && (!flag_0p)) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_ext_fc_np" || ch_name == "BG_nueCC_extra_dirt_fc_np" || ch_name =="nueCC_extra_bnb_fc_np"){
+    if (flag_nueCC&& flag_FC && (!flag_0p)) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_overlay_fc_np"){
+    if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)&& flag_FC && (!flag_0p)) return true;
+    else return false;
+    // FC and 0p
+  }else if (ch_name == "nueCC_extra_nueoverlay_fc_0p"){
+    if (flag_nueCC && flag_truth_inside && flag_FC && (flag_0p)) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_ext_fc_0p" || ch_name == "BG_nueCC_extra_dirt_fc_0p" || ch_name =="nueCC_extra_bnb_fc_0p"){
+    if (flag_nueCC&& flag_FC && (flag_0p)) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_overlay_fc_0p"){
+    if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)&& flag_FC && (flag_0p)) return true;
+    else return false;
+    
  // cut-based numuCC FC/PC 2 obs channels   
   }else if (ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_cutbased_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_cutbased_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_cutbased_nopi0_nonueCC_FC_bnb"){
     if (flag_numuCC_cutbased && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
@@ -955,6 +979,12 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
  // numuCC selection PC+FC 1 obs channel   
   }else if (ch_name == "numuCC_overlay" || ch_name == "BG_numuCC_ext" || ch_name =="BG_numuCC_dirt" || ch_name == "numuCC_bnb"){
     if (flag_numuCC) return true;
+    else return false;
+  }else if (ch_name == "numuCC_overlay_fc_np" || ch_name == "BG_numuCC_ext_fc_np" || ch_name =="BG_numuCC_dirt_fc_np" || ch_name == "numuCC_bnb_fc_np"){
+    if (flag_numuCC && flag_FC && (!flag_0p)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_overlay_fc_0p" || ch_name == "BG_numuCC_ext_fc_0p" || ch_name =="BG_numuCC_dirt_fc_0p" || ch_name == "numuCC_bnb_fc_0p"){
+    if (flag_numuCC && flag_FC && (flag_0p)) return true;
     else return false;
  // cutbased numuCC selection PC+FC 1 obs channel   
   }else if (ch_name == "numuCC_cutbased_overlay" || ch_name == "BG_numuCC_cutbased_ext" || ch_name =="BG_numuCC_cutbased_dirt" || ch_name == "numuCC_cutbased_bnb"){
@@ -1246,6 +1276,27 @@ bool LEEana::is_numuCC_tight(TaggerInfo& tagger_info, PFevalInfo& pfeval){
 
   if (tagger_info.numu_cc_flag>=0 && tagger_info.numu_score > 0.9 && pfeval.reco_muonMomentum[3]>0)
     flag = true;
+  
+  return flag;
+}
+
+bool LEEana::is_0p(TaggerInfo& tagger_info, KineInfo& kine, PFevalInfo& pfeval){
+  bool flag = false;
+  
+  if (tagger_info.numu_cc_flag>=0){ 
+      // 1 lepton <=1 proton 0 charged pion
+      // 1 lepton guaranteed by numu cc flag
+      // using pi0 flag to remove pi0 component in channel definition
+      int Nproton = 0;
+      int Npion = 0;
+      for(size_t i=0; i<kine.kine_energy_particle->size(); i++)
+      {
+          int pdgcode = kine.kine_particle_type->at(i);
+          if(abs(pdgcode)==2212 && kine.kine_energy_particle->at(i)>35) Nproton++; // KE threshold: 50 MeV, 1.5 cm? 
+          if(abs(pdgcode)==211 && kine.kine_energy_particle->at(i)>10) Npion++; // KE threshold: 10 MeV 
+      }
+      if(Nproton==0) flag = true;
+  } 
   
   return flag;
 }

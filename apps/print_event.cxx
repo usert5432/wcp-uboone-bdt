@@ -163,8 +163,12 @@ int main( int argc, char** argv )
 
     double Enu = get_reco_Enu_corr(kine, flag_data);
       
-    if (tagger.nue_score>7.0 && eval.match_isFC==1 && Enu >= 800 && Enu <=1500){
-      std::cout << eval.run << " \t" << eval.subrun << " \t" << eval.event << " \t" <<  Enu << "  \t" << pfeval.reco_nuvtxX << "  \t" << pfeval.reco_nuvtxY << "  \t" << pfeval.reco_nuvtxZ << std::endl;
+    // if (tagger.nue_score>7.0 && eval.match_isFC==1 && Enu >= 800 && Enu <=1500){
+    //   std::cout << eval.run << " \t" << eval.subrun << " \t" << eval.event << " \t" <<  Enu << "  \t" << pfeval.reco_nuvtxX << "  \t" << pfeval.reco_nuvtxY << "  \t" << pfeval.reco_nuvtxZ << std::endl;
+    // }
+
+    if (tagger.nue_score > 4.0){
+      std::cout << eval.run << " \t" << eval.subrun << " \t" << eval.event << " \t" <<  Enu << "  \t" << pfeval.reco_nuvtxX << "  \t" << pfeval.reco_nuvtxY << "  \t" << pfeval.reco_nuvtxZ << " " << tagger.nue_score << " " << eval.match_isFC << std::endl;
     }
     
   }
