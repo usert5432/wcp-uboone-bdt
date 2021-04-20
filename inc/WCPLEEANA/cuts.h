@@ -237,6 +237,7 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       else
 	return -2;
   }else if (var_name == "muon_theta"){
+
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       if (pfeval.reco_muonMomentum[3]>0)
 	return muonMomentum.Theta()*180./TMath::Pi();
@@ -584,6 +585,25 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
   std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }
     }
+    else if (cut_file == 11){
+      if (cut_name == "nueCC.inside.Enu.le.540.gt.200"){ // recommended range: 200 - 540
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=540 && eval.truth_nuEnergy>200) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.705.gt.540"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=705 && eval.truth_nuEnergy>540) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.920.gt.705"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=920 && eval.truth_nuEnergy>705) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.1200.gt.920"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>920) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.1570.gt.1200"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1570 && eval.truth_nuEnergy>1200) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.2050.gt.1570"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=2050 && eval.truth_nuEnergy>1570) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.4000.gt.2050"){ // recommended range: 2050 - 4000
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy>2050 && eval.truth_nuEnergy<=4000) return number;
+      }else{
+        std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
 
   }
   
@@ -664,6 +684,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   else map_cuts_flag["XsecBkgCC"] = false;
 
   // finish Xs related cuts ...
+  if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy > 200) map_cuts_flag["Xs_Enu_nueCCinFV"] = true;
+  else map_cuts_flag["Xs_Enu_nueCCinFV"] = false;
   
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && abs(eval.truth_nuPdg)==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1) map_cuts_flag["nueCCinFV"] = true;
   else map_cuts_flag["nueCCinFV"] = false;
@@ -1072,6 +1094,24 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       if (flag_numuCC && map_cuts_flag["Xs_Enu_numuCCinFV"]) return true;
     }else if (ch_name == "numuCC_background_Enu_overlay"){
       if (flag_numuCC && (!map_cuts_flag["Xs_Enu_numuCCinFV"])) return true;
+    }
+    return false;
+    
+  }else if (ch_name == "nueCC_signal_Enu_FC_overlay" || ch_name == "nueCC_signal_Enu_PC_overlay" || ch_name == "nueCC_background_Enu_FC_overlay" || ch_name == "nueCC_background_Enu_PC_overlay"
+       || ch_name == "nueCC_signal_Enu_overlay" || ch_name == "nueCC_background_Enu_overlay"
+      ){
+    if (ch_name == "nueCC_signal_Enu_FC_overlay"){
+      if (flag_nueCC && flag_FC && map_cuts_flag["Xs_Enu_nueCCinFV"]) return true;
+    }else if (ch_name == "nueCC_signal_Enu_PC_overlay"){
+      if (flag_nueCC && (!flag_FC) && map_cuts_flag["Xs_Enu_nueCCinFV"]) return true;
+    }else if (ch_name == "nueCC_background_Enu_FC_overlay"){
+      if (flag_nueCC && flag_FC && (!map_cuts_flag["Xs_Enu_nueCCinFV"])) return true;
+    }else if (ch_name == "nueCC_background_Enu_PC_overlay" ){
+      if (flag_nueCC && (!flag_FC) && (!map_cuts_flag["Xs_Enu_nueCCinFV"])) return true;
+    }else if (ch_name == "nueCC_signal_Enu_overlay"){
+      if (flag_nueCC && map_cuts_flag["Xs_Enu_nueCCinFV"]) return true;
+    }else if (ch_name == "nueCC_background_Enu_overlay"){
+      if (flag_nueCC && (!map_cuts_flag["Xs_Enu_nueCCinFV"])) return true;
     }
     return false;
     
