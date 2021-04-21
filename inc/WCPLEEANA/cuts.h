@@ -230,6 +230,9 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       return pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
   }else if (var_name == "reco_Emuon"){
       return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV  
+  }else if (var_name == "muon_momentum"){
+      float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
+      return (TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66));
   }else if (var_name == "muon_costheta"){
       TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
       if (pfeval.reco_muonMomentum[3]>0)
@@ -803,6 +806,105 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
   }else if (ch_name == "BG_nueCC_PC_overlay"){
     if (flag_nueCC && (!flag_FC) && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta0_FC_overlay" || ch_name == "BG_numuCC_theta0_FC_ext" || ch_name =="BG_numuCC_theta0_FC_dirt" || ch_name == "numuCC_theta0_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[0] && TMath::Cos(muonMomentum.Theta())<costheta_binning[1])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta1_FC_overlay" || ch_name == "BG_numuCC_theta1_FC_ext" || ch_name =="BG_numuCC_theta1_FC_dirt" || ch_name == "numuCC_theta1_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[1] && TMath::Cos(muonMomentum.Theta())<costheta_binning[2])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta2_FC_overlay" || ch_name == "BG_numuCC_theta2_FC_ext" || ch_name =="BG_numuCC_theta2_FC_dirt" || ch_name == "numuCC_theta2_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[2] && TMath::Cos(muonMomentum.Theta())<costheta_binning[3])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta3_FC_overlay" || ch_name == "BG_numuCC_theta3_FC_ext" || ch_name =="BG_numuCC_theta3_FC_dirt" || ch_name == "numuCC_theta3_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[3] && TMath::Cos(muonMomentum.Theta())<costheta_binning[4])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta4_FC_overlay" || ch_name == "BG_numuCC_theta4_FC_ext" || ch_name =="BG_numuCC_theta4_FC_dirt" || ch_name == "numuCC_theta4_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[4] && TMath::Cos(muonMomentum.Theta())<costheta_binning[5])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta5_FC_overlay" || ch_name == "BG_numuCC_theta5_FC_ext" || ch_name =="BG_numuCC_theta5_FC_dirt" || ch_name == "numuCC_theta5_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[5] && TMath::Cos(muonMomentum.Theta())<costheta_binning[6])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta6_FC_overlay" || ch_name == "BG_numuCC_theta6_FC_ext" || ch_name =="BG_numuCC_theta6_FC_dirt" || ch_name == "numuCC_theta6_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[6] && TMath::Cos(muonMomentum.Theta())<costheta_binning[7])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta7_FC_overlay" || ch_name == "BG_numuCC_theta7_FC_ext" || ch_name =="BG_numuCC_theta7_FC_dirt" || ch_name == "numuCC_theta7_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[7] && TMath::Cos(muonMomentum.Theta())<costheta_binning[8])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta8_FC_overlay" || ch_name == "BG_numuCC_theta8_FC_ext" || ch_name =="BG_numuCC_theta8_FC_dirt" || ch_name == "numuCC_theta8_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[8] && TMath::Cos(muonMomentum.Theta())<costheta_binning[9])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_FC_overlay" || ch_name == "BG_numuCC_theta_all_FC_ext" || ch_name =="BG_numuCC_theta_all_FC_dirt" || ch_name == "numuCC_theta_all_FC_bnb") {
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_0p_FC_overlay" || ch_name == "BG_numuCC_theta_all_0p_FC_ext" || ch_name =="BG_numuCC_theta_all_0p_FC_dirt" || ch_name == "numuCC_theta_all_0p_FC_bnb") {
+    if (flag_numuCC && flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_Np_FC_overlay" || ch_name == "BG_numuCC_theta_all_Np_FC_ext" || ch_name =="BG_numuCC_theta_all_Np_FC_dirt" || ch_name == "numuCC_theta_all_Np_FC_bnb") {
+    if (flag_numuCC && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_all_FC_overlay" || ch_name == "BG_numuCC_all_FC_ext" || ch_name =="BG_numuCC_all_FC_dirt" || ch_name == "numuCC_all_FC_bnb") {
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_all2_FC_overlay" || ch_name == "BG_numuCC_all2_FC_ext" || ch_name =="BG_numuCC_all2_FC_dirt" || ch_name == "numuCC_all2_FC_bnb") {
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_0p_FC_overlay" || ch_name == "BG_numuCC_0p_FC_ext" || ch_name =="BG_numuCC_0p_FC_dirt" || ch_name == "numuCC_0p_FC_bnb") {
+    if (flag_numuCC && flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_Np_FC_overlay" || ch_name == "BG_numuCC_Np_FC_ext" || ch_name =="BG_numuCC_Np_FC_dirt" || ch_name == "numuCC_Np_FC_bnb") {
+    if (flag_numuCC && (!flag_numuCC_1mu0p) && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta0_PC_overlay" || ch_name == "BG_numuCC_theta0_PC_ext" || ch_name =="BG_numuCC_theta0_PC_dirt" || ch_name == "numuCC_theta0_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[0] && TMath::Cos(muonMomentum.Theta())<costheta_binning[1])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta1_PC_overlay" || ch_name == "BG_numuCC_theta1_PC_ext" || ch_name =="BG_numuCC_theta1_PC_dirt" || ch_name == "numuCC_theta1_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[1] && TMath::Cos(muonMomentum.Theta())<costheta_binning[2])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta2_PC_overlay" || ch_name == "BG_numuCC_theta2_PC_ext" || ch_name =="BG_numuCC_theta2_PC_dirt" || ch_name == "numuCC_theta2_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[2] && TMath::Cos(muonMomentum.Theta())<costheta_binning[3])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta3_PC_overlay" || ch_name == "BG_numuCC_theta3_PC_ext" || ch_name =="BG_numuCC_theta3_PC_dirt" || ch_name == "numuCC_theta3_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[3] && TMath::Cos(muonMomentum.Theta())<costheta_binning[4])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta4_PC_overlay" || ch_name == "BG_numuCC_theta4_PC_ext" || ch_name =="BG_numuCC_theta4_PC_dirt" || ch_name == "numuCC_theta4_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[4] && TMath::Cos(muonMomentum.Theta())<costheta_binning[5])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta5_PC_overlay" || ch_name == "BG_numuCC_theta5_PC_ext" || ch_name =="BG_numuCC_theta5_PC_dirt" || ch_name == "numuCC_theta5_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[5] && TMath::Cos(muonMomentum.Theta())<costheta_binning[6])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta6_PC_overlay" || ch_name == "BG_numuCC_theta6_PC_ext" || ch_name =="BG_numuCC_theta6_PC_dirt" || ch_name == "numuCC_theta6_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[6] && TMath::Cos(muonMomentum.Theta())<costheta_binning[7])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta7_PC_overlay" || ch_name == "BG_numuCC_theta7_PC_ext" || ch_name =="BG_numuCC_theta7_PC_dirt" || ch_name == "numuCC_theta7_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[7] && TMath::Cos(muonMomentum.Theta())<costheta_binning[8])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta8_PC_overlay" || ch_name == "BG_numuCC_theta8_PC_ext" || ch_name =="BG_numuCC_theta8_PC_dirt" || ch_name == "numuCC_theta8_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[8] && TMath::Cos(muonMomentum.Theta())<costheta_binning[9])) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_PC_overlay" || ch_name == "BG_numuCC_theta_all_PC_ext" || ch_name =="BG_numuCC_theta_all_PC_dirt" || ch_name == "numuCC_theta_all_PC_bnb") {
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_0p_PC_overlay" || ch_name == "BG_numuCC_theta_all_0p_PC_ext" || ch_name =="BG_numuCC_theta_all_0p_PC_dirt" || ch_name == "numuCC_theta_all_0p_PC_bnb") {
+    if (flag_numuCC && flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_theta_all_Np_PC_overlay" || ch_name == "BG_numuCC_theta_all_Np_PC_ext" || ch_name =="BG_numuCC_theta_all_Np_PC_dirt" || ch_name == "numuCC_theta_all_Np_PC_bnb") {
+    if (flag_numuCC && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_all_PC_overlay" || ch_name == "BG_numuCC_all_PC_ext" || ch_name =="BG_numuCC_all_PC_dirt" || ch_name == "numuCC_all_PC_bnb") {
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_all2_PC_overlay" || ch_name == "BG_numuCC_all2_PC_ext" || ch_name =="BG_numuCC_all2_PC_dirt" || ch_name == "numuCC_all2_PC_bnb") {
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_0p_PC_overlay" || ch_name == "BG_numuCC_0p_PC_ext" || ch_name =="BG_numuCC_0p_PC_dirt" || ch_name == "numuCC_0p_PC_bnb") {
+    if (flag_numuCC && flag_numuCC_1mu0p && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_Np_PC_overlay" || ch_name == "BG_numuCC_Np_PC_ext" || ch_name =="BG_numuCC_Np_PC_dirt" || ch_name == "numuCC_Np_PC_bnb") {
+    if (flag_numuCC && (!flag_numuCC_1mu0p) && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
+    else return false;
+  }else if (ch_name == "numuCC_Np_both_overlay" || ch_name == "BG_numuCC_Np_both_ext" || ch_name =="BG_numuCC_Np_both_dirt" || ch_name == "numuCC_Np_both_bnb") {
+    if (flag_numuCC && (!flag_numuCC_1mu0p) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
     else return false;
   }else if (ch_name == "numuCC_nopi0_nonueCC_FC_overlay" || ch_name == "BG_numuCC_nopi0_nonueCC_FC_ext" || ch_name =="BG_numuCC_nopi0_nonueCC_FC_dirt" || ch_name == "numuCC_nopi0_nonueCC_FC_bnb"){
     if (flag_numuCC && flag_FC && (!flag_nueCC) && (!flag_cc_pi0)) return true;
