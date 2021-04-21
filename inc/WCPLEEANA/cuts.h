@@ -604,6 +604,16 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
         std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }
     }
+    else if (cut_file == 12){
+      if (cut_name == "nueCC.inside.Enu.le.1200.gt.200"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=1200 && eval.truth_nuEnergy>200) return number;
+      }else if (cut_name == "nueCC.inside.Enu.le.4000.gt.1200"){
+        if (eval.truth_nuPdg==12 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy>1200) return number;
+      }
+      else{
+        std::cout << "get_xs_signal_no: no cut found!" << std::endl;
+      }
+    }
 
   }
   
