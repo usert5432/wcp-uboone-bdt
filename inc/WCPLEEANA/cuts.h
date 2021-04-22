@@ -785,6 +785,9 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_NC = is_NC(tagger);
   bool flag_FC = is_FC(eval);
   bool flag_0p = is_0p(tagger, kine, pfeval);
+
+  float costheta_binning[10] = {-1, -.5, 0, .27, .45, .62, .76, .86, .94, 1};
+  TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
   
   if (ch_name == "LEE_FC_nueoverlay"  || ch_name == "nueCC_FC_nueoverlay"){
     if (flag_nueCC && flag_FC && flag_truth_inside) return true;
