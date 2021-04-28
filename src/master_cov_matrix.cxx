@@ -713,7 +713,7 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
 	  for (int k=0;k!=hsigma->GetNbinsX();k++){
 	    //	    int bin = std::round(hsigma->GetBinCenter(k+1));
 	    for (int j=0; j!=hpred->GetNbinsX()+1;j++){
-	      x[start_bin+j] += hR->GetBinContent(j+1,k+1)/hsigma->GetBinContent(k+1)*hsigmabar->GetBinContent(k+1);
+	      x[start_bin+j] += hR->GetBinContent(j+1,k+1)/hsigma->GetBinContent(k+1)*hsigmabar->GetBinContent(k+1); // hR(j,k)/hsigma(k): response in new universe
 	    }
 	  }
 	  
@@ -1040,7 +1040,7 @@ void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int
 	  if (flag_lee){
 	    if (flag_pass) h1->Fill(val, rel_weight_diff * weight * weight_lee);
 	  }else{
-	    if (flag_pass) h1->Fill(val,  rel_weight_diff * weight);
+	    if (flag_pass) h1->Fill(val,  rel_weight_diff * weight); // rel = (genie-cv)/cv
 	  }
 	}else{
 	  if (nsignal_bin != -1){
