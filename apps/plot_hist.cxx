@@ -938,6 +938,8 @@ int main( int argc, char** argv )
         TH1F* hdata = (TH1F*)map_obsch_histos[obschannel].at(0)->Clone("hdata");
         TH1F* hbadmatch = (TH1F*)hdata->Clone("hbadmatch");
         TH1F* hnumuCCinFV = (TH1F*)hdata->Clone("hnumuCCinFV");
+        TH1F* hRnumuCCinFV = (TH1F*)hdata->Clone("hRnumuCCinFV");
+        TH1F* hAnumuCCinFV = (TH1F*)hdata->Clone("hAnumuCCinFV");
         TH1F* hnueCCinFV = (TH1F*)hdata->Clone("hnueCCinFV");
         TH1F* hNCinFV = (TH1F*)hdata->Clone("hNCinFV");
         TH1F* hCCpi0inFV = (TH1F*)hdata->Clone("hCCpi0inFV");
@@ -961,6 +963,8 @@ int main( int argc, char** argv )
         TH1F* hXsecBkgCC = (TH1F*)hdata->Clone("hXsecBkgCC");
         hbadmatch->Reset();
         hnumuCCinFV->Reset();
+        hRnumuCCinFV->Reset();
+        hAnumuCCinFV->Reset();
         hnueCCinFV->Reset();
         hNCinFV->Reset();
         hCCpi0inFV->Reset();
@@ -1006,6 +1010,16 @@ int main( int argc, char** argv )
                 if(line == "numuCCinFV") {
                     std::cout<<"numuCCinFV"<<" "<<histname<<std::endl;
                     hnumuCCinFV->Add(htemp);
+                    break;
+                }
+                if(line == "RnumuCCinFV") {
+                    std::cout<<"RnumuCCinFV"<<" "<<histname<<std::endl;
+                    hRnumuCCinFV->Add(htemp);
+                    break;
+                }
+                if(line == "AnumuCCinFV") {
+                    std::cout<<"AnumuCCinFV"<<" "<<histname<<std::endl;
+                    hAnumuCCinFV->Add(htemp);
                     break;
                 }
                 if(line == "nueCCinFV") {
@@ -1201,6 +1215,20 @@ int main( int argc, char** argv )
         hnumuCCinFV->SetFillColorAlpha(kAzure+6, 0.5);
         hnumuCCinFV->SetLineColor(kAzure+6);
         hnumuCCinFV->SetLineWidth(1);
+
+        hstack[obschannel-1]->Add(hRnumuCCinFV); 
+        legend[obschannel-1]->AddEntry(hRnumuCCinFV, Form("#nu_{#mu} CC in FV, %.1f", hRnumuCCinFV->Integral()), "F"); 
+        hRnumuCCinFV->SetFillStyle(1001);
+        hRnumuCCinFV->SetFillColorAlpha(kAzure+6, 0.5);
+        hRnumuCCinFV->SetLineColor(kAzure+6);
+        hRnumuCCinFV->SetLineWidth(1);
+
+        hstack[obschannel-1]->Add(hAnumuCCinFV); 
+        legend[obschannel-1]->AddEntry(hAnumuCCinFV, Form("Anti #nu_{#mu} CC in FV, %.1f", hAnumuCCinFV->Integral()), "F"); 
+        hAnumuCCinFV->SetFillStyle(1001);
+        hAnumuCCinFV->SetFillColorAlpha(kAzure-6, 0.5);
+        hAnumuCCinFV->SetLineColor(kAzure+6);
+        hAnumuCCinFV->SetLineWidth(1);
 
         hstack[obschannel-1]->Add(hnueCCinFV); 
         legend[obschannel-1]->AddEntry(hnueCCinFV, Form("#nu_{e} CC in FV, %.1f", hnueCCinFV->Integral()), "F"); 

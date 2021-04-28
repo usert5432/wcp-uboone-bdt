@@ -327,7 +327,26 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
           if(kine.kine_energy_particle->at(i)>10) N_showers += 1;
       }
       return N_showers;
-  }else{
+  }else if (var_name == "EhadShwrFrac"){
+      double EhadShwr=0, EhadTot=0;
+
+      if (pfeval.reco_muonMomentum[3]>0) {
+        EhadTot = get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+        for ( size_t j=0;j!= kine.kine_energy_particle->size();j++){
+          if (kine.kine_energy_info->at(j) == 2 && kine.kine_particle_type->at(j) == 11){
+            EhadShwr +=  kine.kine_energy_particle->at(j);
+          }
+
+        }
+        return EhadShwr/ EhadTot;
+
+      }
+      else return -1;
+  
+
+  }
+
+  else{
     std::cout << "No such variable: " << var_name << std::endl;
     exit(EXIT_FAILURE);
   }
@@ -665,6 +684,12 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && abs(eval.truth_nuPdg)==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["numuCCinFV"] = true;
   else map_cuts_flag["numuCCinFV"] = false;
+
+  if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["RnumuCCinFV"] = true;
+  else map_cuts_flag["RnumuCCinFV"] = false;
+
+  if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==-14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_NprimPio==0) map_cuts_flag["AnumuCCinFV"] = true;
+  else map_cuts_flag["AnumuCCinFV"] = false;
 
   // Xs related cuts ...
 
