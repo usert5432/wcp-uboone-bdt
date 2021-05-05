@@ -1062,7 +1062,7 @@ void LEEana::CovMatrix::fill_pred_R_signal(int run, TMatrixD* mat_R, TVectorD* v
 
 
 void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int no, int tot_no, std::map<TString, std::set<std::tuple<float, float, std::vector<float>, std::vector<int>, std::set<std::tuple<int, float, bool, int> > > > >& map_passed_events, std::map<TString, std::tuple<int, int, int, TString>>& map_histoname_infos, std::map<int, TString>& map_no_histoname,  std::map<TString, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_histoname_hists){
-  int jinput = num;
+  // int jinput = num; // backup the input
   for (auto it = map_histoname_hists.begin(); it != map_histoname_hists.end(); it++){
     int num = std::get<4>(it->second);
     TH1F *h1 = std::get<0>(it->second);
