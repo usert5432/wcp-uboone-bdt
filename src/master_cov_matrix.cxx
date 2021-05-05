@@ -590,6 +590,12 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
     }
     
     //std::cout << input_filename << " " << lengths.size() << std::endl;
+  // for (size_t j = 0; j!=max_lengths.size(); j++){
+  //   int nsize = max_lengths.at(j);
+  //   int sup_nsize = max_sup_lengths.at(j);
+  //   std::cout << "knob# " << j << " input filename: " << input_filename << " nsize: " << nsize << " sup_nsize: " << sup_nsize << std::endl;
+  // }
+
   }
 
   double data_pot = 5e19;
@@ -600,25 +606,28 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
   int acc_no = 0;
   // build covariance matrix ...
   
-  for (size_t j = 0; j!=max_lengths.size(); j++){
+  for (size_t j = 0; j!=max_lengths.size(); j++){ // j: index of knobs
     int nsize = max_lengths.at(j);
     int sup_nsize = max_sup_lengths.at(j);
 
     TMatrixD temp_mat(rows, rows);
     temp_mat.Zero(); 
     
-    
-    for (int i=0;i!=nsize;i++){
+    // std::cout << "nsize: " << nsize << " sup_nsize: " << sup_nsize << std::endl;
+    for (int i=0;i!=nsize;i++){ // i: index of universes of a knob
       //      if (i>=10) continue;
       
-      for (int k = 0; k!= rows;k++){
+      for (int k = 0; k!= rows;k++){ // k: index of kinematic variable bins
      	x[k] = 0;
       }
+      // if (nsize==600) {
+      //   std::cout << "[wg] knob: " << j << " universe: " << i << " with nsize=600" << std::endl;
+      // }
       fill_xs_histograms(j, max_lengths.size(), acc_no, i, nsize,  map_passed_events, map_histoname_infos, map_no_histoname, map_histoname_hists);
 
       // merge histograms according to POTs ...
       for (auto it = map_pred_covch_histos.begin(); it!=map_pred_covch_histos.end();it++){
-     	//std::cout << it->first << std::endl;
+     	// std::cout << it->first << std::endl;
      	int covch = it->first;
 	auto tmp_results  = map_covch_hists[covch];
 	TH1F *hpred = std::get<0>(tmp_results);
@@ -699,6 +708,52 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
 	  }
 	}
 
+  // // hack: add a factor onto the CV hpred (reco) and hsigmabar (true)
+  // if (nsize==600 and (covch==1 or covch==2)) {
+  //     std::cout << "hack CV, covch: " << covch << " hpred: " << hpred->GetNbinsX() << " hsigmabar: " << hsigmabar->GetNbinsX() << std::endl;
+
+  //     // // sanity check
+  //     // double reco1[26] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; // FC
+  //     // double signal1[10] = {1,1,1,1,1,1,1,1,1,1};
+  //     // double reco2[26] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; // PC
+  //     // double signal2[10] = {1,1,1,1,1,1,1,1,1,1};
+
+  //     // universe #10
+  //     double reco1[26] = {1.15544, 1.01601, 1.10671, 1.16643, 1.18122, 1.19366, 1.21337, 1.23608, 1.24923, 1.25753, 1.27421, 1.26822, 1.27691, 1.27185, 1.28811, 1.28284, 1.27537, 1.26845, 1.31184, 1.25023, 1.28769, 1.23154, 1.25389, 1.204, 1.29575, 1.17228}; // FC
+  //     double signal1[10] = {1.07612, 1.13412, 1.16191, 1.18975, 1.21469, 1.24133, 1.26417, 1.28709, 1.31289, 1.33121};
+  //     double reco2[26] = {1.18328, 1.16488, 1.16178, 1.15987, 1.16234, 1.17969, 1.19259, 1.20503, 1.21837, 1.22735, 1.23534, 1.25808, 1.2755, 1.26789, 1.28027, 1.27195, 1.27833, 1.29626, 1.30398, 1.29206, 1.31517, 1.27693, 1.23945, 1.25303, 1.21948, 1.22376}; // PC
+  //     double signal2[10] = {1.07612, 1.13412, 1.16191, 1.18975, 1.21469, 1.24133, 1.26417, 1.28709, 1.31289, 1.33121};
+
+  //     // // universe #20
+  //     // double reco1[26] = {0.992982, 1.20967, 1.09658, 1.08109, 1.0721, 1.05364, 1.04987, 1.0382, 1.022, 1.01696, 1.00588, 1.01479, 1.01191, 1.03234, 1.03125, 1.05156, 1.03979, 1.03825, 1.00906, 1.00495, 1.04883, 0.972295, 1.0443, 0.924342, 0.90578, 1.01559}; // FC
+  //     // double signal1[10] = {1.0854, 1.07367, 1.06976, 1.06098, 1.05738, 1.05184, 1.05421, 1.04815, 1.0418, 1.01227};
+  //     // double reco2[26] = {1.11301, 1.08599, 1.08825, 1.08644, 1.08431, 1.0759, 1.06601, 1.05867, 1.05756, 1.04323, 1.04703, 1.03479, 1.04541, 1.04383, 1.03994, 1.04551, 1.0561, 1.04584, 1.02275, 1.0314, 0.994499, 1.04009, 0.952018, 1.06343, 0.990966, 0.996142}; // PC
+  //     // double signal2[10] = {1.0854, 1.07367, 1.06976, 1.06098, 1.05738, 1.05184, 1.05421, 1.04815, 1.0418, 1.01227};
+
+  //     // // universe #30
+  //     // double reco1[26] = {0.876538, 0.861736, 0.914066, 0.923016, 0.93596, 0.931965, 0.922019, 0.922583, 0.914259, 0.904193, 0.90166, 0.898244, 0.88502, 0.877614, 0.887884, 0.873123, 0.881785, 0.905745, 0.891306, 0.891413, 0.898962, 0.977477, 0.903402, 0.948813, 1.02272, 1.06504}; // FC
+  //     // double signal1[10] = {0.91637, 0.938375, 0.934476, 0.93014, 0.932957, 0.937463, 0.935564, 0.934465, 0.939694, 0.987671};
+  //     // double reco2[26] = {0.901012, 0.91087, 0.927336, 0.950435, 0.964766, 0.963674, 0.955021, 0.951623, 0.949155, 0.946879, 0.930978, 0.935261, 0.928834, 0.915442, 0.916933, 0.904826, 0.936526, 0.920638, 0.942837, 0.939482, 0.934553, 0.946315, 0.992394, 1.03342, 1.01518, 1.01065}; // PC
+  //     // double signal2[10] = {0.91637, 0.938375, 0.934476, 0.93014, 0.932957, 0.937463, 0.935564, 0.934465, 0.939694, 0.987671};
+
+  //     // // universe #450
+  //     // double reco1[26] = {0.775025, 0.778931, 0.902054, 0.891595, 0.868683, 0.856287, 0.839721, 0.826733, 0.823029, 0.81763, 0.816336, 0.819113, 0.825171, 0.827854, 0.819509, 0.814784, 0.82175, 0.822185, 0.841672, 0.867768, 0.858879, 0.906656, 0.86976, 0.900973, 0.947299, 0.93384}; // FC
+  //     // double signal1[10] = {0.909232, 0.884066, 0.859239, 0.846319, 0.838245, 0.830874, 0.821119, 0.822615, 0.820209, 0.85052};
+  //     // double reco2[26] = {0.891959, 0.911274, 0.908243, 0.90012, 0.8764, 0.86151, 0.844594, 0.838283, 0.828599, 0.823095, 0.811427, 0.821875, 0.807368, 0.821052, 0.816432, 0.816646, 0.840389, 0.832217, 0.840177, 0.888031, 0.845707, 0.850362, 0.89464, 0.880185, 0.912752, 0.894323}; // PC
+  //     // double signal2[10] = {0.909232, 0.884066, 0.859239, 0.846319, 0.838245, 0.830874, 0.821119, 0.822615, 0.820209, 0.85052};
+
+
+  //     for (int i=0; i<=hpred->GetNbinsX(); i++) { // overflow bin
+  //       if (covch==1) hpred->SetBinContent(i+1, reco1[i] * hpred->GetBinContent(i+1));
+  //       else if (covch==2) hpred->SetBinContent(i+1, reco2[i] * hpred->GetBinContent(i+1));
+  //     }
+  //     for (int i=0; i<hsigmabar->GetNbinsX(); i++) {
+  //       if (covch==1) hsigmabar->SetBinContent(i+1, signal1[i] * hsigmabar->GetBinContent(i+1));
+  //       else if (covch==2) hsigmabar->SetBinContent(i+1, signal2[i] * hsigmabar->GetBinContent(i+1));
+  //     }
+
+  // } // end of hack
+
      	int start_bin = map_covch_startbin[covch];
      	for (int k=0;k!=hpred->GetNbinsX()+1;k++){
 	  if (num == 1){
@@ -717,6 +772,22 @@ void LEEana::CovMatrix::gen_xs_cov_matrix(int run, std::map<int, std::tuple<TH1F
 	    }
 	  }
 	  
+    // // hack: wg CV
+    // if (nsize==600 and i==0) { // only save CV once
+    //   auto ofile = new TFile("wgu_cv.root", "update");
+    //   hpred->Write();
+    //   hsigmabar->Write();
+    //   ofile->Close();
+    // }
+
+    // // hack: wg all_genie: 
+    // // in fill_xs_histograms: if (flag_pass) h1->Fill(val, (1+rel_weight_diff)*weight); // CV as the central one
+    // auto ofile = TFile::Open("wgu_all_genie.root", "update");
+    // auto hpred1 = (TH1F*)hpred->Clone(Form("%s_%d", hpred->GetName(), i));
+    // auto hsigma1 = (TH1F*)hsigma->Clone(Form("%s_%d", hsigma->GetName(), i));
+    // hpred1->Write();
+    // hsigma1->Write();
+    // ofile->Close();
 	}
 	
       }
@@ -991,6 +1062,7 @@ void LEEana::CovMatrix::fill_pred_R_signal(int run, TMatrixD* mat_R, TVectorD* v
 
 
 void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int no, int tot_no, std::map<TString, std::set<std::tuple<float, float, std::vector<float>, std::vector<int>, std::set<std::tuple<int, float, bool, int> > > > >& map_passed_events, std::map<TString, std::tuple<int, int, int, TString>>& map_histoname_infos, std::map<int, TString>& map_no_histoname,  std::map<TString, std::tuple<TH1F*, TH1F*, TH1F*, TH2F*, int> >& map_histoname_hists){
+  int jinput = num;
   for (auto it = map_histoname_hists.begin(); it != map_histoname_hists.end(); it++){
     int num = std::get<4>(it->second);
     TH1F *h1 = std::get<0>(it->second);
@@ -1007,7 +1079,7 @@ void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int
     }
   }
 
-  //std::cout << acc_no << " " << no << std::endl;
+  // std::cout << "acc_no: " << acc_no << " no: " << no << std::endl;
   for (auto it = map_passed_events.begin(); it != map_passed_events.end(); it++){
     TString filename = it->first;
     // loop over events ...
@@ -1053,6 +1125,7 @@ void LEEana::CovMatrix::fill_xs_histograms(int num, int tot_num, int acc_no, int
 	      if (flag_pass) h4->Fill(val, nsignal_bin, (1+rel_weight_diff) * weight*weight_lee);
 	    }else{
 	      if (flag_pass) h1->Fill(val, weight); // CV as the central one
+        // if (flag_pass) h1->Fill(val, (1+rel_weight_diff) * weight); // hack: alternative CV as the central one
 	      
 	      h2->Fill(nsignal_bin, (1+rel_weight_diff) * weight); // signal
 	      h3->Fill(nsignal_bin, weight); // nominal ...
