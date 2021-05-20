@@ -742,6 +742,7 @@ int main( int argc, char** argv )
     T_PFeval_cv->SetBranchStatus("neutrino_type",1);
     T_PFeval_cv->SetBranchStatus("mcflux_dk2gen",1);
     T_PFeval_cv->SetBranchStatus("mcflux_gen2vtx",1);
+    T_PFeval_cv->SetBranchStatus("mcflux_ndecay",1);
   }
 
 
@@ -859,6 +860,7 @@ int main( int argc, char** argv )
     T_PFeval_det->SetBranchStatus("neutrino_type",1);
     T_PFeval_det->SetBranchStatus("mcflux_dk2gen",1);
     T_PFeval_det->SetBranchStatus("mcflux_gen2vtx",1);
+    T_PFeval_det->SetBranchStatus("mcflux_ndecay",1);
   }
 
   

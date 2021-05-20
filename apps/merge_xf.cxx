@@ -552,6 +552,7 @@ int main( int argc, char** argv )
     T_PFeval->SetBranchStatus("neutrino_type",1);
     T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
     T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
+    T_PFeval->SetBranchStatus("mcflux_ndecay",1);
   }
 
   

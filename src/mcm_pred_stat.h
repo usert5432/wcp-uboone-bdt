@@ -786,6 +786,7 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
       T_PFeval->SetBranchStatus("neutrino_type",1);
       T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
       T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
+      T_PFeval->SetBranchStatus("mcflux_ndecay",1);
     }
   }
 

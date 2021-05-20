@@ -711,6 +711,7 @@ std::pair<std::vector<int>, std::vector<int> > LEEana::CovMatrix::get_events_wei
     T_PFeval->SetBranchStatus("neutrino_type",1);
     T_PFeval->SetBranchStatus("mcflux_dk2gen",1);
     T_PFeval->SetBranchStatus("mcflux_gen2vtx",1);
+    T_PFeval->SetBranchStatus("mcflux_ndecay",1);
   }
 
   WeightInfo weight;
