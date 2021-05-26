@@ -1,4 +1,7 @@
 namespace LEEana{
+
+  float cal_nc_delta_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader);
+
 float cal_numu_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader);
 
 float cal_cosmict_10_bdt(float default_val,TaggerInfo& tagger_info, TMVA::Reader& reader,
@@ -119,7 +122,20 @@ float cal_tro_5_bdt(float default_val , TaggerInfo& tagger_info, TMVA::Reader& r
 
 }
 
- 
+// May 26th added by LEE
+// I removed the log conversion step, I think the way it is here should be within the range -20 to +10, matching what I've been using so far
+float LEEana::cal_nc_delta_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader) {
+  float val = -20;
+  
+  double val1 = reader.EvaluateMVA("MyBDT");
+
+  val = TMath::Log10( (1+val1)/(1-val1) );
+  return val;
+}
+
+//
+
+
  
 float LEEana::cal_numu_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader)
 {
