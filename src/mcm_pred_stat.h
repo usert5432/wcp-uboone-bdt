@@ -769,12 +769,16 @@ void LEEana::CovMatrix::get_pred_events_info(TString input_filename, std::map<TS
     T_PFeval->SetBranchStatus("truth_muonMomentum",1);
   }
   if (pfeval.flag_NCDelta){
-    T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+    
     if (!flag_data){
       T_PFeval->SetBranchStatus("truth_NCDelta",1);
       T_PFeval->SetBranchStatus("truth_NprimPio",1);
     }
   }
+  if (pfeval.flag_recoprotonMomentum){
+    T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+  }
+  
   if (pfeval.flag_showerMomentum){
     T_PFeval->SetBranchStatus("reco_showerMomentum",1);
     T_PFeval->SetBranchStatus("reco_Nproton",1);

@@ -5,6 +5,7 @@ namespace LEEana{
 struct PFevalInfo{
   bool flag_NCDelta;
   bool flag_showerMomentum;
+  bool flag_recoprotonMomentum;
   
   Int_t run;
   Int_t subrun;
@@ -98,7 +99,7 @@ void put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
 void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
   tagger_info.flag_NCDelta = false;
   tagger_info.flag_showerMomentum = false;
-  
+  tagger_info.flag_recoprotonMomentum = false;
 
   tagger_info.neutrino_type=0;
   tagger_info.reco_nuvtxX=0;
@@ -186,6 +187,7 @@ void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
 void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
   tagger_info.flag_NCDelta = false;
   tagger_info.flag_showerMomentum = false;
+  tagger_info.flag_recoprotonMomentum = false;
   
   tree0->SetBranchAddress("run", &tagger_info.run);
   tree0->SetBranchAddress("subrun", &tagger_info.subrun);
@@ -271,9 +273,15 @@ void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
       tree0->SetBranchAddress("truth_pio_energy_1",&tagger_info.truth_pio_energy_1);
       tree0->SetBranchAddress("truth_pio_energy_2",&tagger_info.truth_pio_energy_2);
       tree0->SetBranchAddress("truth_pio_angle",&tagger_info.truth_pio_angle);
-      tree0->SetBranchAddress("reco_protonMomentum",&tagger_info.reco_protonMomentum[0]);
+      //tree0->SetBranchAddress("reco_protonMomentum",&tagger_info.reco_protonMomentum[0]);
     }
+
+   
     
+  }
+  if (tree0->GetBranch("reco_protonMomentum")){
+    tagger_info.flag_recoprotonMomentum = true;
+    tree0->SetBranchAddress("reco_protonMomentum",&tagger_info.reco_protonMomentum[0]);
   }
 }
 
@@ -332,8 +340,12 @@ void LEEana::put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
       tree0->Branch("truth_pio_energy_1",&tagger_info.truth_pio_energy_1,"truth_pio_energy_1/F");
       tree0->Branch("truth_pio_energy_2",&tagger_info.truth_pio_energy_2,"truth_pio_energy_2/F");
       tree0->Branch("truth_pio_angle",&tagger_info.truth_pio_angle,"truth_pio_angle/F");
-      tree0->Branch("reco_protonMomentum",&tagger_info.reco_protonMomentum[0],"reco_protonMomentum[4]/F");
+      //tree0->Branch("reco_protonMomentum",&tagger_info.reco_protonMomentum[0],"reco_protonMomentum[4]/F");
     }
+  }
+
+  if (tagger_info.flag_recoprotonMomentum){
+    tree0->Branch("reco_protonMomentum",&tagger_info.reco_protonMomentum[0],"reco_protonMomentum[4]/F");
   }
 
   if (tagger_info.flag_showerMomentum){

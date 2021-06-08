@@ -254,11 +254,14 @@ int main( int argc, char** argv )
       T_PFeval->SetBranchStatus("truth_muonMomentum",1);
   }
   if (pfeval.flag_NCDelta){
-      T_PFeval->SetBranchStatus("reco_protonMomentum",1);
+    
       if (!flag_data){
           T_PFeval->SetBranchStatus("truth_NCDelta",1);
           T_PFeval->SetBranchStatus("truth_NprimPio",1);
       }
+  }
+  if (pfeval.flag_recoprotonMomentum){
+    T_PFeval->SetBranchStatus("reco_protonMomentum",1);
   }
   
   if (pfeval.flag_showerMomentum){

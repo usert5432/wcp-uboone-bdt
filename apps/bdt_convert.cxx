@@ -1738,7 +1738,8 @@ int main( int argc, char** argv )
   reader_nc_delta.AddVariable("kine_pio_dis_2",&kine.kine_pio_dis_2);
   reader_nc_delta.AddVariable("kine_pio_angle",&kine.kine_pio_angle);
   
-  reader_nc_delta.BookMVA( "MyBDT", "weights/NC_Delta_final_weights.xml");
+  //  reader_nc_delta.BookMVA( "MyBDT", "weights/NC_Delta_final_weights.xml");
+  reader_nc_delta.BookMVA( "MyBDT", "weights/NC_Delta_prev_training_plus_even_subrun_ncpi0_ncdelta.xml");
 
   //
 
@@ -1893,14 +1894,15 @@ int main( int argc, char** argv )
 
     // NC gamma ... add a NC BDT ... Lee
     float nc_delta_score = cal_nc_delta_bdts_xgboost(tagger, reader_nc_delta);
-    if (eval.run == 6467 && eval.event == 97
-	|| eval.run == 7026 && eval.event == 22180
-	|| eval.run == 7010 && eval.event == 25278
-	|| eval.run == 5531 && eval.event == 3160
-	|| eval.run == 7020 && eval.event == 32277
-	){
-      std::cout << i << " " << eval.run << " " << eval.event << " " << nc_delta_score << std::endl;
-    }
+    // if (eval.run == 6467 && eval.event == 97
+    // 	|| eval.run == 7026 && eval.event == 22180
+    // 	|| eval.run == 7010 && eval.event == 25278
+    // 	|| eval.run == 5531 && eval.event == 3160
+    // 	|| eval.run == 7020 && eval.event == 32277
+    // 	){
+    //    if (tagger.numu_cc_flag>=0)
+    //  std::cout << i << " " << eval.run << " " << eval.event << " " << nc_delta_score << std::endl;
+    //}
     //
     
     
