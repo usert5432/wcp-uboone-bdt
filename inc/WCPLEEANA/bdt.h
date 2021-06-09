@@ -1,6 +1,7 @@
 namespace LEEana{
 
   float cal_nc_delta_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader);
+  float cal_nc_pio_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader);
 
 float cal_numu_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader);
 
@@ -134,6 +135,14 @@ float LEEana::cal_nc_delta_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& r
 }
 
 //
+float LEEana::cal_nc_pio_bdts_xgboost(TaggerInfo& tagger_info, TMVA::Reader& reader){
+  float val = -20;
+  double val1 = reader.EvaluateMVA("MyBDT");
+
+  val = TMath::Log10( (1+val1)/(1-val1) );
+  return val;
+}
+
 
 
  
