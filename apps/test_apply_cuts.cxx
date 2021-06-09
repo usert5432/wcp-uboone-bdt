@@ -362,6 +362,11 @@ int main( int argc, char** argv )
   T_BDTvars->SetBranchStatus("nue_score",1);
   T_BDTvars->SetBranchStatus("cosmict_flag",1);
 
+  if (tagger.flag_nc_gamma_bdt){
+    T_BDTvars->SetBranchStatus("nc_delta_score", 1);
+    T_BDTvars->SetBranchStatus("nc_pio_score", 1);
+  }
+  
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("match_isFC",1);
   T_eval->SetBranchStatus("match_found",1);

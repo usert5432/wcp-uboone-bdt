@@ -71,9 +71,16 @@ int main(int argc, char** argv){
     Float_t numu_score;
     Float_t nue_score;
     Float_t numu_cc_flag;
+    Float_t nc_pio_score;
+    Float_t nc_delta_score;
     T_BDTvars->SetBranchStatus("numu_score",1); T_BDTvars->SetBranchAddress("numu_score",&numu_score);
     T_BDTvars->SetBranchStatus("nue_score",1); T_BDTvars->SetBranchAddress("nue_score",&nue_score);
     T_BDTvars->SetBranchStatus("numu_cc_flag",1); T_BDTvars->SetBranchAddress("numu_cc_flag",&numu_cc_flag);
+    if (T_BDTvars->GetBranch("nc_delta_score")){
+      T_BDTvars->SetBranchStatus("nc_delta_score",1); T_BDTvars->SetBranchAddress("nc_delta_score",&nc_delta_score);
+      T_BDTvars->SetBranchStatus("nc_pio_score",1); T_BDTvars->SetBranchAddress("nc_pio_score",&nc_pio_score);
+    }
+    
     Float_t kine_reco_Enu;
     T_KINEvars->SetBranchStatus("kine_reco_Enu",1); T_KINEvars->SetBranchAddress("kine_reco_Enu",&kine_reco_Enu);
     
@@ -152,9 +159,15 @@ int main(int argc, char** argv){
     Float_t numu_score;
     Float_t nue_score;
     Float_t numu_cc_flag;
+    Float_t nc_pio_score;
+    Float_t nc_delta_score;
     T_BDTvars->SetBranchStatus("numu_score",1); T_BDTvars->SetBranchAddress("numu_score",&numu_score);
     T_BDTvars->SetBranchStatus("nue_score",1); T_BDTvars->SetBranchAddress("nue_score",&nue_score);
     T_BDTvars->SetBranchStatus("numu_cc_flag",1); T_BDTvars->SetBranchAddress("numu_cc_flag",&numu_cc_flag);
+    if (T_BDTvars->GetBranch("nc_delta_score")){
+      T_BDTvars->SetBranchStatus("nc_delta_score",1); T_BDTvars->SetBranchAddress("nc_delta_score",&nc_delta_score);
+      T_BDTvars->SetBranchStatus("nc_pio_score",1); T_BDTvars->SetBranchAddress("nc_pio_score",&nc_pio_score);
+    }
     Float_t kine_reco_Enu;
     T_KINEvars->SetBranchStatus("kine_reco_Enu",1); T_KINEvars->SetBranchAddress("kine_reco_Enu",&kine_reco_Enu);
 

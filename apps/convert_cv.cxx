@@ -368,7 +368,12 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("gap_n_bad",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_beam",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
-
+  
+  if (tagger_cv.flag_nc_gamma_bdt){
+    T_BDTvars_cv->SetBranchStatus("nc_delta_score", 1);
+    T_BDTvars_cv->SetBranchStatus("nc_pio_score", 1);
+  }
+  
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("match_isFC",1);
   T_eval_cv->SetBranchStatus("match_found",1);

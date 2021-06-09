@@ -722,6 +722,7 @@ int main( int argc, char** argv )
   tagger.numu_cc_2_n_daughter_all = new std::vector<float>;
 
   set_tree_address(T_BDTvars, tagger,2 );
+  tagger.flag_nc_gamma_bdt = true;
   put_tree_address(t4, tagger,2);
 
   if (flag_data){
@@ -2173,8 +2174,8 @@ int main( int argc, char** argv )
     tagger.numu_score = cal_numu_bdts_xgboost(tagger,reader_numu); 
 
     // NC gamma ... add a NC BDT ... Lee
-    float nc_delta_score = cal_nc_delta_bdts_xgboost(tagger, reader_nc_delta);
-    float nc_pio_score = cal_nc_pio_bdts_xgboost(tagger, reader_nc_pi0);
+    tagger.nc_delta_score = cal_nc_delta_bdts_xgboost(tagger, reader_nc_delta);
+    tagger.nc_pio_score = cal_nc_pio_bdts_xgboost(tagger, reader_nc_pi0);
     // if (eval.run == 6467 && eval.event == 97
     // 	|| eval.run == 7026 && eval.event == 22180
     // 	|| eval.run == 7010 && eval.event == 25278

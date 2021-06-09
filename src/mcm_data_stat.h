@@ -517,6 +517,11 @@ void LEEana::CovMatrix::get_data_events_info(TString input_filename, std::map<TS
   T_BDTvars->SetBranchStatus("gap_n_bad",1);
   T_BDTvars->SetBranchStatus("spt_angle_beam",1);
   T_BDTvars->SetBranchStatus("spt_angle_vertical",1);
+
+  if (tagger.flag_nc_gamma_bdt){
+    T_BDTvars->SetBranchStatus("nc_delta_score", 1);
+    T_BDTvars->SetBranchStatus("nc_pio_score", 1);
+  }
   
   T_eval->SetBranchStatus("*",0);
   T_eval->SetBranchStatus("run",1);

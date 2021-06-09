@@ -143,10 +143,17 @@ int main( int argc, char** argv )
   Float_t numu_score;
   Float_t nue_score;
   Float_t cosmict_flag;
+  Float_t nc_delta_score;
+  Float_t nc_pio_score;
   T_BDTvars->SetBranchStatus("numu_score",1);  T_BDTvars->SetBranchAddress("numu_score",&numu_score);
   T_BDTvars->SetBranchStatus("nue_score",1);  T_BDTvars->SetBranchAddress("nue_score",&nue_score);
   T_BDTvars->SetBranchStatus("cosmict_flag",1);  T_BDTvars->SetBranchAddress("cosmict_flag",&cosmict_flag);
-
+  
+  if (T_BDTvars->GetBranch("nc_delta_score")){
+    T_BDTvars->SetBranchStatus("nc_delta_score",1); T_BDTvars->SetBranchAddress("nc_delta_score",&nc_delta_score);
+    T_BDTvars->SetBranchStatus("nc_pio_score",1); T_BDTvars->SetBranchAddress("nc_pio_score",&nc_pio_score);
+  }
+  
   
   TTree *T_kine = (TTree*)file->Get("wcpselection/T_KINEvars"); // Kine tree for pi0 ...
   T_kine->SetBranchStatus("*",0);

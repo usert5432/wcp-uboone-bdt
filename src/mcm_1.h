@@ -466,6 +466,12 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_BDTvars_cv->SetBranchStatus("gap_n_bad",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_beam",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
+
+  if (tagger_cv.flag_nc_gamma_bdt){
+    T_BDTvars_cv->SetBranchStatus("nc_delta_score", 1);
+    T_BDTvars_cv->SetBranchStatus("nc_pio_score", 1);
+  }
+
   
   T_eval_cv->SetBranchStatus("*",0);
   T_eval_cv->SetBranchStatus("run",1);
@@ -591,6 +597,11 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_BDTvars_det->SetBranchStatus("gap_n_bad",1);
   T_BDTvars_det->SetBranchStatus("spt_angle_beam",1);
   T_BDTvars_det->SetBranchStatus("spt_angle_vertical",1);
+
+   if (tagger_det.flag_nc_gamma_bdt){
+    T_BDTvars_det->SetBranchStatus("nc_delta_score", 1);
+    T_BDTvars_det->SetBranchStatus("nc_pio_score", 1);
+  }
   
   T_eval_det->SetBranchStatus("*",0);
   T_eval_det->SetBranchStatus("run",1);
