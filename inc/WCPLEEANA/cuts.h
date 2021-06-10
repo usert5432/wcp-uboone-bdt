@@ -72,11 +72,12 @@ namespace LEEana{
   // NC cuts
   // TCut NC_cut = "(!cosmict_flag) && numu_score < 0.0";
   bool is_NC(TaggerInfo& tagger_info);
-  
+  bool is_NCpio_bdt(TaggerInfo& tagger_info);
+  bool is_NCdelta_bdt(TaggerInfo& tagger_info);
+
   
   // TCut FC_cut = "match_isFC==1";
-  // TCut PC_cut = "match_isFC==0";
-  
+  // TCut PC_cut = "match_isFC==0";  
   bool is_FC(EvalInfo& eval);
   
   
@@ -166,6 +167,10 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     // return kine.kine_pio_mass;
   }else if (var_name == "nue_score"){
     return tagger.nue_score;
+  }else if (var_name == "nc_pio_score"){
+    return tagger.nc_pio_score;
+  }else if (var_name == "nc_delta_score"){
+    return tagger.nc_delta_score;
   }else if (var_name == "numu_score"){
     return tagger.numu_score;
   }else if (var_name == "shower_energy"){
@@ -810,6 +815,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_NC = is_NC(tagger);
   bool flag_FC = is_FC(eval);
   bool flag_0p = is_0p(tagger, kine, pfeval);
+  bool flag_ncpio_bdt = is_NCpio_bdt(tagger);
+  bool flag_ncdelta_bdt = is_NCdelta_bdt(tagger);
 
   float costheta_binning[10] = {-1, -.5, 0, .27, .45, .62, .76, .86, .94, 1};
   TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
@@ -1316,6 +1323,112 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       if (flag_numuCC && (!flag_FC) ) return true;
     }
     return false;
+  }else if (ch_name == "nc_pio_energy_FC" || ch_name == "nc_pio_score_FC"
+	    || ch_name == "nc_pio_energy_FC_ncpio_overlay" || ch_name == "nc_pio_score_FC_ncpio_overlay"
+	    || ch_name == "nc_pio_energy_FC_ncdelta_overlay" || ch_name == "nc_pio_score_FC_ncdelta_overlay"
+	    || ch_name == "nc_pio_energy_FC_overlay" || ch_name == "nc_pio_score_FC_overlay"
+	    || ch_name == "nc_pio_energy_FC_ext" || ch_name == "nc_pio_score_FC_ext"
+	    || ch_name == "nc_pio_energy_FC_dirt" || ch_name == "nc_pio_score_FC_dirt"
+	    ){
+    if (ch_name == "nc_pio_energy_FC" 
+	|| ch_name == "nc_pio_energy_FC_ext" 
+	|| ch_name == "nc_pio_energy_FC_dirt" ){
+      if (flag_ncpio_bdt && flag_FC) return true;
+    }else if (ch_name == "nc_pio_energy_FC_ncpio_overlay" ){
+      if (flag_ncpio_bdt && flag_FC && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0 
+					&& !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true; 
+    }else if (ch_name == "nc_pio_energy_FC_ncdelta_overlay" ){
+      if (flag_ncpio_bdt && flag_FC && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true;
+    }else if (ch_name == "nc_pio_energy_FC_overlay" ){
+      if (flag_ncpio_bdt && flag_FC && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      					  && !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)))
+      	  && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      //if (flag_ncpio_bdt && flag_FC) return true;
+    }else if (ch_name == "nc_pio_score_FC"
+	|| ch_name == "nc_pio_score_FC_ext"
+	|| ch_name == "nc_pio_score_FC_dirt"){
+      if (flag_FC) return true;
+    }else if (ch_name == "nc_pio_score_FC_ncpio_overlay"){ 
+      if (flag_FC && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0 
+      && !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true; 
+    }else if (ch_name == "nc_pio_score_FC_ncdelta_overlay"){
+      if (flag_FC && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true;
+    }else if (ch_name == "nc_pio_score_FC_overlay"){
+      if (flag_FC && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+			&& (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))))
+	  && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      //  if (flag_FC) return true;
+    }
+    
+    return false;
+  }else if (ch_name == "nc_delta_energy_FC_0p" || ch_name == "nc_delta_score_FC_0p"
+	    || ch_name == "nc_delta_energy_FC_0p_ncpio_overlay" || ch_name == "nc_delta_score_FC_0p_ncpio_overlay"
+	    || ch_name == "nc_delta_energy_FC_0p_ncdelta_overlay" || ch_name == "nc_delta_score_FC_0p_ncdelta_overlay"
+	    || ch_name == "nc_delta_energy_FC_0p_overlay" || ch_name == "nc_delta_score_FC_0p_overlay"
+	    || ch_name == "nc_delta_energy_FC_0p_ext" || ch_name == "nc_delta_score_FC_0p_ext"
+	    || ch_name == "nc_delta_energy_FC_0p_dirt" || ch_name == "nc_delta_score_FC_0p_dirt"){
+
+    if (ch_name == "nc_delta_energy_FC_0p" ||  ch_name == "nc_delta_energy_FC_0p_ext" || ch_name == "nc_delta_energy_FC_0p_dirt"){
+      if (flag_FC && flag_ncdelta_bdt && flag_0p) return true;
+    }else if (ch_name == "nc_delta_energy_FC_0p_ncpio_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && flag_0p && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0 
+						     && !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+    }else if (ch_name == "nc_delta_energy_FC_0p_ncdelta_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && flag_0p && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true;
+    }else if (ch_name == "nc_delta_energy_FC_0p_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && flag_0p && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      						       && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))))
+      	  && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      //      if (flag_FC && flag_ncdelta_bdt && flag_0p) return true;
+    }else if (ch_name == "nc_delta_score_FC_0p" ||  ch_name == "nc_delta_score_FC_0p_ext" || ch_name == "nc_delta_score_FC_0p_dirt"){
+      if (flag_FC  && flag_0p) return true;
+    }else if (ch_name == "nc_delta_score_FC_0p_ncpio_overlay"){
+      if (flag_FC  && flag_0p && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0 
+				  && !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+    }else if (ch_name == "nc_delta_score_FC_0p_ncdelta_overlay"){
+      if (flag_FC  && flag_0p && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true;
+    }else if (ch_name == "nc_delta_score_FC_0p_overlay"){
+      if (flag_FC  && flag_0p && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      					       && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))))
+       && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      //      if (flag_FC  && flag_0p) return true;
+    }
+    
+    return false;
+  }else if (ch_name == "nc_delta_energy_FC_Np" || ch_name == "nc_delta_score_FC_Np"
+	    || ch_name == "nc_delta_energy_FC_Np_ncpio_overlay" || ch_name == "nc_delta_score_FC_Np_ncpio_overlay"
+	    || ch_name == "nc_delta_energy_FC_Np_ncdelta_overlay" || ch_name == "nc_delta_score_FC_Np_ncdelta_overlay"
+	    || ch_name == "nc_delta_energy_FC_Np_overlay" || ch_name == "nc_delta_score_FC_Np_overlay"
+	    || ch_name == "nc_delta_energy_FC_Np_ext" || ch_name == "nc_delta_score_FC_Np_ext"
+	    || ch_name == "nc_delta_energy_FC_Np_dirt" || ch_name == "nc_delta_score_FC_Np_dirt"){
+
+    if (ch_name == "nc_delta_energy_FC_Np" ||  ch_name == "nc_delta_energy_FC_Np_ext" || ch_name == "nc_delta_energy_FC_Np_dirt"){
+      if (flag_FC && flag_ncdelta_bdt && (!flag_0p)) return true;
+    }else if (ch_name == "nc_delta_energy_FC_Np_ncpio_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && (!flag_0p) && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      					&& !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+    }else if (ch_name == "nc_delta_energy_FC_Np_ncdelta_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && (!flag_0p) && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true;
+    }else if (ch_name == "nc_delta_energy_FC_Np_overlay"){
+      if (flag_FC && flag_ncdelta_bdt && (!flag_0p) && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      						       && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))))
+      	  && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      //      if (flag_FC && flag_ncdelta_bdt && (!flag_0p)) return true;
+    }else if (ch_name == "nc_delta_score_FC_Np" ||  ch_name == "nc_delta_score_FC_Np_ext" || ch_name == "nc_delta_score_FC_Np_dirt"){
+      if (flag_FC  && (!flag_0p)) return true;
+    }else if (ch_name == "nc_delta_score_FC_Np_ncpio_overlay"){
+      if (flag_FC  && (!flag_0p) && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      					&& !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+    }else if (ch_name == "nc_delta_score_FC_Np_ncdelta_overlay"){
+      if (flag_FC  && (!flag_0p) && (eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside)) return true; 
+    }else if (ch_name == "nc_delta_score_FC_Np_overlay"){
+      if (flag_FC  && (!flag_0p) && (!(eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0
+      						       && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))))
+      	  && (!(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true;
+      // if (flag_FC  && (!flag_0p)) return true;
+    }
+    
+    return false;
   }else{
     std::cout << "Not sure what cut: " << ch_name << std::endl;
   }
@@ -1431,6 +1544,17 @@ bool LEEana::is_pi0(KineInfo& kine, bool flag_data){
   return flag;
 }
 
+
+bool LEEana::is_NCpio_bdt(TaggerInfo& tagger_info){
+  bool flag = false;
+  if (tagger_info.nc_pio_score > 1.68 && tagger_info.numu_cc_flag >=0) flag = true;
+  return flag;
+}
+bool LEEana::is_NCdelta_bdt(TaggerInfo& tagger_info){
+  bool flag = false;
+  if (tagger_info.nc_delta_score > 2.61 && tagger_info.numu_cc_flag >=0) flag = true;
+  return flag;
+}
 
 
 bool LEEana::is_NC(TaggerInfo& tagger_info){

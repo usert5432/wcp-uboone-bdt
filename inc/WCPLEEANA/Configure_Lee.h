@@ -40,7 +40,7 @@ namespace config_Lee
   /* TString detector_directory = "./new_TLee_input_fakeset5_myself/det/"; */
   /* TString mc_directory = "./new_TLee_input_fakeset5_myself/mc_stat/"; */
 
-  int channels_observation = 7;// data channels (=hdata_obsch_# in spectra_file above)
+  int channels_observation = 6;// data channels (=hdata_obsch_# in spectra_file above)
                                // which is equal to the channels after collapse
 
   int syst_cov_flux_Xs_begin = 1;// files in flux_Xs_directory above
@@ -64,7 +64,7 @@ namespace config_Lee
   ////////// systematics flag
   
   bool flag_syst_flux_Xs    = 1;
-  bool flag_syst_detector   = 1;
+  bool flag_syst_detector   = 0;
   bool flag_syst_additional = 1;
   bool flag_syst_mc_stat    = 1;
 
