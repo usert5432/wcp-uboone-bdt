@@ -904,7 +904,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   
   lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{%3.1f#sigma:        overall #chi^{2}/dof: %3.1f/%d}", kBlue, sigma_default, chi2, rows), "");
   if( lambda_sigma_3p>=1 ) {
-    lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{%3.1f#sigma (LEE corr.): #chi^{2}/dof: %3.1f/%d (|#sigma_{i}\'|>3)}",
+    lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{%3.1f#sigma (LEE corr.): #chi^{2}/dof: %3.1f/%d (|#epsilon_{i}\'|>3)}",
 						  kRed, sigma_global, sum_AA, (int)(map_above3sigma.size())), "");
   }
   else {
