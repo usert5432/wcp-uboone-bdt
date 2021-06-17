@@ -108,18 +108,38 @@ double LEEana::get_reco_Enu_corr(KineInfo& kine, bool flag_data){
 }
 
 double LEEana::get_weight(TString weight_name, EvalInfo& eval){
+
+  double addtl_weight = 1.0;
+
+  // CV correction from numuCC cross section data
+  // if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1){
+  //   if (eval.truth_nuEnergy>200 && eval.truth_nuEnergy<=540) addtl_weight = 1.28043; 
+  //   else if (eval.truth_nuEnergy>540 && eval.truth_nuEnergy<=705) addtl_weight = 1.21158;
+  //   else if (eval.truth_nuEnergy>705 && eval.truth_nuEnergy<=805) addtl_weight = 1.19091;
+  //   else if (eval.truth_nuEnergy>805 && eval.truth_nuEnergy<=920) addtl_weight = 1.17733;
+  //   else if (eval.truth_nuEnergy>920 && eval.truth_nuEnergy<=1050) addtl_weight = 1.13983;
+  //   else if (eval.truth_nuEnergy>1050 && eval.truth_nuEnergy<=1200) addtl_weight = 1.07864;
+  //   else if (eval.truth_nuEnergy>1200 && eval.truth_nuEnergy<=1375) addtl_weight = 1.00722;
+  //   else if (eval.truth_nuEnergy>1375 && eval.truth_nuEnergy<=1570) addtl_weight = 0.93857;
+  //   else if (eval.truth_nuEnergy>1570 && eval.truth_nuEnergy<=2050) addtl_weight = 0.886241;
+  //   else if (eval.truth_nuEnergy>2050 && eval.truth_nuEnergy<=4000) addtl_weight = 0.858724;
+  //   else if (eval.truth_nuEnergy>4000) addtl_weight = 0.858724;
+  // }
+  // std::cout << "energy: " << eval.truth_nuEnergy << " addtl_weight: " << addtl_weight << std::endl;
+  // end of data correction
+
   if (weight_name == "cv_spline"){
-    return eval.weight_cv * eval.weight_spline;
+    return addtl_weight*eval.weight_cv * eval.weight_spline;
   }else if (weight_name == "cv_spline_cv_spline"){
-    return pow(eval.weight_cv * eval.weight_spline,2);
+    return pow(addtl_weight*eval.weight_cv * eval.weight_spline,2);
   }else if (weight_name == "unity" || weight_name == "unity_unity"){
     return 1;
   }else if (weight_name == "lee_cv_spline"){
-    return (eval.weight_lee * eval.weight_cv * eval.weight_spline);
+    return (eval.weight_lee * addtl_weight*eval.weight_cv * eval.weight_spline);
   }else if (weight_name == "lee_cv_spline_lee_cv_spline"){
-    return pow(eval.weight_lee * eval.weight_cv * eval.weight_spline,2);
+    return pow(eval.weight_lee * addtl_weight*eval.weight_cv * eval.weight_spline,2);
   }else if (weight_name == "lee_cv_spline_cv_spline" || weight_name == "cv_spline_lee_cv_spline"){
-    return eval.weight_lee * pow(eval.weight_cv * eval.weight_spline,2);
+    return eval.weight_lee * pow(addtl_weight*eval.weight_cv * eval.weight_spline,2);
   }else if (weight_name == "spline"){
     return eval.weight_spline;
   }else if (weight_name == "spline_spline"){
