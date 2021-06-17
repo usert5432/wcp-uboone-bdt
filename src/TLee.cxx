@@ -6,37 +6,37 @@
 
 namespace DataBase {
   double x1[101]={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-		  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-		  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-		  31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-		  41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-		  51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-		  61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
-		  71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
-		  81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
-		  91, 92, 93, 94, 95, 96, 97, 98, 99, 100};
+                  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+                  31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+                  41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+                  51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+                  61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+                  71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+                  81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+                  91, 92, 93, 94, 95, 96, 97, 98, 99, 100};
   
   double yl[101]={0, 0, 0, 0.856632, 1.70317, 2.51005, 3.32075, 4.14046, 4.9693, 5.80646, 6.65117,
-		  7.5025, 8.35978, 9.22237, 10.0898, 10.9615, 11.8372, 12.7165, 13.5992, 14.4849, 15.3734,
-		  16.2646, 17.1583, 18.0543, 18.9524, 19.8526, 20.7547, 21.6586, 22.5642, 23.4715, 24.3803,
-		  25.2906, 26.2023, 27.1153, 28.0297, 28.9452, 29.8619, 30.7797, 31.6987, 32.6187, 33.5396,
-		  34.4616, 35.3845, 36.3083, 37.2329, 38.1584, 39.0847, 40.0118, 40.9396, 41.8682, 42.7975,
-		  43.7275, 44.6581, 45.5895, 46.5215, 47.454, 48.3873, 49.321, 50.2554, 51.1903, 52.1257,
-		  53.0617, 53.9982, 54.9352, 55.8727, 56.8107, 57.7491, 58.6881, 59.6274, 60.5673, 61.5075,
-		  62.4482, 63.3892, 64.3307, 65.2725, 66.2148, 67.1575, 68.1005, 69.0438, 69.9876, 70.9317,
-		  71.8761, 72.8209, 73.766, 74.7114, 75.6572, 76.6033, 77.5497, 78.4964, 79.4434, 80.3907,
-		  81.3383, 82.2862, 83.2342, 84.1827, 85.1314, 86.0804, 87.0296, 87.9791, 88.9288, 89.8788};
+                  7.5025, 8.35978, 9.22237, 10.0898, 10.9615, 11.8372, 12.7165, 13.5992, 14.4849, 15.3734,
+                  16.2646, 17.1583, 18.0543, 18.9524, 19.8526, 20.7547, 21.6586, 22.5642, 23.4715, 24.3803,
+                  25.2906, 26.2023, 27.1153, 28.0297, 28.9452, 29.8619, 30.7797, 31.6987, 32.6187, 33.5396,
+                  34.4616, 35.3845, 36.3083, 37.2329, 38.1584, 39.0847, 40.0118, 40.9396, 41.8682, 42.7975,
+                  43.7275, 44.6581, 45.5895, 46.5215, 47.454, 48.3873, 49.321, 50.2554, 51.1903, 52.1257,
+                  53.0617, 53.9982, 54.9352, 55.8727, 56.8107, 57.7491, 58.6881, 59.6274, 60.5673, 61.5075,
+                  62.4482, 63.3892, 64.3307, 65.2725, 66.2148, 67.1575, 68.1005, 69.0438, 69.9876, 70.9317,
+                  71.8761, 72.8209, 73.766, 74.7114, 75.6572, 76.6033, 77.5497, 78.4964, 79.4434, 80.3907,
+                  81.3383, 82.2862, 83.2342, 84.1827, 85.1314, 86.0804, 87.0296, 87.9791, 88.9288, 89.8788};
 
   double yh[101]={1.1478, 2.35971, 3.51917, 4.72422, 5.98186, 7.21064, 8.41858, 9.61053, 10.7896, 11.9582, 13.1179,
-		  14.27, 15.4155, 16.5552, 17.6898, 18.8197, 19.9454, 21.0673, 22.1858, 23.3011, 24.4133,
-		  25.5229, 26.6299, 27.7346, 28.837, 29.9374, 31.0358, 32.1322, 33.2271, 34.3201, 35.4117,
-		  36.5017, 37.5904, 38.6776, 39.7635, 40.8483, 41.9318, 43.0141, 44.0955, 45.1757, 46.2549,
-		  47.3331, 48.4104, 49.4868, 50.5623, 51.637, 52.7108, 53.7839, 54.8561, 55.9277, 56.9985,
-		  58.0686, 59.1381, 60.2068, 61.275, 62.3425, 63.4094, 64.4757, 65.5415, 66.6066, 67.6713,
-		  68.7354, 69.7989, 70.862, 71.9246, 72.9866, 74.0483, 75.1094, 76.1701, 77.2304, 78.2902,
-		  79.3496, 80.4085, 81.4672, 82.5253, 83.5831, 84.6406, 85.6976, 86.7542, 87.8105, 88.8665,
-		  89.9221, 90.9774, 92.0323, 93.0869, 94.1411, 95.1951, 96.2488, 97.3021, 98.3552, 99.4079,
-		  100.46, 101.513, 102.564, 103.616, 104.667, 105.718, 106.769, 107.82, 108.87, 109.92};
+                  14.27, 15.4155, 16.5552, 17.6898, 18.8197, 19.9454, 21.0673, 22.1858, 23.3011, 24.4133,
+                  25.5229, 26.6299, 27.7346, 28.837, 29.9374, 31.0358, 32.1322, 33.2271, 34.3201, 35.4117,
+                  36.5017, 37.5904, 38.6776, 39.7635, 40.8483, 41.9318, 43.0141, 44.0955, 45.1757, 46.2549,
+                  47.3331, 48.4104, 49.4868, 50.5623, 51.637, 52.7108, 53.7839, 54.8561, 55.9277, 56.9985,
+                  58.0686, 59.1381, 60.2068, 61.275, 62.3425, 63.4094, 64.4757, 65.5415, 66.6066, 67.6713,
+                  68.7354, 69.7989, 70.862, 71.9246, 72.9866, 74.0483, 75.1094, 76.1701, 77.2304, 78.2902,
+                  79.3496, 80.4085, 81.4672, 82.5253, 83.5831, 84.6406, 85.6976, 86.7542, 87.8105, 88.8665,
+                  89.9221, 90.9774, 92.0323, 93.0869, 94.1411, 95.1951, 96.2488, 97.3021, 98.3552, 99.4079,
+                  100.46, 101.513, 102.564, 103.616, 104.667, 105.718, 106.769, 107.82, 108.87, 109.92};
 }
 
 
@@ -52,10 +52,10 @@ void TLee::Exe_Fiedman_Cousins_Data(TMatrixD matrix_fakedata, double Lee_true_lo
   Minimization_Lee_strength_FullCov(1, 0);
   
   cout<<TString::Format(" ---> Best fit of Lee strength: chi2 %6.2f, %5.2f +/- %5.2f",
-			minimization_chi2,
-			minimization_Lee_strength_val,
-			minimization_Lee_strength_err
-			)<<endl;
+                        minimization_chi2,
+                        minimization_Lee_strength_val,
+                        minimization_Lee_strength_err
+                        )<<endl;
   
   //////////////////
 
@@ -238,7 +238,7 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
       int size_map_fake_data = map_fake_data.size();
       TMatrixD matrix_meas(1, size_map_fake_data);
       for(int ibin=0; ibin<size_map_fake_data; ibin++) {
-	matrix_meas(0, ibin) = map_fake_data[ibin];	
+        matrix_meas(0, ibin) = map_fake_data[ibin];     
       }
 
       /////////
@@ -252,14 +252,14 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
       TMatrixD matrix_cov_syst = matrix_absolute_cov_newworld;
       
       for(int ibin=0; ibin<matrix_cov_syst.GetNrows(); ibin++) {
-	double val_stat_cov = 0;	
-	double val_meas = matrix_meas(0, ibin);
-	double val_pred = matrix_pred(0, ibin);
-	
-	if( val_meas==0 ) val_stat_cov = val_pred/2;
-	else val_stat_cov = 3./( 1./val_meas + 2./val_pred );	
-	if( val_meas==0 && val_pred==0 ) val_stat_cov = 1e-6;
-	matrix_cov_syst(ibin, ibin) += val_stat_cov;
+        double val_stat_cov = 0;        
+        double val_meas = matrix_meas(0, ibin);
+        double val_pred = matrix_pred(0, ibin);
+        
+        if( val_meas==0 ) val_stat_cov = val_pred/2;
+        else val_stat_cov = 3./( 1./val_meas + 2./val_pred );   
+        if( val_meas==0 && val_pred==0 ) val_stat_cov = 1e-6;
+        matrix_cov_syst(ibin, ibin) += val_stat_cov;
       }
 
       /////////
@@ -279,131 +279,131 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
 
       if( flag_Lee_minimization_after_constraint ) {// do the fitting on the spectra and cov_total after constraint
 
-	if( 0 ) {
-	  int num_Y = 26+26;
-	  int num_X = matrix_cov_syst.GetNrows() - num_Y;
-	  
-	  matrix_pred.T(); matrix_meas.T();
-	  TMatrixD matrix_pred_X = matrix_pred.GetSub(num_Y, num_Y+num_X-1, 0, 0);
-	  TMatrixD matrix_meas_X = matrix_meas.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+        if( 0 ) {
+          int num_Y = 26+26;
+          int num_X = matrix_cov_syst.GetNrows() - num_Y;
+          
+          matrix_pred.T(); matrix_meas.T();
+          TMatrixD matrix_pred_X = matrix_pred.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+          TMatrixD matrix_meas_X = matrix_meas.GetSub(num_Y, num_Y+num_X-1, 0, 0);
 
-	  TMatrixD matrix_pred_Y = matrix_pred.GetSub(0, num_Y-1, 0, 0);
-	  TMatrixD matrix_meas_Y = matrix_meas.GetSub(0, num_Y-1, 0, 0);
-	  matrix_pred.T(); matrix_meas.T();
-	
-	  TMatrixD matrix_XX = matrix_cov_total.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
-	  TMatrixD matrix_XX_inv = matrix_XX;
-	  matrix_XX_inv.Invert();
-	
-	  TMatrixD matrix_YY = matrix_cov_total.GetSub(0, num_Y-1, 0, num_Y-1);
-	
-	  TMatrixD matrix_YX = matrix_cov_total.GetSub(0, num_Y-1, num_Y, num_Y+num_X-1);
-	  TMatrixD matrix_XY(num_X, num_Y); matrix_XY.Transpose(matrix_YX);
-	
-	  TMatrixD matrix_Y_under_X = matrix_pred_Y + matrix_YX * matrix_XX_inv * (matrix_meas_X - matrix_pred_X);
-	  TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
-	  
-	  //////
-	  
-	  matrix_Y_under_X.T();
-	  matrix_meas_Y.T();
-	  
-	  TMatrixD matrix_wicons_delta = matrix_Y_under_X - matrix_meas_Y;
-	  TMatrixD matrix_wicons_delta_T = matrix_wicons_delta.T();
-	  matrix_wicons_delta.T();
+          TMatrixD matrix_pred_Y = matrix_pred.GetSub(0, num_Y-1, 0, 0);
+          TMatrixD matrix_meas_Y = matrix_meas.GetSub(0, num_Y-1, 0, 0);
+          matrix_pred.T(); matrix_meas.T();
+        
+          TMatrixD matrix_XX = matrix_cov_total.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
+          TMatrixD matrix_XX_inv = matrix_XX;
+          matrix_XX_inv.Invert();
+        
+          TMatrixD matrix_YY = matrix_cov_total.GetSub(0, num_Y-1, 0, num_Y-1);
+        
+          TMatrixD matrix_YX = matrix_cov_total.GetSub(0, num_Y-1, num_Y, num_Y+num_X-1);
+          TMatrixD matrix_XY(num_X, num_Y); matrix_XY.Transpose(matrix_YX);
+        
+          TMatrixD matrix_Y_under_X = matrix_pred_Y + matrix_YX * matrix_XX_inv * (matrix_meas_X - matrix_pred_X);
+          TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
+          
+          //////
+          
+          matrix_Y_under_X.T();
+          matrix_meas_Y.T();
+          
+          TMatrixD matrix_wicons_delta = matrix_Y_under_X - matrix_meas_Y;
+          TMatrixD matrix_wicons_delta_T = matrix_wicons_delta.T();
+          matrix_wicons_delta.T();
 
-	  TMatrixD matrix_YY_under_XX_inv = matrix_YY_under_XX;
-	  matrix_YY_under_XX_inv.Invert();
-	  
-	  TMatrixD matrix_wicons_chi2 = matrix_wicons_delta * matrix_YY_under_XX_inv * matrix_wicons_delta_T;
-	  double val_wicons_chi2 = matrix_wicons_chi2(0,0);
-	  chi2 = val_wicons_chi2;	
-	}
-	
-	//////
+          TMatrixD matrix_YY_under_XX_inv = matrix_YY_under_XX;
+          matrix_YY_under_XX_inv.Invert();
+          
+          TMatrixD matrix_wicons_chi2 = matrix_wicons_delta * matrix_YY_under_XX_inv * matrix_wicons_delta_T;
+          double val_wicons_chi2 = matrix_wicons_chi2(0,0);
+          chi2 = val_wicons_chi2;       
+        }
+        
+        //////
 
-	if( 1 ) {
-	  
-	  vector<int> vc_target_detailed_chs;	 
-	  for(int idx=0; idx<8; idx++) vc_target_detailed_chs.push_back( idx );
-	  for(int idx=26; idx<26+8; idx++) vc_target_detailed_chs.push_back( idx );	  
-	  vector<int> vc_support_detailed_chs;
-	  for(int idx=8; idx<26; idx++) vc_support_detailed_chs.push_back( idx );
-	  for(int idx=26+8; idx<26+26; idx++) vc_support_detailed_chs.push_back( idx );
-	  for(int idx=26+26; idx<137; idx++) vc_support_detailed_chs.push_back( idx );
+        if( 1 ) {
+          
+          vector<int> vc_target_detailed_chs;    
+          for(int idx=0; idx<8; idx++) vc_target_detailed_chs.push_back( idx );
+          for(int idx=26; idx<26+8; idx++) vc_target_detailed_chs.push_back( idx );       
+          vector<int> vc_support_detailed_chs;
+          for(int idx=8; idx<26; idx++) vc_support_detailed_chs.push_back( idx );
+          for(int idx=26+8; idx<26+26; idx++) vc_support_detailed_chs.push_back( idx );
+          for(int idx=26+26; idx<137; idx++) vc_support_detailed_chs.push_back( idx );
 
-	  // vector<int> vc_target_detailed_chs;	 
-	  // for(int idx=0; idx<26; idx++) vc_target_detailed_chs.push_back( idx );	  
-	  // vector<int> vc_support_detailed_chs;
-	  // for(int idx=26; idx<137; idx++) vc_support_detailed_chs.push_back( idx );
+          // vector<int> vc_target_detailed_chs;         
+          // for(int idx=0; idx<26; idx++) vc_target_detailed_chs.push_back( idx );       
+          // vector<int> vc_support_detailed_chs;
+          // for(int idx=26; idx<137; idx++) vc_support_detailed_chs.push_back( idx );
 
-	  //////
-	  
-	  int num_Y = vc_target_detailed_chs.size();
-	  int num_X = vc_support_detailed_chs.size();
-	  
-	  TMatrixD matrix_gof_trans( bins_newworld, num_Y+num_X );// oldworld, newworld
-	  int new_ch = -1;
-	  
-	  for(int idx=0; idx<num_Y; idx++) {
-	    int old_ch = vc_target_detailed_chs.at(idx);
-	    new_ch++;
-	    matrix_gof_trans(old_ch, new_ch) = 1;
-	  }
-	  
-	  for(int idx=0; idx<num_X; idx++) {
-	    int old_ch = vc_support_detailed_chs.at(idx);
-	    new_ch++;
-	    matrix_gof_trans(old_ch, new_ch) = 1;
-	  }
-	  
-	  TMatrixD matrix_gof_trans_T = matrix_gof_trans.T();
-	  matrix_gof_trans.T();
+          //////
+          
+          int num_Y = vc_target_detailed_chs.size();
+          int num_X = vc_support_detailed_chs.size();
+          
+          TMatrixD matrix_gof_trans( bins_newworld, num_Y+num_X );// oldworld, newworld
+          int new_ch = -1;
+          
+          for(int idx=0; idx<num_Y; idx++) {
+            int old_ch = vc_target_detailed_chs.at(idx);
+            new_ch++;
+            matrix_gof_trans(old_ch, new_ch) = 1;
+          }
+          
+          for(int idx=0; idx<num_X; idx++) {
+            int old_ch = vc_support_detailed_chs.at(idx);
+            new_ch++;
+            matrix_gof_trans(old_ch, new_ch) = 1;
+          }
+          
+          TMatrixD matrix_gof_trans_T = matrix_gof_trans.T();
+          matrix_gof_trans.T();
 
-	  TMatrixD matrix_pred_userA = matrix_pred * matrix_gof_trans;
-	  TMatrixD matrix_meas_userA = matrix_meas * matrix_gof_trans;
-	  TMatrixD matrix_cov_total_userA = matrix_gof_trans_T * matrix_cov_total * matrix_gof_trans;
+          TMatrixD matrix_pred_userA = matrix_pred * matrix_gof_trans;
+          TMatrixD matrix_meas_userA = matrix_meas * matrix_gof_trans;
+          TMatrixD matrix_cov_total_userA = matrix_gof_trans_T * matrix_cov_total * matrix_gof_trans;
 
-	  //////
-	  
-	  matrix_pred_userA.T(); matrix_meas_userA.T();
-	  TMatrixD matrix_pred_X = matrix_pred_userA.GetSub(num_Y, num_Y+num_X-1, 0, 0);
-	  TMatrixD matrix_meas_X = matrix_meas_userA.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+          //////
+          
+          matrix_pred_userA.T(); matrix_meas_userA.T();
+          TMatrixD matrix_pred_X = matrix_pred_userA.GetSub(num_Y, num_Y+num_X-1, 0, 0);
+          TMatrixD matrix_meas_X = matrix_meas_userA.GetSub(num_Y, num_Y+num_X-1, 0, 0);
 
-	  TMatrixD matrix_pred_Y = matrix_pred_userA.GetSub(0, num_Y-1, 0, 0);
-	  TMatrixD matrix_meas_Y = matrix_meas_userA.GetSub(0, num_Y-1, 0, 0);
-	  matrix_pred_userA.T(); matrix_meas_userA.T();
-	
-	  TMatrixD matrix_XX = matrix_cov_total_userA.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
-	  TMatrixD matrix_XX_inv = matrix_XX;
-	  matrix_XX_inv.Invert();
-	
-	  TMatrixD matrix_YY = matrix_cov_total_userA.GetSub(0, num_Y-1, 0, num_Y-1);
-	
-	  TMatrixD matrix_YX = matrix_cov_total_userA.GetSub(0, num_Y-1, num_Y, num_Y+num_X-1);
-	  TMatrixD matrix_XY(num_X, num_Y); matrix_XY.Transpose(matrix_YX);
-	
-	  TMatrixD matrix_Y_under_X = matrix_pred_Y + matrix_YX * matrix_XX_inv * (matrix_meas_X - matrix_pred_X);
-	  TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
-	  
-	  //////
-	  
-	  matrix_Y_under_X.T();
-	  matrix_meas_Y.T();
-	  
-	  TMatrixD matrix_wicons_delta = matrix_Y_under_X - matrix_meas_Y;
-	  TMatrixD matrix_wicons_delta_T = matrix_wicons_delta.T();
-	  matrix_wicons_delta.T();
+          TMatrixD matrix_pred_Y = matrix_pred_userA.GetSub(0, num_Y-1, 0, 0);
+          TMatrixD matrix_meas_Y = matrix_meas_userA.GetSub(0, num_Y-1, 0, 0);
+          matrix_pred_userA.T(); matrix_meas_userA.T();
+        
+          TMatrixD matrix_XX = matrix_cov_total_userA.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
+          TMatrixD matrix_XX_inv = matrix_XX;
+          matrix_XX_inv.Invert();
+        
+          TMatrixD matrix_YY = matrix_cov_total_userA.GetSub(0, num_Y-1, 0, num_Y-1);
+        
+          TMatrixD matrix_YX = matrix_cov_total_userA.GetSub(0, num_Y-1, num_Y, num_Y+num_X-1);
+          TMatrixD matrix_XY(num_X, num_Y); matrix_XY.Transpose(matrix_YX);
+        
+          TMatrixD matrix_Y_under_X = matrix_pred_Y + matrix_YX * matrix_XX_inv * (matrix_meas_X - matrix_pred_X);
+          TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
+          
+          //////
+          
+          matrix_Y_under_X.T();
+          matrix_meas_Y.T();
+          
+          TMatrixD matrix_wicons_delta = matrix_Y_under_X - matrix_meas_Y;
+          TMatrixD matrix_wicons_delta_T = matrix_wicons_delta.T();
+          matrix_wicons_delta.T();
 
-	  TMatrixD matrix_YY_under_XX_inv = matrix_YY_under_XX;
-	  matrix_YY_under_XX_inv.Invert();
-	  
-	  TMatrixD matrix_wicons_chi2 = matrix_wicons_delta * matrix_YY_under_XX_inv * matrix_wicons_delta_T;
-	  double val_wicons_chi2 = matrix_wicons_chi2(0,0);
-	  chi2 = val_wicons_chi2;
-	  
-	}
-	
+          TMatrixD matrix_YY_under_XX_inv = matrix_YY_under_XX;
+          matrix_YY_under_XX_inv.Invert();
+          
+          TMatrixD matrix_wicons_chi2 = matrix_wicons_delta * matrix_YY_under_XX_inv * matrix_wicons_delta_T;
+          double val_wicons_chi2 = matrix_wicons_chi2(0,0);
+          chi2 = val_wicons_chi2;
+          
+        }
+        
       }// flag_Lee_minimization_after_constraint
       
       ///////////////////////////////////////////////////////////////////////////      
@@ -446,7 +446,7 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
   //   double minosError_hgh = 0;
   //   min_Lee.GetMinosError(0, minosError_low, minosError_hgh);
   //   cout<<TString::Format(" ---> Best fit of Lee strength: %5.2f, (1 sigma) from MinosError: %5.2f %5.2f",
-  //  			  minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
+  //                      minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
   // }
   // {
   //   min_Lee.SetErrorDef(4);
@@ -454,7 +454,7 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
   //   double minosError_hgh = 0;
   //   min_Lee.GetMinosError(0, minosError_low, minosError_hgh);
   //   cout<<TString::Format(" ---> Best fit of Lee strength: %5.2f, (2 sigma) from MinosError: %5.2f %5.2f",
-  // 			  minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
+  //                      minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
   // }
   // {
   //   min_Lee.SetErrorDef(9);
@@ -462,7 +462,7 @@ void TLee::Minimization_Lee_strength_FullCov(double Lee_initial_value, bool flag
   //   double minosError_hgh = 0;
   //   min_Lee.GetMinosError(0, minosError_low, minosError_hgh);
   //   cout<<TString::Format(" ---> Best fit of Lee strength: %5.2f, (3 sigma) from MinosError: %5.2f %5.2f",
-  // 			  minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
+  //                      minimization_Lee_strength_val, minosError_low, minosError_hgh)<<endl;
   // }
   
 }  
@@ -516,10 +516,10 @@ void TLee::Set_Variations(int num_toy)
     TMatrixD matrix_element(bins_newworld, 1);    
     for(int ibin=0; ibin<bins_newworld; ibin++) {
       if( matrix_eigenvalue(ibin)>=0 ) {
-	matrix_element(ibin,0) = rand->Gaus( 0, sqrt( matrix_eigenvalue(ibin) ) );
+        matrix_element(ibin,0) = rand->Gaus( 0, sqrt( matrix_eigenvalue(ibin) ) );
       }
       else {
-	matrix_element(ibin,0) = 0;
+        matrix_element(ibin,0) = 0;
       }      
     }
     TMatrixD matrix_variation = matrix_eigenvector * matrix_element;
@@ -530,6 +530,428 @@ void TLee::Set_Variations(int num_toy)
     }
   }
     
+}
+
+///////////////////////////////////////////////////////// ccc
+
+double TLee::GetChi2(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_temp, TMatrixD matrix_syst_abscov_temp)
+{
+  double chi2 = 0;
+  
+  TMatrixD matrix_delta = matrix_pred_temp - matrix_meas_temp;
+  TMatrixD matrix_delta_T = matrix_delta.T(); matrix_delta.T(); 
+
+  int rows = matrix_pred_temp.GetNcols();
+
+  /// docDB 32520, when the prediction is sufficiently low
+  double array_pred_protect[11] = {0, 0.461, 0.916, 1.382, 1.833, 2.298, 2.767, 3.225, 3.669, 4.141, 4.599};
+  
+  TMatrixD matrix_stat_cov(rows, rows);
+  for(int idx=0; idx<rows; idx++) {
+    matrix_stat_cov(idx, idx) = matrix_pred_temp(0, idx);
+    
+    double val_meas = matrix_meas_temp(0, idx);
+    double val_pred = matrix_pred_temp(0, idx);
+    int int_meas = (int)(val_meas+0.1);
+
+    if( int_meas>=1 && int_meas<=10) {
+      if( val_pred<array_pred_protect[int_meas] ) {
+	double numerator = pow(val_pred-val_meas, 2);
+        double denominator = 2*( val_pred - val_meas + val_meas*log(val_meas/val_pred) );
+	matrix_stat_cov(idx, idx) = numerator/denominator;
+      }
+    }
+    
+  }
+
+  TMatrixD matrix_total_cov(rows, rows); matrix_total_cov = matrix_syst_abscov_temp + matrix_stat_cov;
+  TMatrixD matrix_total_cov_inv = matrix_total_cov; matrix_total_cov_inv.Invert();
+  chi2 = ( matrix_delta*matrix_total_cov_inv*matrix_delta_T )(0,0);
+  
+  return chi2;  
+}
+
+void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_temp, TMatrixD matrix_syst_abscov_temp, bool saveFIG, TString ffstr, int index)
+{
+  TString roostr = "";
+  
+  int rows = matrix_pred_temp.GetNcols();
+  //TMatrixD matrix_stat_cov(rows, rows);
+  //for(int idx=0; idx<rows; idx++) matrix_stat_cov(idx, idx) = matrix_pred_temp(0, idx);
+
+  /// docDB 32520, when the prediction is sufficiently low
+  double array_pred_protect[11] = {0, 0.461, 0.916, 1.382, 1.833, 2.298, 2.767, 3.225, 3.669, 4.141, 4.599};
+  
+  TMatrixD matrix_stat_cov(rows, rows);
+  for(int idx=0; idx<rows; idx++) {
+    matrix_stat_cov(idx, idx) = matrix_pred_temp(0, idx);
+    
+    double val_meas = matrix_meas_temp(0, idx);
+    double val_pred = matrix_pred_temp(0, idx);
+    int int_meas = (int)(val_meas+0.1);
+
+    if( int_meas>=1 && int_meas<=10) {
+      if( val_pred<array_pred_protect[int_meas] ) {
+	double numerator = pow(val_pred-val_meas, 2);
+        double denominator = 2*( val_pred - val_meas + val_meas*log(val_meas/val_pred) );
+	matrix_stat_cov(idx, idx) = numerator/denominator;
+      }
+    }
+    
+  }  
+  
+  
+  TMatrixD matrix_total_cov(rows, rows); matrix_total_cov = matrix_syst_abscov_temp + matrix_stat_cov;
+
+  double determinant = matrix_total_cov.Determinant();
+  if( determinant==0 ) {
+    cerr<<endl<<" Error: determinant of total COV is 0"<<endl<<endl; exit(1);
+  }
+  
+  double chi2 = GetChi2(matrix_pred_temp, matrix_meas_temp, matrix_syst_abscov_temp);
+  cout<<endl<<TString::Format(" ---> check chi2_normal %7.2f", chi2)<<endl;
+  
+  TMatrixDSym DSmatrix_cov(rows);
+  for(int ibin=0; ibin<rows; ibin++)
+    for(int jbin=0; jbin<rows; jbin++)
+      DSmatrix_cov(ibin, jbin) = matrix_total_cov(ibin, jbin);
+  TMatrixDSymEigen DSmatrix_eigen( DSmatrix_cov );
+  TMatrixD matrix_eigenvector = DSmatrix_eigen.GetEigenVectors();
+  TVectorD matrix_eigenvalue = DSmatrix_eigen.GetEigenValues();
+  TMatrixD matrix_eigenvector_T = matrix_eigenvector.T(); matrix_eigenvector.T();
+
+  TMatrixD matrix_lambda_pred = matrix_pred_temp * matrix_eigenvector;
+  TMatrixD matrix_lambda_meas = matrix_meas_temp * matrix_eigenvector;
+  TMatrixD matrix_delta_lambda = matrix_lambda_meas - matrix_lambda_pred;
+  TMatrixD matrix_delta_lambda_T = matrix_delta_lambda.T(); matrix_delta_lambda.T();
+
+  TMatrixD matrix_cov_lambda(rows, rows);
+  for(int idx=0; idx<rows; idx++) matrix_cov_lambda(idx, idx) = matrix_eigenvalue(idx);
+  TMatrixD matrix_cov_lambda_inv = matrix_cov_lambda; matrix_cov_lambda_inv.Invert();
+  double chi2_lambda = (matrix_delta_lambda * matrix_cov_lambda_inv * matrix_delta_lambda_T)(0,0);
+  cout<<TString::Format(" ---> check chi2_lambda %7.2f", chi2_lambda)<<endl<<endl;
+
+  //////////////////////////////////////////////// Plotting
+
+  int color_pred = kRed;
+  int color_meas = kBlack;
+
+  TF1 *ff_1 = new TF1("ff_1", "1", 0, 1e3);
+  ff_1->SetLineColor(kGray+1); ff_1->SetLineStyle(7);
+
+  TF1 *ff_0 = new TF1("ff_0", "0", 0, 1e3);
+  ff_0->SetLineColor(kGray+1); ff_0->SetLineStyle(7);
+
+  TH1D *h1_fake_meas = new TH1D(TString::Format("h1_fake_meas_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  TGraphErrors *gh_fake_meas = new TGraphErrors();
+  TH1D *h1_pred = new TH1D(TString::Format("h1_pred_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  TH1D *h1_meas2pred = new TH1D(TString::Format("h1_meas2pred_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  TH1D *h1_meas2pred_syst = new TH1D(TString::Format("h1_meas2pred_syst_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  
+  TH1D *h1_lambda_pred = new TH1D(TString::Format("h1_lambda_pred_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  TH1D *h1_lambda_meas = new TH1D(TString::Format("h1_lambda_meas_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  TH1D *h1_lambda_absigma_dis = new TH1D(TString::Format("h1_lambda_absigma_dis_%d_%s", index, ffstr.Data()), "", 10, 0, 10);
+  TH1D *h1_lambda_sigma_iii = new TH1D(TString::Format("h1_lambda_sigma_iii_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+
+  map<int, double>map_above3sigma;
+  vector<double>vec_above3sigma;
+  
+  for(int ibin=1; ibin<=rows; ibin++) {
+    double pred_val = matrix_pred_temp(0, ibin-1);
+    double pred_err = sqrt( matrix_total_cov(ibin-1, ibin-1) );
+    double meas_val = matrix_meas_temp(0, ibin-1);
+    //double meas2pred_val = 0;
+    if( pred_val!=0 ) {
+      h1_meas2pred->SetBinContent(ibin, meas_val/pred_val);
+      h1_meas2pred->SetBinError(ibin, sqrt(meas_val)/pred_val);
+      h1_meas2pred_syst->SetBinContent(ibin, 1);
+      h1_meas2pred_syst->SetBinError(ibin, pred_err/pred_val);
+    }
+    
+    double pred_lambda_val = matrix_lambda_pred(0, ibin-1);
+    double pred_lambda_err = sqrt( matrix_cov_lambda(ibin-1, ibin-1) );
+    double meas_lambda_val = matrix_lambda_meas(0, ibin-1);
+    double delta_lambda_val = matrix_delta_lambda(0, ibin-1);
+    double relerr_lambda = delta_lambda_val/pred_lambda_err;
+
+    gh_fake_meas->SetPoint( ibin-1, h1_fake_meas->GetBinCenter(ibin), meas_val );
+    gh_fake_meas->SetPointError( ibin-1, h1_fake_meas->GetBinWidth(ibin)*0.5, sqrt(meas_val) );
+    h1_fake_meas->SetBinContent( ibin, meas_val );
+    h1_pred->SetBinContent( ibin, pred_val );
+    h1_pred->SetBinError( ibin, pred_err );
+
+    h1_lambda_pred->SetBinContent( ibin, pred_lambda_val );
+    h1_lambda_pred->SetBinError( ibin, pred_lambda_err );
+    h1_lambda_meas->SetBinContent( ibin, meas_lambda_val );
+    
+    if( fabs(relerr_lambda)>=10 ) h1_lambda_absigma_dis->Fill( 9.5 );
+    else h1_lambda_absigma_dis->Fill( fabs(relerr_lambda) );
+
+    double edge_val = 6;
+    double mod_relerr_lambda = relerr_lambda;
+    if( fabs(relerr_lambda)>edge_val ) {
+      (relerr_lambda>0) ? (mod_relerr_lambda = edge_val) : (mod_relerr_lambda = edge_val*(-1));
+    }
+    h1_lambda_sigma_iii->SetBinContent( ibin, mod_relerr_lambda );
+
+    if( fabs(relerr_lambda)>=3 ) {
+      map_above3sigma[ibin] = fabs(relerr_lambda);
+      vec_above3sigma.push_back( fabs(relerr_lambda) );
+    }
+    
+  }
+
+  cout<<endl;
+  cout<<" bin above 3sigma"<<endl;
+  for(auto it_map_above3sigma=map_above3sigma.begin(); it_map_above3sigma!=map_above3sigma.end(); it_map_above3sigma++) {
+    int user_index = it_map_above3sigma->first;
+    double user_value = it_map_above3sigma->second;
+    cout<<TString::Format(" ---> %2d, %3.1f", user_index, user_value)<<endl;
+  }
+  cout<<endl;
+  
+  /////////////////////////////////////////////////////////////
+ 
+  // double lambda_sigma_11 = h1_lambda_absigma_dis->GetBinContent( 1 );
+  // double lambda_sigma_12 = h1_lambda_absigma_dis->GetBinContent( 2 );
+  // double lambda_sigma_23 = h1_lambda_absigma_dis->GetBinContent( 3 );
+  double lambda_sigma_3p = h1_lambda_absigma_dis->Integral(4, 10);
+
+  /////////////////////////////////////////////////////////////
+  
+  roostr = TString::Format("canv_h1_fake_meas_%d_%s", index, ffstr.Data());  
+  TCanvas *canv_h1_fake_meas = new TCanvas(roostr, roostr, 1000, 950);
+
+  /////////////
+  canv_h1_fake_meas->cd();
+  TPad *pad_top_no = new TPad("pad_top_no", "pad_top_no", 0, 0.45, 1, 1);
+  func_canv_margin(pad_top_no, 0.15, 0.1, 0.1, 0.05);
+  pad_top_no->Draw(); pad_top_no->cd();
+  
+  TH1D *h1_pred_clone = (TH1D*)h1_pred->Clone(TString::Format("h1_pred_clone_%d_%s", index, ffstr.Data()));
+  h1_pred_clone->Draw("e2"); h1_pred_clone->SetMinimum(0);
+  double max_h1_pred_clone = 0;
+  double max_h1_fake_meas = h1_fake_meas->GetMaximum();
+  for(int ibin=1; ibin<=rows; ibin++) {
+    double sub_pred = h1_pred_clone->GetBinContent(ibin) + h1_pred_clone->GetBinError(ibin);
+    if( max_h1_pred_clone<sub_pred ) max_h1_pred_clone = sub_pred;
+  }
+  if( max_h1_pred_clone<max_h1_fake_meas ) h1_pred_clone->SetMaximum( max_h1_fake_meas*1.1 );
+  h1_pred_clone->SetFillColor(kRed-10); h1_pred_clone->SetFillStyle(1001);
+  h1_pred_clone->SetMarkerSize(0);
+  h1_pred_clone->SetLineColor(kRed);
+  h1_pred_clone->GetXaxis()->SetLabelColor(10);
+  func_xy_title(h1_pred_clone, "Bin index", "Entries"); func_title_size(h1_pred_clone, 0.065, 0.065, 0.065, 0.065);
+  h1_pred_clone->GetXaxis()->CenterTitle(); h1_pred_clone->GetYaxis()->CenterTitle();
+  h1_pred_clone->GetYaxis()->SetTitleOffset(1.2); 
+
+  h1_pred->Draw("hist same"); h1_pred->SetLineColor(color_pred);
+
+  gh_fake_meas->Draw("same p");
+  gh_fake_meas->SetMarkerStyle(20); gh_fake_meas->SetMarkerSize(1.2);
+  gh_fake_meas->SetMarkerColor(color_meas); gh_fake_meas->SetLineColor(color_meas);
+
+  h1_pred_clone->Draw("same axis");
+
+  double shift_chi2_toy_YY = 0;// -0.45
+  double shift_chi2_toy_XX = 0.3;
+  TLegend *lg_chi2_toy = new TLegend(0.17+0.03+shift_chi2_toy_XX, 0.6+shift_chi2_toy_YY, 0.4+0.04+shift_chi2_toy_XX, 0.85+shift_chi2_toy_YY);    
+  lg_chi2_toy->AddEntry(gh_fake_meas, TString::Format("#color[%d]{Data}", color_meas), "lep");
+  lg_chi2_toy->AddEntry(h1_pred_clone, TString::Format("#color[%d]{Prediction}", color_pred), "fl");
+  lg_chi2_toy->AddEntry("", TString::Format("#color[%d]{#chi^{2}/ndf: %4.1f/%d}", color_pred, chi2, rows), "");
+  lg_chi2_toy->Draw();
+  lg_chi2_toy->SetBorderSize(0); lg_chi2_toy->SetFillStyle(0); lg_chi2_toy->SetTextSize(0.08);
+
+  /////////////
+  canv_h1_fake_meas->cd();
+  TPad *pad_bot_no = new TPad("pad_bot_no", "pad_bot_no", 0, 0, 1, 0.45);
+  func_canv_margin(pad_bot_no, 0.15, 0.1, 0.05, 0.3);
+  pad_bot_no->Draw(); pad_bot_no->cd();
+  
+  h1_meas2pred_syst->Draw("e2");
+  h1_meas2pred_syst->SetMinimum(0); h1_meas2pred_syst->SetMaximum(2);
+  h1_meas2pred_syst->SetFillColor(kRed-10); h1_meas2pred_syst->SetFillStyle(1001); h1_meas2pred_syst->SetMarkerSize(0);
+  func_title_size(h1_meas2pred_syst, 0.078, 0.078, 0.078, 0.078);
+  func_xy_title(h1_meas2pred_syst, "Measured bin index", "Data / Pred");
+  h1_meas2pred_syst->GetXaxis()->SetTickLength(0.05);  h1_meas2pred_syst->GetXaxis()->SetLabelOffset(0.005);
+  h1_meas2pred_syst->GetXaxis()->CenterTitle(); h1_meas2pred_syst->GetYaxis()->CenterTitle(); 
+  h1_meas2pred_syst->GetYaxis()->SetTitleOffset(0.99);
+  h1_meas2pred_syst->GetYaxis()->SetNdivisions(509);
+
+  ff_1->Draw("same");
+  
+  h1_meas2pred->Draw("same e1");
+  h1_meas2pred->SetLineColor(color_meas);
+  //h1_meas2pred->SetMarkerSytle(20); h1_meas2pred->SetMarkerSize(1.2); h1_meas2pred->SetMarkerColor(color_meas); 
+
+  if( saveFIG ) {
+    roostr = TString::Format("canv_h1_fake_meas_%d_%s.png", index, ffstr.Data());  
+    //canv_h1_fake_meas->SaveAs(roostr);
+  }
+    
+  /////////////////////////////////////////////////////////////
+
+  roostr = TString::Format("canv_h1_lambda_pred_%d_%s", index, ffstr.Data());
+  TCanvas *canv_h1_lambda_pred = new TCanvas(roostr, roostr, 900, 650);
+  func_canv_margin(canv_h1_lambda_pred, 0.15, 0.1, 0.1, 0.15);
+    
+  TH1D *h1_lambda_pred_clone = (TH1D*)h1_lambda_pred->Clone("h1_lambda_pred_clone");
+  h1_lambda_pred_clone->Draw("e2");
+  //h1_lambda_pred_clone->SetMinimum(0);
+  if( h1_lambda_pred_clone->GetMaximum()<h1_lambda_meas->GetMaximum() ) h1_lambda_pred_clone->SetMaximum (h1_lambda_meas->GetMaximum() * 1.1 );
+  h1_lambda_pred_clone->SetFillColor(kRed-10); h1_lambda_pred_clone->SetFillStyle(1001);
+  h1_lambda_pred_clone->SetMarkerSize(0);
+  h1_lambda_pred_clone->SetLineColor(color_pred);
+  func_xy_title(h1_lambda_pred_clone, "Decomposed bin index", "Entries\'");
+  func_title_size(h1_lambda_pred_clone, 0.05, 0.05, 0.05, 0.05);
+  h1_lambda_pred_clone->GetXaxis()->CenterTitle(); h1_lambda_pred_clone->GetYaxis()->CenterTitle();
+  h1_lambda_pred_clone->GetYaxis()->SetTitleOffset(1.5); 
+
+  h1_lambda_pred->Draw("hist same"); h1_lambda_pred->SetLineColor(color_pred);
+
+  h1_lambda_meas->Draw("same p");
+  h1_lambda_meas->SetMarkerStyle(20); h1_lambda_meas->SetMarkerSize(1.2); h1_lambda_meas->SetMarkerColor(color_meas);
+  h1_lambda_meas->SetLineColor(color_meas);    
+
+  h1_lambda_pred_clone->Draw("same axis");   
+
+  if( saveFIG ) {
+    roostr = TString::Format("canv_h1_lambda_pred_%d_%s.png", index, ffstr.Data());
+    canv_h1_lambda_pred->SaveAs(roostr);
+  }
+    
+  /////////////////////////////////////////////////////////////
+
+  roostr = TString::Format("canv_lambda_sigma_%d_%s", index, ffstr.Data());
+  TCanvas *canv_lambda_sigma = new TCanvas(roostr, roostr, 900, 650);
+  func_canv_margin(canv_lambda_sigma, 0.15, 0.1, 0.1, 0.15);
+    
+  TH1D *h1_lambda_sigmax3 = new TH1D(TString::Format("h1_lambda_sigmax3_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  for(int ibin=1; ibin<=rows; ibin++) h1_lambda_sigmax3->SetBinError(ibin, 3);
+  
+  TH1D *h1_lambda_sigmax2 = new TH1D(TString::Format("h1_lambda_sigmax2_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  for(int ibin=1; ibin<=rows; ibin++) h1_lambda_sigmax2->SetBinError(ibin, 2);
+  
+  TH1D *h1_lambda_sigmax1 = new TH1D(TString::Format("h1_lambda_sigmax1_%d_%s", index, ffstr.Data()), "", rows, 0, rows);
+  for(int ibin=1; ibin<=rows; ibin++) h1_lambda_sigmax1->SetBinError(ibin, 1);
+  
+  h1_lambda_sigmax3->Draw("e2");
+  h1_lambda_sigmax3->SetMinimum(-6);
+  h1_lambda_sigmax3->SetMaximum(6);
+  h1_lambda_sigmax3->SetFillColor(kRed-9); h1_lambda_sigmax3->SetFillStyle(1001);
+  h1_lambda_sigmax3->SetMarkerSize(0);
+  h1_lambda_sigmax3->SetLineColor(color_pred);
+  func_xy_title(h1_lambda_sigmax3, "Decomposed bin index", "#sigma_{i}\' value");
+  func_title_size(h1_lambda_sigmax3, 0.05, 0.05, 0.05, 0.05);
+  h1_lambda_sigmax3->GetXaxis()->CenterTitle(); h1_lambda_sigmax3->GetYaxis()->CenterTitle();
+  h1_lambda_sigmax3->GetYaxis()->SetTitleOffset(1.2); 
+  h1_lambda_sigmax3->GetYaxis()->SetNdivisions(112);
+
+  h1_lambda_sigmax2->Draw("same e2"); h1_lambda_sigmax2->SetMarkerSize(0);
+  h1_lambda_sigmax2->SetFillColor(kYellow); h1_lambda_sigmax2->SetFillStyle(1001);
+
+  h1_lambda_sigmax1->Draw("same e2"); h1_lambda_sigmax1->SetMarkerSize(0);
+  h1_lambda_sigmax1->SetFillColor(kGreen); h1_lambda_sigmax1->SetFillStyle(1001);
+
+  h1_lambda_sigma_iii->Draw("same p");
+  h1_lambda_sigma_iii->SetMarkerSize(1.4); h1_lambda_sigma_iii->SetMarkerStyle(21); h1_lambda_sigma_iii->SetMarkerColor(color_meas);
+    
+  ff_0->Draw("same");
+  
+  h1_lambda_sigmax2->Draw("same axis");
+
+  double shift_x_lambda_sigma = -0.15;
+  TLegend *lg_lambda_sigma = new TLegend(0.35+shift_x_lambda_sigma, 0.75, 0.7+shift_x_lambda_sigma, 0.85);
+  // lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{Total num: %d}", kBlue, rows), "");
+  // lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{|#sigma_{i}\'| #in (1, 2]: %1.0f, expect. %3.2f}",
+  // 						kBlue, lambda_sigma_12, rows*0.2718), "");
+  // lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{|#sigma_{i}\'| #in (2, 3]: %1.0f, expect. %3.2f}",
+  // 						kBlue, lambda_sigma_23, rows*0.0428), "");
+  // lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{|#sigma_{i}\'| > 3: %1.0f, expect. %3.2f}",
+  // 						kBlue, lambda_sigma_3p, rows*0.0027), "");
+
+  
+  double pvalue_default = TMath::Prob( chi2, rows );
+  double sigma_default = sqrt( TMath::ChisquareQuantile( 1-pvalue_default, 1 ) );
+  double pvalue_global = 0;
+  double sigma_global = 0;
+  double sigma_global_AA = 0;
+  double sigma_global_BB = 0;
+  
+  if( (int)(map_above3sigma.size())>=1 ) {    
+    if( (int)(map_above3sigma.size())==1 ) {
+      double chi2_local = pow(map_above3sigma.begin()->second, 2);
+      double pvalue_local = TMath::Prob( chi2_local, 1 );
+      pvalue_global = 1 - pow(1-pvalue_local, rows);
+      sigma_global = sqrt( TMath::ChisquareQuantile( 1-pvalue_global, 1 ) );
+    }
+    else {
+      int user_vec_size = vec_above3sigma.size();
+      sort( vec_above3sigma.begin(), vec_above3sigma.end() );
+
+      double chi2_local_AA = pow( vec_above3sigma.at(0), 2 );
+      double pvalue_local_AA = TMath::Prob( chi2_local_AA, 1 );
+      double sum_AA = 0;
+      for(int idx=0; idx<user_vec_size; idx++) {
+	double coeff = TMath::Factorial(rows)/TMath::Factorial(rows-idx)/TMath::Factorial(idx);
+	sum_AA += coeff*pow(pvalue_local_AA, idx)*pow( 1-pvalue_local_AA, rows-idx );
+      }
+      double pvalue_global_AA = 1 - sum_AA;
+      sigma_global_AA = sqrt( TMath::ChisquareQuantile( 1-pvalue_global_AA, 1 ) );
+      
+      double chi2_local_BB = pow( vec_above3sigma.at(user_vec_size-1), 2 );
+      double pvalue_local_BB = TMath::Prob( chi2_local_BB, 1 );
+      double sum_BB = 0;
+      for(int idx=0; idx<user_vec_size; idx++) {
+	double coeff = TMath::Factorial(rows)/TMath::Factorial(rows-idx)/TMath::Factorial(idx);
+	sum_BB += coeff*pow(pvalue_local_BB, idx)*pow( 1-pvalue_local_BB, rows-idx );
+      }
+      double pvalue_global_BB = 1 - sum_BB;
+      sigma_global_BB = sqrt( TMath::ChisquareQuantile( 1-pvalue_global_BB, 1 ) );      
+    }
+  }
+  
+  lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{#chi^{2}/ndf: %3.1f/%d, significance: %3.1f#sigma}", kBlue, chi2, rows, sigma_default), "");
+  if( lambda_sigma_3p>=1 ) {
+    if( lambda_sigma_3p==1 )
+      lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{Significance (look elsewhere effect): %3.1f#sigma}", kRed, sigma_global), "");
+    else
+      lg_lambda_sigma->AddEntry("", TString::Format("#color[%d]{Significance (look elsewhere effect): (%3.1f, %3.1f)#sigma}", kRed, sigma_global_AA, sigma_global_BB), "");
+  }
+  else {
+    lg_lambda_sigma->AddEntry("", "", "");
+  }
+  lg_lambda_sigma->Draw();
+  lg_lambda_sigma->SetBorderSize(0); lg_lambda_sigma->SetFillStyle(0); lg_lambda_sigma->SetTextSize(0.05);
+
+  if( saveFIG ) {
+    roostr = TString::Format("canv_lambda_sigma_%d_%s.png", index, ffstr.Data());
+    canv_lambda_sigma->SaveAs(roostr);
+  }
+
+  /////////////////////////////////    
+    
+  roostr = TString::Format("h2_lambda_transform_matrix_%d_%s", index, ffstr.Data());
+  TH2D *h2_lambda_transform_matrix = new TH2D(roostr, "", rows, 0, rows, rows, 0, rows);
+  for(int ibin=1; ibin<=rows; ibin++) {
+    for(int jbin=1; jbin<=rows; jbin++) {
+      double value = matrix_eigenvector(ibin-1, jbin-1);
+      h2_lambda_transform_matrix->SetBinContent(ibin, jbin, value);
+    }
+  }
+
+  roostr = TString::Format("canv_h2_lambda_transform_matrix_%d_%s", index, ffstr.Data());
+  TCanvas *canv_h2_lambda_transform_matrix = new TCanvas(roostr, roostr, 900, 850);
+  func_canv_margin(canv_h2_lambda_transform_matrix, 0.15, 0.2,0.15,0.2);
+  h2_lambda_transform_matrix->Draw("colz");
+  func_xy_title(h2_lambda_transform_matrix, "Measured bin index", "Decomposed bin index");
+  func_title_size(h2_lambda_transform_matrix, 0.05, 0.05, 0.05, 0.05);
+  h2_lambda_transform_matrix->GetXaxis()->CenterTitle(); h2_lambda_transform_matrix->GetYaxis()->CenterTitle();
+  if( saveFIG ) {
+    roostr = TString::Format("canv_h2_lambda_transform_matrix_%d_%s.png", index, ffstr.Data());
+    canv_h2_lambda_transform_matrix->SaveAs(roostr);
+  }
+  
 }
 
 ///////////////////////////////////////////////////////// ccc
@@ -585,8 +1007,8 @@ int TLee::Exe_Goodness_of_fit(vector<int>vc_target_chs, vector<int>vc_support_ch
     if( size_support==0 ) break;
     for(int jdx=0; jdx<size_support; jdx++) {      
       if( vc_target_chs.at(idx)==vc_support_chs.at(jdx) ) {
-	cout<<endl<<" Are you joking? There is same channel for target and support: "<<vc_target_chs.at(idx)<<endl<<endl;
-	exit(1);
+        cout<<endl<<" Are you joking? There is same channel for target and support: "<<vc_target_chs.at(idx)<<endl<<endl;
+        exit(1);
       }
     }// jdx
   }// idx
@@ -676,30 +1098,178 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
 
   if( num_Y+num_X!=matrix_syst.GetNrows() ) {cout<<" ERROR"<<endl; exit(10);}
   
-  cout<<Form(" ---> Goodness of fit, %2d", index)<<endl;
+  cout<<Form(" ---> Goodness of fit: %2d", index)<<endl;
 
   int color_no = kRed;
   int color_wi = kBlue;
   int color_data = kBlack;
 
-  // TFile *file_cov = new TFile("file_cov_AA.root", "recreate");
-  // matrix_syst.Write("covariance_Flux");
-  // //matrix_pred.Write("matrix_prediction");
-  // //matrix_data.Write("matrix_measurement");
-  // file_cov->Close();
+  //////////////////////////////////// ttt
   
+  bool flag_axis_userAA = 0;
+  bool flag_axis_userAB = 0;
+
+  ///////////
+  
+  int axis_user_divisions = 508;
+  
+  double userAA_index_low = 0;
+  double userAA_index_hgh = 16;
+  double userAA_value_low = -1;
+  double userAA_value_hgh = 1;
+  double userAA_TickSize       = 0.06;
+  double userAA_LabelSize      = 0.078;  
+  double userAA_clone_TickSize = 0.05;
+  double userAA_wi2no_TickSize = 0.03;;
+  
+  double userAB_index_low = 0;
+  double userAB_index_hgh = 16;
+  double userAB_value_low = -1;
+  double userAB_value_hgh = 1;
+  double userAB_TickSize       = 0.06;
+  double userAB_LabelSize      = 0.078;  
+  double userAB_clone_TickSize = 0.05;
+  double userAB_wi2no_TickSize = 0.03;;
+  
+  TString title_axis_user = "E_{#nu}^{rec}";
+
+  TLine *line_FC_PC = new TLine(num_Y/2, 0, num_Y/2, 2);
+  line_FC_PC->SetLineColor(kGray+1);
+  line_FC_PC->SetLineWidth(4);
+  //line_FC_PC->SetLineStyle(7);
+
+  if( index==111111123 ) {    
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 1;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 503;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 26;
+    userAA_value_low = 0;
+    userAA_value_hgh = 2600;
+    
+    userAB_index_low = 26;
+    userAB_index_hgh = 52;
+    userAB_value_low = 0;
+    userAB_value_hgh = 2600;    
+  }
+
+  if( index==9111111123 ) {    
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 1;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 504;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 31;
+    userAA_value_low = 0;
+    userAA_value_hgh = 3100;
+    
+    userAB_index_low = 31;
+    userAB_index_hgh = 62;
+    userAB_value_low = 0;
+    userAB_value_hgh = 3100;    
+  }
+
+  if( index==2111111123 || index==3111111123 || index==4111111123 ) {
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 0;
+
+    title_axis_user = "Reco kinetic energy of #pi^{0} (MeV)";
+    axis_user_divisions = 508;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 11;
+    userAA_value_low = 0;
+    userAA_value_hgh = 1100;    
+  }
+  
+  if( index==5111111123 ) {
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 0;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 508;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 26;
+    userAA_value_low = 0;
+    userAA_value_hgh = 2600;    
+  }
+   
+  if( index==6111111123 ) {
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 0;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 508;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 18;
+    userAA_value_low = 800;
+    userAA_value_hgh = 2600;    
+  }
+  
+  if( index==7111111123 ) {
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 0;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 508;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 8;
+    userAA_value_low = 0;
+    userAA_value_hgh = 800;    
+  }
+    
+  if( index==8111111123 ) {
+    flag_axis_userAA = 1;
+    flag_axis_userAB = 0;
+
+    title_axis_user = "Reco neutrino energy (MeV)";
+    axis_user_divisions = 508;
+      
+    userAA_index_low = 0;
+    userAA_index_hgh = 26;
+    userAA_value_low = 0;
+    userAA_value_hgh = 2600;    
+  }
+  
+  
+  ///////////
+    
+  TGaxis *axis_userAA = new TGaxis(userAA_index_low, 0, userAA_index_hgh, 0,   userAA_value_low, userAA_value_hgh, axis_user_divisions, "S");
+  axis_userAA->SetName("axis_userAA");
+  axis_userAA->SetTickSize(userAA_TickSize);
+  axis_userAA->SetLabelSize(userAA_LabelSize);
+  axis_userAA->SetLabelFont(42);
+  TGaxis *axis_userAA_clone = (TGaxis*)axis_userAA->Clone("axis_userAA_clone");
+  axis_userAA_clone->SetLabelSize(0);
+  axis_userAA_clone->SetTickSize(userAA_clone_TickSize);
+  TGaxis *axis_userAA_wi2no = (TGaxis*)axis_userAA->Clone("axis_userAA_clone");
+  axis_userAA_wi2no->SetLabelSize(userAA_clone_TickSize);
+  axis_userAA_wi2no->SetTickSize(userAA_wi2no_TickSize);
+    
+  TGaxis *axis_userAB = new TGaxis(userAB_index_low, 0, userAB_index_hgh, 0,   userAB_value_low, userAB_value_hgh, axis_user_divisions, "S");
+  axis_userAB->SetName("axis_userAB");
+  axis_userAB->SetTickSize(userAB_TickSize);
+  axis_userAB->SetLabelSize(userAB_LabelSize);
+  axis_userAB->SetLabelFont(42);
+  TGaxis *axis_userAB_clone = (TGaxis*)axis_userAB->Clone("axis_userAB_clone");
+  axis_userAB_clone->SetLabelSize(0);
+  axis_userAB_clone->SetTickSize(userAB_clone_TickSize);
+  TGaxis *axis_userAB_wi2no = (TGaxis*)axis_userAB->Clone("axis_userAB_clone");
+  axis_userAB_wi2no->SetLabelSize(userAB_clone_TickSize);
+  axis_userAB_wi2no->SetTickSize(userAB_wi2no_TickSize);
+    
   ///////////////////////////////////////////////////////////////////////////////////////////// for no-systematics
 
-  {
-    double val_cov = 0;
-    for(int ibin=0; ibin<matrix_syst.GetNrows(); ibin++) {
-      val_cov += matrix_syst(ibin, ibin);
-    }
-    if(val_cov==0) {
-      for(int ibin=0; ibin<matrix_syst.GetNrows(); ibin++) {
-	matrix_syst(ibin, ibin) = 1e-6;
-      } 
-    }    
+  for(int ibin=0; ibin<matrix_syst.GetNrows(); ibin++) {
+    if( matrix_syst(ibin, ibin)==0 ) matrix_syst(ibin, ibin) = 1e-6;
   }
   
   ///////////////////////////////////////////////////////////////////////////////////////////// noConstraint
@@ -707,9 +1277,9 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   TMatrixD matrix_cov_stat(num_Y+num_X, num_Y+num_X);  
   TMatrixD matrix_cov_total(num_Y+num_X, num_Y+num_X);
   matrix_cov_total = matrix_cov_stat + matrix_syst;
-  for(int idx=1; idx<=num_Y+num_X; idx++) {
-    if( matrix_cov_total(idx-1, idx-1)==0 ) matrix_cov_total(idx-1, idx-1) = 1e-6;// case inverse
-  }   
+  // for(int idx=1; idx<=num_Y+num_X; idx++) {
+  //   if( matrix_cov_total(idx-1, idx-1)==0 ) matrix_cov_total(idx-1, idx-1) = 1e-6;// case inverse
+  // }    
   
   matrix_pred.T(); matrix_data.T();
   TMatrixD matrix_pred_Y = matrix_pred.GetSub(0, num_Y-1, 0, 0);
@@ -717,31 +1287,46 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   matrix_pred.T(); matrix_data.T();
 
   TMatrixD matrix_YY = matrix_cov_total.GetSub(0, num_Y-1, 0, num_Y-1);
- 
+
+  if( flag_lookelsewhere ) {
+    TMatrixD matrix_pred_temp = matrix_pred_Y; matrix_pred_temp.T();
+    TMatrixD matrix_meas_temp = matrix_data_Y; matrix_meas_temp.T();
+    TMatrixD matrix_syst_abscov_temp = matrix_YY;    
+    Plotting_singlecase(matrix_pred_temp, matrix_meas_temp, matrix_syst_abscov_temp, 1, "noConstraint", index);
+  }
+  
   ///////////////////////////// goodness of fit, Pearson's format
 
+  /// docDB 32520, when the prediction is sufficiently low
+  double array_pred_protect[11] = {0, 0.461, 0.916, 1.382, 1.833, 2.298, 2.767, 3.225, 3.669, 4.141, 4.599};
+  
   TMatrixD matrix_goodness_cov_total_noConstraint(num_Y, num_Y);
   for( int i=0; i<num_Y; i++ ) {
     double val_pred = matrix_pred_Y(i, 0);
-    double val_data = matrix_data_Y(i, 0);
+    double val_data = matrix_data_Y(i, 0);        
+    matrix_goodness_cov_total_noConstraint(i,i) = val_pred;
+
     
-    matrix_goodness_cov_total_noConstraint(i,i) = val_pred;    
-    if( val_data==1 ) {
-      if( val_pred<0.461 ) {// DocDB-32520, when the prediction is sufficiently low
+    // if( val_data==1 ) {
+    //   if( val_pred<0.461 ) {// DocDB-32520, when the prediction is sufficiently low
+    //     double numerator = pow(val_pred-val_data, 2);
+    //     double denominator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
+    //     matrix_goodness_cov_total_noConstraint(i,i) = numerator/denominator;
+    //   }
+    // }
+
+    
+    int int_data = (int)(val_data+0.1);
+    if( int_data>=1 && int_data<=10) {
+      if( val_pred<array_pred_protect[int_data] ) {
 	double numerator = pow(val_pred-val_data, 2);
-	double denominator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
+        double denominator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
 	matrix_goodness_cov_total_noConstraint(i,i) = numerator/denominator;
       }
     }
 
+    
     if( (val_pred==val_data) && (val_pred==0) ) matrix_goodness_cov_total_noConstraint(i,i) = 1e-6;
-
-    /// CNP
-    // double val_stat_cov = 0;
-    // if( val_data==0 ) val_stat_cov = val_pred/2;
-    // else val_stat_cov = 3./( 1./val_data + 2./val_pred );	
-    // if( val_data==0 && val_pred==0 ) val_stat_cov = 1e-6;
-    // matrix_goodness_cov_total_noConstraint(i,i) = val_stat_cov;
   }  
   matrix_goodness_cov_total_noConstraint = matrix_goodness_cov_total_noConstraint + matrix_YY;
 
@@ -761,23 +1346,14 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     val_data_noConstraint += matrix_data_Y(idx,0);
     val_pred_noConstraint += matrix_pred_Y(idx,0);
   }
-  cout<<endl<<TString::Format(" ---> GOF noConstraint: chi2 %6.2f, ndf %3d, chi2/ndf %6.2f, p-value %10.8f, meas/pred %4.2f %4.2f",
-			      val_chi2_noConstraint, num_Y, val_chi2_noConstraint/num_Y, p_value_noConstraint,
-			      val_data_noConstraint, val_pred_noConstraint
-			      )<<endl;
-
+  cout<<TString::Format(" ---> GOF noConstraint: chi2 %6.2f, ndf %3d, chi2/ndf %6.2f, p-value %10.8f, meas/pred %4.2f %4.2f",
+                        val_chi2_noConstraint, num_Y, val_chi2_noConstraint/num_Y, p_value_noConstraint,
+                        val_data_noConstraint, val_pred_noConstraint
+                        )<<endl;
+  
   val_GOF_noConstrain = val_chi2_noConstraint;
   val_GOF_NDF = num_Y;
-  
-  // double sum_chi2 = 0;
-  // for(int ibin=1; ibin<=num_Y; ibin++) {
-  //   double val_pred = matrix_pred_Y(ibin-1, 0);      
-  //   double val_data = matrix_data_Y(ibin-1, 0);
-  //   double val_chi2 = pow(val_pred-val_data,2)/val_pred;
-  //   sum_chi2 += val_chi2;
-  //   cout<<" ---> ibin "<<ibin<<"\t"<<val_chi2<<"\t"<<sum_chi2<<endl;;
-  // }
-  
+
   /////////////////////////////
 
   roostr = TString::Format("h1_pred_Y_noConstraint_%02d", index);
@@ -814,8 +1390,6 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     array_val_data_low[ibin-1] = val_data_low;
     array_val_data_hgh[ibin-1] = val_data_hgh;
     
-    ///////
-
     double val_ratio_no = val_data/val_pred_noConstraint;
     double val_ratio_no_low = val_ratio_no - val_data_low/val_pred_noConstraint;
     double val_ratio_no_hgh = val_data_hgh/val_pred_noConstraint - val_ratio_no;
@@ -824,6 +1398,23 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     gh_ratio_noConstraint->SetPointError( ibin-1, 0.5, 0.5, val_ratio_no_low, val_ratio_no_hgh );    
   }
 
+  ///////
+  
+  double ymax_pred = 0;
+  double ymax_data = 0;
+    
+  for(int ibin=1; ibin<=num_Y; ibin++) {
+    double val_pred = h1_pred_Y_noConstraint->GetBinContent(ibin)
+      + h1_pred_Y_noConstraint->GetBinError(ibin);
+    if( ymax_pred<val_pred ) ymax_pred = val_pred;
+      
+    double xx_data(0), yy_data(0);
+    gh_data->GetPoint(ibin-1, xx_data, yy_data);
+    if( ymax_data<yy_data ) ymax_data = yy_data;      
+  }
+
+  ///////
+  
   roostr = TString::Format("canv_spectra_GoF_no_%02d", index);
   TCanvas *canv_spectra_GoF_no = new TCanvas(roostr, roostr, 1000, 950);
   
@@ -837,6 +1428,8 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   
   h1_pred_Y_noConstraint->Draw("e2");
   h1_pred_Y_noConstraint->SetMinimum(0.);
+  //h1_pred_Y_noConstraint->SetMaximum(4.6);
+  if( ymax_data>ymax_pred*1.05 ) h1_pred_Y_noConstraint->SetMaximum(ymax_data*1.1);
   h1_pred_Y_noConstraint->SetMarkerSize(0.);
   h1_pred_Y_noConstraint->SetFillColor(color_no); h1_pred_Y_noConstraint->SetFillStyle(3005);
   h1_pred_Y_noConstraint->SetLineColor(color_no);
@@ -844,7 +1437,9 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   func_xy_title(h1_pred_Y_noConstraint, "", "Entries");
   h1_pred_Y_noConstraint->GetXaxis()->SetLabelOffset(2);
   h1_pred_Y_noConstraint->GetYaxis()->CenterTitle();
-  
+  h1_pred_Y_noConstraint->GetYaxis()->SetTitleOffset(1.2);
+  h1_pred_Y_noConstraint->GetYaxis()->SetTickLength(0.02);
+    
   h1_pred_Y_noConstraint_clone->Draw("same hist");
   h1_pred_Y_noConstraint_clone->SetLineColor(color_no);
   
@@ -860,7 +1455,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   TLegend *lg_top_no = new TLegend((index==1)?0.2:0.5, 0.60, (index==1)?0.4:0.85, 0.85);
   if( index==1 || index==7 ) { lg_top_no->SetX1(0.2); lg_top_no->SetX2(0.4);}
   lg_top_no->AddEntry(gh_data, "Data", "lep");
-  lg_top_no->AddEntry(h1_pred_Y_noConstraint, "Pred no constraint", "lf");
+  lg_top_no->AddEntry(h1_pred_Y_noConstraint, TString::Format("#color[%d]{Pred no constraint}", color_no), "lf");
   lg_top_no->AddEntry("", TString::Format("#color[%d]{#chi^{2}/ndf: %3.2f/%d}", color_no, val_chi2_noConstraint, num_Y), "");
   lg_top_no->Draw();
   lg_top_no->SetBorderSize(0); lg_top_no->SetFillStyle(0); lg_top_no->SetTextSize(0.065);
@@ -889,7 +1484,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   h1_pred_Y_noConstraint_rel_error->GetXaxis()->SetTickLength(0.05);
   h1_pred_Y_noConstraint_rel_error->GetXaxis()->SetLabelOffset(0.005);
   h1_pred_Y_noConstraint_rel_error->GetXaxis()->CenterTitle(); h1_pred_Y_noConstraint_rel_error->GetYaxis()->CenterTitle(); 
-  h1_pred_Y_noConstraint_rel_error->GetYaxis()->SetTitleOffset(0.92);
+  h1_pred_Y_noConstraint_rel_error->GetYaxis()->SetTitleOffset(0.99);
   h1_pred_Y_noConstraint_rel_error->GetYaxis()->SetNdivisions(509);
 
   TF1 *line_no = new TF1("line_no", "1", 0, 1e6); line_no->Draw("same");
@@ -897,12 +1492,32 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   
   gh_ratio_noConstraint->Draw("same pe");
   gh_ratio_noConstraint->SetMarkerStyle(20); gh_ratio_noConstraint->SetMarkerSize(1.12);
-  gh_ratio_noConstraint->SetMarkerColor(color_no); gh_ratio_noConstraint->SetLineColor(color_no);
+  gh_ratio_noConstraint->SetMarkerColor(color_no); gh_ratio_noConstraint->SetLineColor(color_no);  
+
+  h1_pred_Y_noConstraint_rel_error->Draw("same axis");
+
+  if( flag_axis_userAA || flag_axis_userAB ) {
+    ///////////////////// bot
+    h1_pred_Y_noConstraint_rel_error->GetXaxis()->SetTickLength(0);
+    h1_pred_Y_noConstraint_rel_error->GetXaxis()->SetLabelSize(0);
+    h1_pred_Y_noConstraint_rel_error->SetXTitle( title_axis_user );
+    
+    if( flag_axis_userAA && flag_axis_userAB ) line_FC_PC->Draw("same");
+    
+    if( flag_axis_userAA )  axis_userAA->Draw();
+    if( flag_axis_userAB )  axis_userAB->Draw();
+
+    ///////////////////// top
+    canv_spectra_GoF_no->cd(); pad_top_no->cd();
+    h1_pred_Y_noConstraint->GetXaxis()->SetTickLength(0);
+    h1_pred_Y_noConstraint->GetXaxis()->SetLabelSize(0);
+    if( flag_axis_userAA ) axis_userAA_clone->Draw();
+    if( flag_axis_userAB ) axis_userAB_clone->Draw();    
+  }  
+  
   if( num_X==0 ) {
     gh_ratio_noConstraint->SetMarkerColor(kBlue); gh_ratio_noConstraint->SetLineColor(kBlue);
-  }
-
-  if( num_X==0 ) {
+    
     roostr = TString::Format("canv_spectra_GoF_no_%02d.png", index);
     canv_spectra_GoF_no->SaveAs(roostr);        
     return 1;
@@ -916,7 +1531,25 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   matrix_pred.T(); matrix_data.T();
 
   TMatrixD matrix_XX = matrix_cov_total.GetSub(num_Y, num_Y+num_X-1, num_Y, num_Y+num_X-1);
-  for(int ibin=1; ibin<=num_X; ibin++) matrix_XX(ibin-1, ibin-1) += matrix_pred_X(ibin-1, 0);// Pearson's term for statistics
+  for(int ibin=1; ibin<=num_X; ibin++) {
+    //matrix_XX(ibin-1, ibin-1) += matrix_pred_X(ibin-1, 0);// Pearson's term for statistics
+
+    
+    double user_stat = matrix_pred_X(ibin-1, 0);
+    double val_meas = matrix_data_X(ibin-1,0);
+    double val_pred = matrix_pred_X(ibin-1,0);
+    int int_meas = (int)(val_meas+0.1);    
+    if( int_meas>=1 && int_meas<=10) {
+      if( val_pred<array_pred_protect[int_meas] ) {
+	double numerator = pow(val_pred-val_meas, 2);
+        double denominator = 2*( val_pred - val_meas + val_meas*log(val_meas/val_pred) );
+	user_stat = numerator/denominator;
+      }
+    }    
+    matrix_XX(ibin-1, ibin-1) += user_stat;
+
+    
+  }
   TMatrixD matrix_XX_inv = matrix_XX;
   matrix_XX_inv.Invert();
 
@@ -927,21 +1560,66 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   TMatrixD matrix_YY_under_XX = matrix_YY - matrix_YX * matrix_XX_inv * matrix_XY;
   // Here, only for systetmaics uncertainty because of no stat in matrix_YY
   
+  if( flag_lookelsewhere ) {
+    TMatrixD matrix_pred_temp = matrix_Y_under_X; matrix_pred_temp.T();
+    TMatrixD matrix_meas_temp = matrix_data_Y; matrix_meas_temp.T();
+    TMatrixD matrix_syst_abscov_temp = matrix_YY_under_XX;    
+    Plotting_singlecase(matrix_pred_temp, matrix_meas_temp, matrix_syst_abscov_temp, 1, "wiConstraint", index);
+  }
+  
+  /////////////////////////////
+  /////////////////////////////
+
+  double pred_cv_before = 0;
+  double pred_err_before = 0;
+
+  double pred_cv_after = 0;
+  double pred_err_after = 0;
+
+  for(int idx=0; idx<num_Y; idx++) {
+    pred_cv_before += matrix_pred_Y(idx, 0);
+    pred_cv_after += matrix_Y_under_X(idx, 0);
+
+    for(int jdx=0; jdx<num_Y; jdx++) {
+      pred_err_before += matrix_YY(idx, jdx);
+      pred_err_after += matrix_YY_under_XX(idx, jdx);
+    }
+  }
+
+  cout<<endl;
+  cout<<TString::Format(" ---> %6d befor constraint: %6.2f %6.2f", index, pred_cv_before, sqrt(pred_err_before) )<<endl;
+  cout<<TString::Format(" ---> %6d after constraint: %6.2f %6.2f", index, pred_cv_after, sqrt(pred_err_after) )<<endl;
+  cout<<endl;
+
+
+  /////////////////////////////
   ///////////////////////////// goodness of fit, Pearson's format
 
   TMatrixD matrix_goodness_cov_total_wiConstraint(num_Y, num_Y);
   for( int i=0; i<num_Y; i++ ) {
     double val_pred = matrix_Y_under_X(i, 0);
-    double val_data = matrix_data_Y(i, 0);
+    double val_data = matrix_data_Y(i, 0);    
+    matrix_goodness_cov_total_wiConstraint(i,i) = val_pred;
+
     
-    matrix_goodness_cov_total_wiConstraint(i,i) = val_pred;    
-    if( val_data==1 ) {
-      if( val_pred<0.461 ) {// DocDB-32520, when the prediction is sufficiently low
+    // if( val_data==1 ) {
+    //   if( val_pred<0.461 ) {// DocDB-32520, when the prediction is sufficiently low
+    //     double numerator = pow(val_pred-val_data, 2);
+    //     double dewiminator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
+    //     matrix_goodness_cov_total_wiConstraint(i,i) = numerator/dewiminator;
+    //   }
+    // }
+
+    
+    int int_data = (int)(val_data+0.1);
+    if( int_data>=1 && int_data<=10) {
+      if( val_pred<array_pred_protect[int_data] ) {
 	double numerator = pow(val_pred-val_data, 2);
-	double dewiminator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
-	matrix_goodness_cov_total_wiConstraint(i,i) = numerator/dewiminator;
+        double denominator = 2*( val_pred - val_data + val_data*log(val_data/val_pred) );
+        matrix_goodness_cov_total_wiConstraint(i,i) = numerator/denominator;
       }
     }
+    
 
     if( (val_pred==val_data) && (val_pred==0) ) matrix_goodness_cov_total_wiConstraint(i,i) = 1e-6;
   }  
@@ -962,12 +1640,11 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   for(int idx=0; idx<num_Y; idx++) {
     val_data_wiConstraint += matrix_data_Y(idx,0);
     val_pred_wiConstraint += matrix_Y_under_X(idx,0);
-    //cout<<" ---> "<<matrix_Y_under_X(idx,0) - matrix_pred_Y(idx, 0)<<endl;
   }  
   cout<<TString::Format(" ---> GOF wiConstraint: chi2 %6.2f, ndf %3d, chi2/ndf %6.2f, p-value %10.8f, meas/pred %4.2f %4.2f",
-			val_chi2_wiConstraint, num_Y, val_chi2_wiConstraint/num_Y, p_value_wiConstraint,
-			val_data_wiConstraint, val_pred_wiConstraint
-			)<<endl<<endl;
+                        val_chi2_wiConstraint, num_Y, val_chi2_wiConstraint/num_Y, p_value_wiConstraint,
+                        val_data_wiConstraint, val_pred_wiConstraint
+                        )<<endl<<endl;
   
   val_GOF_wiConstrain = val_chi2_wiConstraint;
 
@@ -1016,7 +1693,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   h1_pred_Y_wiConstraint->Draw("e2");
   h1_pred_Y_wiConstraint->SetFillColor(color_wi); h1_pred_Y_wiConstraint->SetFillStyle(3004);
   h1_pred_Y_wiConstraint->SetLineColor(color_wi);
-  
+    
   h1_pred_Y_wiConstraint_clone->Draw("same hist");
   h1_pred_Y_wiConstraint_clone->SetLineColor(color_wi); h1_pred_Y_wiConstraint_clone->SetFillStyle(0);
   
@@ -1027,7 +1704,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   TLegend *lg_top_wi = new TLegend(0.5, 0.60, 0.85, 0.85);
   if( index==1 || index==7 ) { lg_top_wi->SetX1(0.2); lg_top_wi->SetX2(0.4);}
   lg_top_wi->AddEntry(gh_data, "Data", "lep");
-  lg_top_wi->AddEntry(h1_pred_Y_wiConstraint, "Pred wi constraint", "lf");
+  lg_top_wi->AddEntry(h1_pred_Y_wiConstraint, TString::Format("#color[%d]{Pred wi constraint}", color_wi), "lf");
   lg_top_wi->AddEntry("", TString::Format("#color[%d]{#chi^{2}/ndf: %3.2f/%d}", color_wi, val_chi2_wiConstraint, num_Y), "");
   lg_top_wi->Draw();
   lg_top_wi->SetBorderSize(0); lg_top_wi->SetFillStyle(0); lg_top_wi->SetTextSize(0.065);
@@ -1058,7 +1735,23 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   gh_ratio_wiConstraint->Draw("same pe");
   gh_ratio_wiConstraint->SetMarkerStyle(20); gh_ratio_wiConstraint->SetMarkerSize(1.12);
   gh_ratio_wiConstraint->SetMarkerColor(color_wi); gh_ratio_wiConstraint->SetLineColor(color_wi);
+
+  h1_pred_Y_wiConstraint_rel_error->Draw("same axis");
    
+  if( flag_axis_userAA || flag_axis_userAB ) {
+    ///////////////////// bot
+    
+    if( flag_axis_userAA && flag_axis_userAB ) line_FC_PC->Draw("same");
+    
+    if( flag_axis_userAA )  axis_userAA->Draw();
+    if( flag_axis_userAB )  axis_userAB->Draw();
+    
+    ///////////////////// top
+    canv_spectra_GoF_wi->cd(); pad_top_wi->cd();
+    if( flag_axis_userAA ) axis_userAA_clone->Draw();
+    if( flag_axis_userAB ) axis_userAB_clone->Draw();    
+  }
+  
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   canv_spectra_GoF_no->cd(); pad_top_no->cd(); pad_top_no->Update(); double y2_no = gPad->GetUymax();
@@ -1081,7 +1774,10 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   ////////////////
 
   roostr = TString::Format("h1_spectra_wi2no_%02d", index);
+  TString roostr_wi2no = roostr;
+  //TH1D *h1_spectra_wi2no = (TH1D*)h1_pred_Y_noConstraint->Clone(roostr);
   TH1D *h1_spectra_wi2no = new TH1D(roostr, "", num_Y, 0, num_Y);
+  h1_spectra_wi2no->SetFillStyle(0);
   for(int ibin=1; ibin<=num_Y; ibin++) {
     double val_wiConstraint = h1_pred_Y_wiConstraint->GetBinContent(ibin);
     double val_noConstraint = h1_pred_Y_noConstraint->GetBinContent(ibin);
@@ -1095,18 +1791,28 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   func_canv_margin(canv_spectra_wi2no, 0.15, 0.1, 0.1, 0.15);
   canv_spectra_wi2no->SetGridy();
       
-  h1_spectra_wi2no->Draw();
+  h1_spectra_wi2no->Draw("hist");
   h1_spectra_wi2no->SetLineColor(color_wi);
+  
+  h1_spectra_wi2no->SetMinimum(0);
+  h1_spectra_wi2no->SetMaximum(2);
   func_title_size(h1_spectra_wi2no, 0.05, 0.05, 0.05, 0.05);
+  
   func_xy_title(h1_spectra_wi2no, "Bin index", "Prediction wi/no constraint");
   h1_spectra_wi2no->GetXaxis()->CenterTitle(); h1_spectra_wi2no->GetYaxis()->CenterTitle(); 
   h1_spectra_wi2no->GetYaxis()->SetTitleOffset(1.18);
   h1_spectra_wi2no->GetYaxis()->SetNdivisions(509);
-
-  // TF1 *f1_wi2no = new TF1("f1_wi2no", "1", 0, 1e6);
-  // f1_wi2no->Draw("same"); f1_wi2no->SetLineColor(kBlack); f1_wi2no->SetLineStyle(7);
-
+  h1_spectra_wi2no->GetYaxis()->SetTickLength(0.03);    
+  if( flag_axis_userAA || flag_axis_userAB ) {/// ttt
+    func_xy_title(h1_spectra_wi2no, title_axis_user, "Prediction wi/no constraint");
+    h1_spectra_wi2no->GetXaxis()->SetLabelSize(0);
+    if( flag_axis_userAA )  axis_userAA_wi2no->Draw();
+    if( flag_axis_userAB )  axis_userAB_wi2no->Draw(); 
+  }
+  
   roostr = TString::Format("canv_spectra_wi2no_%02d.png", index); canv_spectra_wi2no->SaveAs(roostr);
+
+  //h1_spectra_wi2no->SaveAs(roostr_wi2no+".root");
   
   ////////////////
   
@@ -1121,6 +1827,8 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
 
   h1_pred_Y_wiConstraint->Draw("e2");
   h1_pred_Y_wiConstraint->SetXTitle("Energy (#times 100 MeV)");
+  //if( index==7 ) h1_pred_Y_wiConstraint->SetMaximum(25);
+  //if( index==9 ) h1_pred_Y_wiConstraint->SetMaximum(50);
   h1_pred_Y_noConstraint->Draw("same e2");  
   h1_pred_Y_wiConstraint_clone->Draw("same hist");
   h1_pred_Y_noConstraint_clone->Draw("same hist");  
@@ -1141,9 +1849,11 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   canv_spectra_GoF_total->cd();
   TPad *pad_bot_total = new TPad("pad_bot_total", "pad_bot_total", 0, 0, 1, 0.45);
   func_canv_margin(pad_bot_total, 0.15, 0.1, 0.05, 0.3);
-  pad_bot_total->Draw(); pad_bot_total->cd(); pad_bot_total->SetTicky();
+  pad_bot_total->Draw(); pad_bot_total->cd();
+  //pad_bot_total->SetTicky();
 
   h1_pred_Y_noConstraint_rel_error->Draw("e2");
+  //h1_pred_Y_noConstraint_rel_error->SetYTitle("Uncertainties");
   h1_pred_Y_wiConstraint_rel_error->Draw("same e2");
     
   TF1 *line_total = new TF1("line_total", "1", 0, 1e6); line_total->Draw("same");
@@ -1151,22 +1861,27 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   
   gh_ratio_noConstraint->Draw("same pe");
   gh_ratio_wiConstraint->Draw("same pe");
-  
-  /*
-  h1_spectra_wi2no->Draw("same");
-  h1_spectra_wi2no->SetLineColor(kGreen+1);
-  
-  TLegend *lg_wi2no = new TLegend(0.92, 0.15, 0.94, 0.60);
-  lg_wi2no->SetHeader( TString::Format("#color[%d]{Prediction wi/wo}", kGreen+1) );
-  lg_wi2no->Draw("same"); lg_wi2no->SetTextSize(0.078); lg_wi2no->SetTextAngle(90);
-  lg_wi2no->SetBorderSize(0);
-  */
+      
+  if( flag_axis_userAA || flag_axis_userAB ) {
+    ///////////////////// bot
+    
+    if( flag_axis_userAA && flag_axis_userAB ) line_FC_PC->Draw("same");
+    
+    if( flag_axis_userAA )  axis_userAA->Draw();
+    if( flag_axis_userAB )  axis_userAB->Draw();
 
-  // TFile *file_test = new TFile("file_test.root", "recreate");
-  // gh_ratio_noConstraint->Write("gh_data2no");
-  // h1_spectra_wi2no->Write();
-  // h1_pred_Y_wiConstraint_clone->Write();
-  // file_test->Close();
+    ///////////////////// top
+    canv_spectra_GoF_total->cd(); pad_top_total->cd();
+    if( flag_axis_userAA ) axis_userAA_clone->Draw();
+    if( flag_axis_userAB ) axis_userAB_clone->Draw();    
+  }
+  
+  // h1_spectra_wi2no->Draw("same");
+  // h1_spectra_wi2no->SetLineColor(kGreen+1);  
+  // TLegend *lg_wi2no = new TLegend(0.92, 0.15, 0.94, 0.60);
+  // lg_wi2no->SetHeader( TString::Format("#color[%d]{Prediction wi/wo}", kGreen+1) );
+  // lg_wi2no->Draw("same"); lg_wi2no->SetTextSize(0.078); lg_wi2no->SetTextAngle(90);
+  // lg_wi2no->SetBorderSize(0);
   
   // TLatex *latex = new TLatex(0.5, 0.5, TString::Format("#color[%d]{Predictioin wi/wo}", kGreen+1));
   // latex->Draw("same"); latex->SetTextSize(0.078); //latex->SetTextAngle(90);
@@ -1178,8 +1893,70 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   // lg_bot_total->SetBorderSize(0); lg_bot_total->SetTextSize(0.078);
   // lg_bot_total->SetFillColor(10); 
 
-  h1_pred_Y_noConstraint_rel_error->Draw("same axis");
   roostr = TString::Format("canv_spectra_GoF_total_%02d.png", index); canv_spectra_GoF_total->SaveAs(roostr);
+
+  //////////////////////////////////////////////////////////////////
+
+  roostr = TString::Format("h1_spectra_relerr_%02d", index);
+  TH1D *h1_spectra_relerr = new TH1D(roostr, "", num_Y, 0, num_Y);
+
+  roostr = TString::Format("h1_spectra_relerr_wi_%02d", index);
+  TH1D *h1_spectra_relerr_wi = new TH1D(roostr, "", num_Y, 0, num_Y);
+
+  for(int ibin=1; ibin<=num_Y; ibin++) {    
+    double val_noConstraint = h1_pred_Y_noConstraint_rel_error->GetBinError(ibin);
+    double val_wiConstraint = h1_pred_Y_wiConstraint_rel_error->GetBinError(ibin);
+    h1_spectra_relerr->SetBinContent(ibin, val_noConstraint);
+    h1_spectra_relerr_wi->SetBinContent(ibin, val_wiConstraint);    
+  }
+  
+  roostr = TString::Format("canv_spectra_relerr_%02d", index);
+  TCanvas *canv_spectra_relerr = new TCanvas(roostr, roostr, 900, 650);
+  func_canv_margin(canv_spectra_relerr, 0.15, 0.1, 0.1, 0.15);
+  canv_spectra_relerr->SetGridy();
+      
+  h1_spectra_relerr->Draw("hist");
+  h1_spectra_relerr->SetLineColor(color_no);
+       
+  h1_spectra_relerr_wi->Draw("same hist");
+  h1_spectra_relerr_wi->SetLineColor(color_wi);
+  
+  h1_spectra_relerr->SetMinimum(0);
+  h1_spectra_relerr->SetMaximum(0.5);
+  func_title_size(h1_spectra_relerr, 0.05, 0.05, 0.05, 0.05);
+  
+  h1_spectra_relerr->Draw("same axis");
+  
+  func_xy_title(h1_spectra_relerr, "Bin index", "Rel.Err to Pred no constraint");
+  h1_spectra_relerr->GetXaxis()->CenterTitle(); h1_spectra_relerr->GetYaxis()->CenterTitle(); 
+  h1_spectra_relerr->GetYaxis()->SetTitleOffset(1.18);
+  h1_spectra_relerr->GetYaxis()->SetNdivisions(509);
+  h1_spectra_relerr->GetYaxis()->SetTickLength(0.03);    
+  if( flag_axis_userAA || flag_axis_userAB ) {/// ttt
+    func_xy_title(h1_spectra_relerr, title_axis_user,"Rel.Err to Pred no constraint");
+    
+    if( flag_axis_userAA && flag_axis_userAB ) {
+      line_FC_PC->Draw("same");
+      line_FC_PC->SetY2(0.5);
+    }
+    
+    h1_spectra_relerr->GetXaxis()->SetLabelSize(0);
+    h1_spectra_relerr->GetXaxis()->SetTickSize(0);
+    
+    if( flag_axis_userAA )  {
+      axis_userAA->Draw();
+      axis_userAA->SetTickSize(0.06);
+      axis_userAA->SetLabelSize(0.05);
+    }
+    if( flag_axis_userAB )  {
+      axis_userAB->Draw();
+      axis_userAB->SetTickSize(0.06);
+      axis_userAB->SetLabelSize(0.05);
+    }
+  } 
+  
+  roostr = TString::Format("canv_spectra_relerr_%02d.png", index); canv_spectra_relerr->SaveAs(roostr);
+  //roostr = TString::Format("canv_h1_spectra_relerr_wi_%02d.root", index); h1_spectra_relerr_wi->SaveAs(roostr);  
   
   return 1;
 }
@@ -1200,6 +1977,8 @@ void TLee::Plotting_systematics()
   int rows = bins_newworld;
   int num_ch = map_data_spectrum_ch_bin.size();
   
+  if( color_flux+color_Xs+color_detector+color_additional+color_mc_stat+color_total+rows+num_ch==0 ) cout<<" test "<<endl;
+  
   ///////////////////////////////////////////
 
   map<int, double>line_xy;
@@ -1212,13 +1991,12 @@ void TLee::Plotting_systematics()
     }
     //cout<<Form(" ---> line xy %2d: %4.0f", ich, line_xy[ich])<<endl;    
     line_root_xx[ich] = new TLine( line_xy[ich], 0, line_xy[ich], rows );
-    line_root_xx[ich]->SetLineWidth(1); line_root_xx[ich]->SetLineColor(kBlack); line_root_xx[ich]->SetLineStyle(1);
+    line_root_xx[ich]->SetLineWidth(1); line_root_xx[ich]->SetLineColor(kBlack); line_root_xx[ich]->SetLineStyle(7);
     line_root_yy[ich] = new TLine( 0, line_xy[ich], rows, line_xy[ich]);
-    line_root_yy[ich]->SetLineWidth(1); line_root_yy[ich]->SetLineColor(kBlack); line_root_yy[ich]->SetLineStyle(1);
+    line_root_yy[ich]->SetLineWidth(1); line_root_yy[ich]->SetLineColor(kBlack); line_root_yy[ich]->SetLineStyle(7);
   }
-  
-  ///////////////////////////////////////////
 
+  ///////////////////////////////////////////
   TH2D *h2_covariance_total = new TH2D("h2_covariance_total", "", rows, 0, rows, rows, 0, rows);
   TH2D *h2_correlation_total = new TH2D("h2_correlation_total", "", rows, 0, rows, rows, 0, rows);
   
@@ -1251,32 +2029,39 @@ void TLee::Plotting_systematics()
       h2_correlation_total->SetBinContent(ibin, jbin, val_correlation);
 
       if( ibin==jbin ) {
-	double val_cv = matrix_pred_newworld(0, ibin-1);	
-	if(val_cv!=0) {
-	  double cov_total      = matrix_absolute_cov_newworld(ibin-1, ibin-1);
-	  double cov_flux       = matrix_absolute_flux_cov_newworld(ibin-1, ibin-1);
-	  double cov_Xs         = matrix_absolute_Xs_cov_newworld(ibin-1, ibin-1);
-	  double cov_detector   = matrix_absolute_detector_cov_newworld(ibin-1, ibin-1);
-	  double cov_mc_stat    = matrix_absolute_mc_stat_cov_newworld(ibin-1, ibin-1);
-	  double cov_additional = matrix_absolute_additional_cov_newworld(ibin-1, ibin-1);
-	  
-	  h1_total_relerr->SetBinContent( ibin, sqrt( cov_total )/val_cv );
-	  h1_flux_relerr->SetBinContent( ibin, sqrt( cov_flux )/val_cv );
-	  h1_Xs_relerr->SetBinContent( ibin, sqrt(cov_Xs  )/val_cv );
-	  h1_detector_relerr->SetBinContent( ibin, sqrt( cov_detector )/val_cv );
-	  h1_mc_stat_relerr->SetBinContent( ibin, sqrt( cov_mc_stat )/val_cv );
-	  h1_additional_relerr->SetBinContent( ibin, sqrt( cov_additional )/val_cv );
+        double val_cv = matrix_pred_newworld(0, ibin-1);
 
-	  h1_flux_fraction->SetBinContent(ibin, cov_flux*100./cov_total );
-	  h1_Xs_fraction->SetBinContent(ibin, cov_Xs*100./cov_total );	  
-	  h1_detector_fraction->SetBinContent(ibin, cov_detector*100./cov_total );
-	  h1_mc_stat_fraction->SetBinContent(ibin, cov_mc_stat*100./cov_total );
-	  h1_additional_fraction->SetBinContent(ibin, cov_additional*100./cov_total );
-	  
-	  h1_pred_totalsyst->SetBinContent( ibin, val_cv ); h1_pred_totalsyst->SetBinError( ibin, sqrt(cov_total) );
-	  h1_meas->SetBinContent( ibin, matrix_data_newworld(0, ibin-1) );
-	  
-	}// val_cv!-0
+        double cov_total      = matrix_absolute_cov_newworld(ibin-1, ibin-1);
+        double cov_flux       = matrix_absolute_flux_cov_newworld(ibin-1, ibin-1);
+        double cov_Xs         = matrix_absolute_Xs_cov_newworld(ibin-1, ibin-1);
+        double cov_detector   = matrix_absolute_detector_cov_newworld(ibin-1, ibin-1);
+        double cov_mc_stat    = matrix_absolute_mc_stat_cov_newworld(ibin-1, ibin-1);
+        double cov_additional = matrix_absolute_additional_cov_newworld(ibin-1, ibin-1);
+
+        // if( val_cv==0 || val_cv<1e-3) {
+        //   cout<<" CV==0 at bin "<<ibin<<" "<<val_cv<<endl;
+        // }
+        
+        if(val_cv!=0) {
+          h1_total_relerr->SetBinContent( ibin, sqrt( cov_total )/val_cv );
+          h1_flux_relerr->SetBinContent( ibin, sqrt( cov_flux )/val_cv );
+          h1_Xs_relerr->SetBinContent( ibin, sqrt(cov_Xs  )/val_cv );
+          h1_detector_relerr->SetBinContent( ibin, sqrt( cov_detector )/val_cv );
+          h1_mc_stat_relerr->SetBinContent( ibin, sqrt( cov_mc_stat )/val_cv );
+          h1_additional_relerr->SetBinContent( ibin, sqrt( cov_additional )/val_cv );
+        }
+
+        if( cov_total!=0 ) {
+          h1_flux_fraction->SetBinContent(ibin, cov_flux*100./cov_total );
+          h1_Xs_fraction->SetBinContent(ibin, cov_Xs*100./cov_total );    
+          h1_detector_fraction->SetBinContent(ibin, cov_detector*100./cov_total );
+          h1_mc_stat_fraction->SetBinContent(ibin, cov_mc_stat*100./cov_total );
+          h1_additional_fraction->SetBinContent(ibin, cov_additional*100./cov_total );
+        }
+        
+        h1_pred_totalsyst->SetBinContent( ibin, val_cv ); h1_pred_totalsyst->SetBinError( ibin, sqrt(cov_total) );
+        h1_meas->SetBinContent( ibin, matrix_data_newworld(0, ibin-1) );          
+        
       }// ibin==jbin      
     }// jbin
   }// ibin
@@ -1403,6 +2188,13 @@ void TLee::Plotting_systematics()
   }
 
   canv_h1_pred_totalsyst->SaveAs("canv_h1_pred_totalsyst.png");
+  
+  /////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////
+
+  
+  
+    
 }
 
 ///////////////////////////////////////////////////////// ccc
@@ -1448,9 +2240,30 @@ void TLee::Set_Collapse()
     for(int ibin=0; ibin<bins_newworld; ibin++) {
       double val_mc_stat_cov = gh_mc_stat_bin[ibin]->Eval( scaleF_Lee );
       matrix_absolute_cov_newworld(ibin, ibin) += val_mc_stat_cov;
-      //matrix_absolute_cov_newworld(ibin, ibin) += val_mc_stat_cov/4e6;
+      //matrix_absolute_cov_newworld(ibin, ibin) += val_mc_stat_cov/4.;
     }
   }
+  
+  ////////////////////////////////////////
+
+  for( auto it_sub=matrix_sub_flux_geant4_Xs_oldworld.begin(); it_sub!=matrix_sub_flux_geant4_Xs_oldworld.end(); it_sub++ ) {
+    int index = it_sub->first;
+    int rows = matrix_sub_flux_geant4_Xs_oldworld[index].GetNrows();
+    
+    for(int idx=0; idx<rows; idx++) {
+      for(int jdx=0; jdx<rows; jdx++) {
+	double cv_i = map_input_spectrum_oldworld_bin[idx];
+	double cv_j = map_input_spectrum_oldworld_bin[jdx];
+	double fcov_ij = matrix_sub_flux_geant4_Xs_oldworld[index](idx, jdx);
+	matrix_sub_flux_geant4_Xs_oldworld[index](idx, jdx) = cv_i*cv_j*fcov_ij;	
+      }// jdx
+    }// idx
+
+    matrix_sub_flux_geant4_Xs_newworld[index].Clear();
+    matrix_sub_flux_geant4_Xs_newworld[index].ResizeTo(bins_newworld, bins_newworld);
+    matrix_sub_flux_geant4_Xs_newworld[index] = matrix_transform_Lee_T * matrix_sub_flux_geant4_Xs_oldworld[index] * matrix_transform_Lee;
+  }
+
   
   ////////////////////////////////////////
 
@@ -1550,8 +2363,8 @@ void TLee::Set_POT_implement()
       matrix_input_cov_additional(ibin, jbin) *= scaleF_POT2;
             
       for(auto it=matrix_input_cov_detector_sub.begin(); it!=matrix_input_cov_detector_sub.end(); it++) {
-	int idx = it->first;
-	matrix_input_cov_detector_sub[idx](ibin, jbin) *= scaleF_POT2;
+        int idx = it->first;
+        matrix_input_cov_detector_sub[idx](ibin, jbin) *= scaleF_POT2;
       }
   
     }// jbin
@@ -1595,9 +2408,9 @@ void TLee::Set_Spectra_MatrixCov()
 
   ////////////////////////////////////// pred
   
-  map_input_spectrum_ch_str[1] = "ch1";
-  map_input_spectrum_ch_str[2] = "ch2";
-  map_input_spectrum_ch_str[3] = "ch3";
+  map_input_spectrum_ch_str[1] = "nueCC_FC_norm";
+  map_input_spectrum_ch_str[2] = "nueCC_PC_norm";
+  map_input_spectrum_ch_str[3] = "numuCC_FC_norm";
   map_input_spectrum_ch_str[4] = "numuCC_PC_norm";
   map_input_spectrum_ch_str[5] = "CCpi0_FC_norm";
   map_input_spectrum_ch_str[6] = "CCpi0_PC_norm";
@@ -1607,23 +2420,26 @@ void TLee::Set_Spectra_MatrixCov()
   map_input_spectrum_ch_str[10]= "nueCC_FC_ext";
   map_input_spectrum_ch_str[11]= "nueCC_PC_ext";
   map_input_spectrum_ch_str[12]= "numuCC_FC_ext";
-  // map_input_spectrum_ch_str[13]= "numuCC_PC_ext";
-  // map_input_spectrum_ch_str[14]= "CCpi0_FC_ext";
-  // map_input_spectrum_ch_str[15]= "CCpi0_PC_ext";
-  // map_input_spectrum_ch_str[16]= "NCpi0_ext";
-  // map_input_spectrum_ch_str[17]= "ch17";
-  // map_input_spectrum_ch_str[18]= "ch18";
-  // map_input_spectrum_ch_str[19]= "ch19";
-  // map_input_spectrum_ch_str[20]= "ch20";
-  // map_input_spectrum_ch_str[21]= "ch21";
-  // map_input_spectrum_ch_str[22]= "ch22";
-  // map_input_spectrum_ch_str[23]= "ch23";
-  // map_input_spectrum_ch_str[24]= "ch24";
+  map_input_spectrum_ch_str[13]= "numuCC_PC_ext";
+  map_input_spectrum_ch_str[14]= "CCpi0_FC_ext";
+  map_input_spectrum_ch_str[15]= "CCpi0_PC_ext";
+  map_input_spectrum_ch_str[16]= "NCpi0_ext";
 
-  // flag for LEE channels corresponding to the cov_input.txt
-  //  map_Lee_ch[8] = 1;
-  // map_Lee_ch[9] = 1;
+  /// flag for LEE channels corresponding to the cov_input.txt
+  map_Lee_ch[8] = 1;
+  map_Lee_ch[9] = 1;
   
+
+  ///////////////////////////////////////
+
+  //for(int idx=1; idx<=16; idx++) map_input_spectrum_ch_str[idx] = TString::Format("pred_%02d", idx);
+  
+  /////////////////////////////////////// case: separate nueCC signal and bkg
+  /*
+  for(int idx=1; idx<=18; idx++) map_input_spectrum_ch_str[idx] = TString::Format("pred_%02d", idx);
+  map_Lee_ch[8] = 1;
+  map_Lee_ch[9] = 1;
+  */
   /////////////////////////////////////// case: fake data
   /*
   map_input_spectrum_ch_str[1] = "nueCC_FC_norm";
@@ -1634,13 +2450,14 @@ void TLee::Set_Spectra_MatrixCov()
   map_input_spectrum_ch_str[6] = "CCpi0_PC_norm";
   map_input_spectrum_ch_str[7] = "NCpi0_norm";
   map_input_spectrum_ch_str[8] = "Lee_FC";
-  map_input_spectrum_ch_str[9] = "Lee_PC"; 
+  map_input_spectrum_ch_str[9] = "Lee_PC";
+  
   /// flag for LEE channels corresponding to the cov_input.txt
   map_Lee_ch[8] = 1;
   map_Lee_ch[9] = 1;
   */
   /////////////////////////////////////// case: 1u0p and 1uNp
-  /*
+ /* 
   map_input_spectrum_ch_str[1] = "nueCC_FC_norm";
   map_input_spectrum_ch_str[2] = "nueCC_PC_norm";
   map_input_spectrum_ch_str[3] = "numuCC_FC_1u0p_norm";
@@ -1652,10 +2469,11 @@ void TLee::Set_Spectra_MatrixCov()
   map_input_spectrum_ch_str[9] = "NCpi0_norm";
   map_input_spectrum_ch_str[10] = "Lee_FC";
   map_input_spectrum_ch_str[11] = "Lee_PC";
+
   /// flag for LEE channels corresponding to the cov_input.txt
   map_Lee_ch[10] = 1;
   map_Lee_ch[11] = 1;
-  */
+*/  
   //////////////////
   //////////////////
   
@@ -1668,6 +2486,10 @@ void TLee::Set_Spectra_MatrixCov()
   matrix_transform.ResizeTo( mat_collapse->GetNrows(), mat_collapse->GetNcols() );
   matrix_transform = (*mat_collapse);
 
+  ///
+  // TFile *file_wi2no_101 = new TFile("./h1_spectra_wi2no_101.root", "read");
+  // TH1D *h1_spectra_wi2no_101 = (TH1D*)file_wi2no_101->Get("h1_spectra_wi2no");
+  
   ///
   cout<<" Predictions"<<endl;
   for(int ich=1; ich<=(int)map_input_spectrum_ch_str.size(); ich++) {
@@ -1689,27 +2511,17 @@ void TLee::Set_Spectra_MatrixCov()
       // 	if( ibin==7 ) content *= 1.196;
       // 	if( ibin==8 ) content *= 1.104;
       // }    
+
+      //if( (ich==1 || ich==8) && ibin<=8 ) content *= h1_spectra_wi2no_101->GetBinContent(ibin);
       
       map_input_spectrum_ch_bin[ich][ibin-1] = content;
     }
     
   }
   cout<<endl;
-
   
-  ////////////////////for fake data set, begin
-  // for(int idx=10; idx<=13; idx++) {
-  //   for(int ibin=1; ibin<=26; ibin++) {
-  //     map_input_spectrum_ch_bin[idx][ibin-1] = 0;
-  //   }
-  // }  
-  // for(int idx=14; idx<=16; idx++) {
-  //   for(int ibin=1; ibin<=11; ibin++) {
-  //     map_input_spectrum_ch_bin[idx][ibin-1] = 0;
-  //   }
-  // }
-  ////////////////////for fake data set, end
-  
+  ////////////////////
+  ////////////////////
 
   bins_oldworld = 0;
   for(auto it_ch=map_input_spectrum_ch_bin.begin(); it_ch!=map_input_spectrum_ch_bin.end(); it_ch++) {
@@ -1762,6 +2574,11 @@ void TLee::Set_Spectra_MatrixCov()
     map_matrix_flux_Xs_frac[idx] = (TMatrixD*)map_file_flux_Xs_frac[idx]->Get(TString::Format("frac_cov_xf_mat_%d", idx));
     cout<<TString::Format(" %2d %s", idx, roostr.Data())<<endl;
 
+    matrix_sub_flux_geant4_Xs_oldworld[idx].Clear();
+    matrix_sub_flux_geant4_Xs_oldworld[idx].ResizeTo(bins_oldworld, bins_oldworld);
+    matrix_sub_flux_geant4_Xs_oldworld[idx] += (*map_matrix_flux_Xs_frac[idx]); 
+    
+    //if( idx!=17 )
     matrix_flux_Xs_frac += (*map_matrix_flux_Xs_frac[idx]);    
     
     if( idx<=16 ) {// flux
@@ -1778,6 +2595,7 @@ void TLee::Set_Spectra_MatrixCov()
   cout<<" Detector systematics"<<endl;
     
   map<int, TString>map_detectorfile_str;
+  
   map_detectorfile_str[1] = detector_directory+"cov_LYDown.root";
   map_detectorfile_str[2] = detector_directory+"cov_LYRayleigh.root";
   map_detectorfile_str[3] = detector_directory+"cov_Recomb2.root";
@@ -1789,6 +2607,7 @@ void TLee::Set_Spectra_MatrixCov()
   map_detectorfile_str[9] = detector_directory+"cov_WMYZ.root";
   map_detectorfile_str[10]= detector_directory+"cov_LYatt.root";
   
+  
   map<int, TFile*>map_file_detector_frac;
   map<int, TMatrixD*>map_matrix_detector_frac;
   TMatrixD matrix_detector_frac(bins_oldworld, bins_oldworld);
@@ -1796,16 +2615,14 @@ void TLee::Set_Spectra_MatrixCov()
   
   for( auto it=map_detectorfile_str.begin(); it!=map_detectorfile_str.end(); it++ ) {
     int idx = it->first;
-    if(idx==5) continue;    
+    if(idx==5)  continue;    
     roostr = map_detectorfile_str[idx];
     cout<<TString::Format(" %2d %s", idx, roostr.Data())<<endl;
     
     map_file_detector_frac[idx] = new TFile(roostr, "read");
     map_matrix_detector_frac[idx] = (TMatrixD*)map_file_detector_frac[idx]->Get(TString::Format("frac_cov_det_mat_%d", idx));
-    // cout<<TString::Format(" ---> check: detector, %2d  ", idx)<<roostr<<endl;
 
-    matrix_detector_frac += (*map_matrix_detector_frac[idx]); // to disable detsys, comment this line
-                                                              // also, set flag_syst_detector = 0 in Configure_TLee.h
+    matrix_detector_frac += (*map_matrix_detector_frac[idx]);
 
     matrix_detector_sub_frac[idx].Clear();
     matrix_detector_sub_frac[idx].ResizeTo(bins_oldworld, bins_oldworld);
@@ -1813,6 +2630,43 @@ void TLee::Set_Spectra_MatrixCov()
   }
   cout<<endl;
 
+  
+  if( 0 ) {
+    cout<<endl<<" testestest "<<endl<<endl;
+    
+    int user_rows = matrix_detector_frac.GetNrows();
+    const double user_nue_reduced = sqrt(3.);
+    
+    for(int idx=0; idx<user_rows; idx++) {
+      for(int jdx=0; jdx<user_rows; jdx++) {
+
+	////
+        int flag_idx = 0;
+	if( idx>=1-1 || idx<=26*2-1 ) flag_idx = 1;
+	if( idx>=26*4+11*3 ) flag_idx = 1;
+	  
+	////
+	int flag_jdx = 0;
+	if( jdx>=1-1 || jdx<=26*2-1 ) flag_jdx = 1;
+	if( jdx>=26*4+11*3 ) flag_jdx = 1;
+
+	////
+	double val = matrix_detector_frac(idx, jdx);
+
+	if( flag_idx+flag_jdx==1 ) {
+	  val = val/user_nue_reduced;
+	}
+	if( flag_idx+flag_jdx==2 ) {
+	  val = val/user_nue_reduced/user_nue_reduced;
+	}
+
+	matrix_detector_frac(idx, jdx) = val;
+	
+      }// for(int jdx=0; jdx<user_rows; jdx++)
+    }//for(int idx=0; idx<user_rows; idx++)     
+  }
+  
+    
   ////////////////////////////////////////// additional
 
   TMatrixD *matrix_additional_abs_point = (TMatrixD*)file_spectra->Get("cov_mat_add");
@@ -1894,7 +2748,7 @@ void TLee::Set_Spectra_MatrixCov()
     
     gbins_mc_stat = count_check -1;
     if( gbins_mc_stat!=bins_newworld ) {
-      cout<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<< " " << gbins_mc_stat << " " << bins_newworld << endl;
+      cout<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<<endl;
       cerr<<" Error gbins_mc_stat!=bins_newworld: "<<roostr<<endl;
       exit(1);
     }

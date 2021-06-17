@@ -65,7 +65,7 @@ int main(int argc, char** argv)
   gStyle->SetGridWidth(snWidth);
   gStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
   gStyle->SetMarkerStyle(20);
-  gStyle->SetMarkerSize(1.0);
+  gStyle->SetMarkerSize(1.2);
   gStyle->SetEndErrorSize(4);
   gStyle->SetEndErrorSize(0);
 
@@ -86,7 +86,9 @@ int main(int argc, char** argv)
   Lee_test->syst_cov_flux_Xs_end   = config_Lee::syst_cov_flux_Xs_end;
   Lee_test->syst_cov_mc_stat_begin = config_Lee::syst_cov_mc_stat_begin;
   Lee_test->syst_cov_mc_stat_end   = config_Lee::syst_cov_mc_stat_end;  
-  
+ 
+  Lee_test->flag_lookelsewhere     = config_Lee::flag_lookelsewhere;
+
   Lee_test->scaleF_POT = scaleF_POT;
   Lee_test->Set_config_file_directory(config_Lee::spectra_file, config_Lee::flux_Xs_directory,
                                       config_Lee::detector_directory, config_Lee::mc_directory);
@@ -102,11 +104,97 @@ int main(int argc, char** argv)
   Lee_test->flag_syst_mc_stat    = config_Lee::flag_syst_mc_stat;
   
   Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_outputfile_covariance_matrix;
+  Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_GoF;
   Lee_test->Set_Collapse();
 
   Lee_test->flag_Lee_minimization_after_constraint = config_Lee::flag_Lee_minimization_after_constraint;
   
   //////////
+
+  if( 0 ) {// shape only covariance
+
+    int nbins = Lee_test->bins_newworld;
+    TMatrixD matrix_pred = Lee_test->matrix_pred_newworld;
+    TMatrixD matrix_syst = Lee_test->matrix_absolute_cov_newworld;    
+    TMatrixD matrix_shape(nbins, nbins);
+    TMatrixD matrix_mixed(nbins, nbins);
+    TMatrixD matrix_norm(nbins, nbins);
+    
+    ///
+    double N_T = 0;
+    for(int idx=0; idx<nbins; idx++) N_T += matrix_pred(0, idx);
+
+    ///
+    double M_kl = 0;
+    for(int i=0; i<nbins; i++) {
+      for(int j=0; j<nbins; j++) {
+	M_kl += matrix_syst(i,j);
+      }
+    }
+
+    ///
+    for(int i=0; i<nbins; i++) {
+      for(int j=0; j<nbins; j++) {      
+	double N_i = matrix_pred(0, i);
+	double N_j = matrix_pred(0, j);
+
+	double M_ij = matrix_syst(i,j);      
+	double M_ik = 0; for(int k=0; k<nbins; k++) M_ik += matrix_syst(i,k);
+	double M_kj = 0; for(int k=0; k<nbins; k++) M_kj += matrix_syst(k,j);
+
+	matrix_shape(i,j) = M_ij - N_j*M_ik/N_T - N_i*M_kj/N_T + N_i*N_j*M_kl/N_T/N_T;
+	matrix_mixed(i,j) = N_j*M_ik/N_T + N_i*M_kj/N_T - 2*N_i*N_j*M_kl/N_T/N_T;	
+	matrix_norm(i,j) = N_i*N_j*M_kl/N_T/N_T;
+      }
+    }
+
+    Lee_test->matrix_absolute_cov_newworld = matrix_shape;
+    
+  }// shape only covariance
+
+  if( 0 ) {// shape only covariance
+
+    int nbins = Lee_test->bins_newworld;
+    TMatrixD matrix_pred = Lee_test->matrix_pred_newworld;
+    TMatrixD matrix_syst = Lee_test->matrix_absolute_flux_cov_newworld;    
+    TMatrixD matrix_shape(nbins, nbins);
+    TMatrixD matrix_mixed(nbins, nbins);
+    TMatrixD matrix_norm(nbins, nbins);
+    
+    ///
+    double N_T = 0;
+    for(int idx=0; idx<nbins; idx++) N_T += matrix_pred(0, idx);
+
+    ///
+    double M_kl = 0;
+    for(int i=0; i<nbins; i++) {
+      for(int j=0; j<nbins; j++) {
+	M_kl += matrix_syst(i,j);
+      }
+    }
+
+    ///
+    for(int i=0; i<nbins; i++) {
+      for(int j=0; j<nbins; j++) {      
+	double N_i = matrix_pred(0, i);
+	double N_j = matrix_pred(0, j);
+
+	double M_ij = matrix_syst(i,j);      
+	double M_ik = 0; for(int k=0; k<nbins; k++) M_ik += matrix_syst(i,k);
+	double M_kj = 0; for(int k=0; k<nbins; k++) M_kj += matrix_syst(k,j);
+
+	matrix_shape(i,j) = M_ij - N_j*M_ik/N_T - N_i*M_kj/N_T + N_i*N_j*M_kl/N_T/N_T;
+	matrix_mixed(i,j) = N_j*M_ik/N_T + N_i*M_kj/N_T - 2*N_i*N_j*M_kl/N_T/N_T;	
+	matrix_norm(i,j) = N_i*N_j*M_kl/N_T/N_T;
+      }
+    }
+
+    Lee_test->matrix_absolute_flux_cov_newworld = matrix_shape;
+    
+  }// shape only covariance
+
+  /////////////////////////////
+  /////////////////////////////
   
   TFile *file_collapsed_covariance_matrix = new TFile("file_collapsed_covariance_matrix.root", "recreate");
   
@@ -144,7 +232,14 @@ int main(int argc, char** argv)
   }
      
   Lee_test->matrix_pred_newworld.Write("matrix_pred_newworld");// (1, bins)
-  Lee_test->matrix_data_newworld.Write("matrix_data_newworld");// (1, bins)  
+  Lee_test->matrix_data_newworld.Write("matrix_data_newworld");// (1, bins)
+
+  for(auto it_sub=Lee_test->matrix_sub_flux_geant4_Xs_newworld.begin(); it_sub!=Lee_test->matrix_sub_flux_geant4_Xs_newworld.end(); it_sub++) {
+    int index = it_sub->first;
+    roostr = TString::Format("matrix_sub_flux_geant4_Xs_newworld_%d", index);
+    Lee_test->matrix_sub_flux_geant4_Xs_newworld[index].Write(roostr);
+  }
+  
   //file_collapsed_covariance_matrix->Close();
   
   //////////
@@ -153,8 +248,8 @@ int main(int argc, char** argv)
   
   //////////////////////////////////////////////////////////////////////////////////////// Goodness of fit
   
-  Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_GoF;
-  Lee_test->Set_Collapse();
+  //Lee_test->scaleF_Lee = config_Lee::Lee_strength_for_GoF;
+  //Lee_test->Set_Collapse();
 
   if( config_Lee::flag_GoF_output2file_default_0 ) {
     file_collapsed_covariance_matrix->cd();
@@ -246,9 +341,10 @@ int main(int argc, char** argv)
 
   
   if( 0 ) {// first 6 bins--> 1 bin, constrained by others
-    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 1 + (26-6) + 26*3 + 11*3 );// oldworld, newworld
-    for( int ibin=1; ibin<=6; ibin++) matrix_gof_trans(ibin-1, 0) = 1;
-    for( int ibin=1; ibin<=26*4+11*3-6; ibin++) matrix_gof_trans(6+ibin-1, ibin) = 1;
+    int nbins_first = 6;
+    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 1 + (26-nbins_first) + 26*3 + 11*3 );// oldworld, newworld
+    for( int ibin=1; ibin<=nbins_first; ibin++) matrix_gof_trans(ibin-1, 0) = 1;
+    for( int ibin=1; ibin<=26*4+11*3-nbins_first; ibin++) matrix_gof_trans(nbins_first+ibin-1, ibin) = 1;
     
     
     TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
@@ -262,6 +358,7 @@ int main(int argc, char** argv)
   }  
   
   if( 0 ) {// first 6 bins, constrained by others
+    int nbins_first = 6;
     TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 26*4 + 11*3 );// oldworld, newworld
     for( int ibin=1; ibin<=26*4 + 11*3; ibin++) matrix_gof_trans(ibin-1, ibin-1) = 1;
     
@@ -272,7 +369,7 @@ int main(int argc, char** argv)
     TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
     TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
 
-    Lee_test->Exe_Goodness_of_fit( 6, matrix_gof_trans.GetNcols()-6, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 202);
+    Lee_test->Exe_Goodness_of_fit( nbins_first, matrix_gof_trans.GetNcols()-nbins_first, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 202);
   }
 
   ///////////////////////// gof
@@ -319,6 +416,26 @@ int main(int argc, char** argv)
     Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 1 );
   }
 
+  if( 0 ) {
+    TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 52 );// oldworld, newworld
+    for( int ibin=1; ibin<=52; ibin++) matrix_gof_trans(52+ibin-1, ibin-1) = 1;
+    
+    TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+    matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+    TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+    TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+    Lee_test->Exe_Goodness_of_fit( 52, 0, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 123);
+
+    TFile *file_numu = new TFile("file_numu.root", "recreate");
+    matrix_gof_pred.Write("matrix_gof_pred");
+    matrix_gof_data.Write("matrix_gof_meas");
+    matrix_gof_syst.Write("matrix_gof_syst");
+    file_numu->Close();
+  }
+  
   ///////////////////////// gof
   
   if( flag_CCpi0_FC_by_numuCC ) { 
@@ -358,6 +475,143 @@ int main(int argc, char** argv)
     Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 4 );
   }
 
+  ////////////////////////////////////////////////////////////////////
+
+  if( 0 ) {
+    vector<int>vc_target_chs;
+    vc_target_chs.push_back( 1 );
+    vc_target_chs.push_back( 2 );
+    
+    vector<int>vc_support_chs;
+    vc_support_chs.push_back( 3 );
+    vc_support_chs.push_back( 4 );
+    vc_support_chs.push_back( 5 );
+    vc_support_chs.push_back( 6 );
+    vc_support_chs.push_back( 7 );
+
+    Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 101 );
+  }
+
+  if( 0 ) {
+    vector<int>vc_target_chs;
+    //vc_target_chs.push_back( 1 );
+    vc_target_chs.push_back( 2 );
+    
+    vector<int>vc_support_chs;
+    vc_support_chs.push_back( 3 );
+    vc_support_chs.push_back( 4 );
+    vc_support_chs.push_back( 5 );
+    vc_support_chs.push_back( 6 );
+    vc_support_chs.push_back( 7 );
+
+    Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 102 );
+  }
+
+  
+  if( 0 ) {
+    vector<int>vc_target_chs;
+    for(int idx=1; idx<=8; idx++) vc_target_chs.push_back( idx-1 );
+    
+    vector<int>vc_support_chs;
+    for(int idx=9; idx<=Lee_test->bins_newworld; idx++) {
+      if( idx>=26+1 && idx<=26+8 ) continue;
+      vc_support_chs.push_back( idx-1 );
+    }
+
+    Lee_test->Exe_Goodness_of_fit_detailed( vc_target_chs, vc_support_chs, 101 );
+  }
+
+  
+
+  
+  ////////////////////////////////////////////////////////////////////
+
+  bool flag_publicnote = 0;
+  
+  if( flag_publicnote ) {
+    
+    ///////////////////////// gof
+    
+    if( 1 ) {
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( 3 );
+      vc_target_chs.push_back( 4 ); 
+      vector<int>vc_support_chs;      
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 1 );
+    }
+
+    if( 1 ) {
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( 5 );
+      vector<int>vc_support_chs;
+      vc_support_chs.push_back( 3 );
+      vc_support_chs.push_back( 4 );      
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 2 );
+    }
+
+    if( 1 ) {
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( 6 );
+      vector<int>vc_support_chs;
+      vc_support_chs.push_back( 3 );
+      vc_support_chs.push_back( 4 );      
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 3 );
+    }
+
+    if( 1 ) {
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( 7 );
+      vector<int>vc_support_chs;
+      vc_support_chs.push_back( 3 );
+      vc_support_chs.push_back( 4 );      
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 4 );
+    }
+
+    if( 0 ) {    
+      vector<int>vc_target_chs;
+      vc_target_chs.push_back( 2 );
+      
+      vector<int>vc_support_chs;
+      vc_support_chs.push_back( 3 );
+      vc_support_chs.push_back( 4 );
+      vc_support_chs.push_back( 5 );
+      vc_support_chs.push_back( 6 );
+      vc_support_chs.push_back( 7 );
+      
+      Lee_test->Exe_Goodness_of_fit( vc_target_chs, vc_support_chs, 5 );
+    }
+    
+    if( 0 ) {
+      TMatrixD matrix_gof_trans( Lee_test->bins_newworld, (26-8) + 26*3 + 11*3 );// oldworld, newworld
+      for( int ibin=1; ibin<=(26-8) + 26*3 + 11*3; ibin++) matrix_gof_trans(8+ibin-1, ibin-1) = 1;
+    
+      TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+      matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+      TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+      TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+      TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+      Lee_test->Exe_Goodness_of_fit( (26-8), matrix_gof_trans.GetNcols()-(26-8), matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 6);    
+    }
+
+    if( 0 ) {
+      TMatrixD matrix_gof_trans( Lee_test->bins_newworld, 26*4 + 11*3 );// oldworld, newworld
+      for( int ibin=1; ibin<=26*4 + 11*3; ibin++) matrix_gof_trans(ibin-1, ibin-1) = 1;
+    
+      TMatrixD matrix_gof_trans_T( matrix_gof_trans.GetNcols(), matrix_gof_trans.GetNrows() );
+      matrix_gof_trans_T.Transpose( matrix_gof_trans );
+
+      TMatrixD matrix_gof_pred = Lee_test->matrix_pred_newworld * matrix_gof_trans;
+      TMatrixD matrix_gof_data = Lee_test->matrix_data_newworld * matrix_gof_trans;
+      TMatrixD matrix_gof_syst = matrix_gof_trans_T * (Lee_test->matrix_absolute_cov_newworld) * matrix_gof_trans;
+
+      Lee_test->Exe_Goodness_of_fit( 8, matrix_gof_trans.GetNcols()-8, matrix_gof_pred, matrix_gof_data, matrix_gof_syst, 7);
+    }
+
+  }
+  
+  
   //////////////////////////////////////////////////////////////////////////////////////// LEE strength fitting
 
   if( config_Lee::flag_Lee_strength_data ) {
@@ -569,7 +823,7 @@ int main(int argc, char** argv)
     tree->Branch("chi2_null_null8Lee_true8Lee", &chi2_null_null8Lee_true8Lee, "chi2_null_null8Lee_true8Lee/D" );
     tree->Branch("chi2_gmin_null8Lee_true8Lee", &chi2_gmin_null8Lee_true8Lee, "chi2_gmin_null8Lee_true8Lee/D" );
 
-    int N_toy = 100;
+    int N_toy = 500;
         
     for(int itoy=1; itoy<=N_toy; itoy++) {
             
@@ -677,13 +931,19 @@ int main(int argc, char** argv)
   
   ////////////////////////////////////////////////////////////////////////////////////////
 
+  cout<<endl;
+  cout<<" ---> flag_syst_flux_Xs    "<<Lee_test->flag_syst_flux_Xs<<endl;
+  cout<<" ---> flag_syst_detector   "<<Lee_test->flag_syst_detector<<endl;
+  cout<<" ---> flag_syst_additional "<<Lee_test->flag_syst_additional<<endl;
+  cout<<" ---> flag_syst_mc_stat    "<<Lee_test->flag_syst_mc_stat<<endl;  
+  
   cout<<endl<<endl;
   cout<<" ---> Finish all the program"<<endl;
   cout<<endl<<endl;
   
   if( config_Lee::flag_display_graphics ) {
-    cout<<endl<<" Entrer Ctrl+c to end the program"<<endl;
-    cout<<" Entrer Ctrl+c to end the program"<<endl<<endl;
+    cout<<endl<<" Enter Ctrl+c to end the program"<<endl;
+    cout<<" Enter Ctrl+c to end the program"<<endl<<endl;
     
     theApp.Run();
   }
