@@ -1535,6 +1535,7 @@ void LEEana::clear_tagger_info(TaggerInfo& tagger_info){
 }
 
 void LEEana::set_tree_address(TTree *tree0, TaggerInfo& tagger_info, int flag){
+  tagger_info.flag_nc_gamma_bdt = false;
 
   if (tree0->GetBranch("nc_delta_score")){
     tagger_info.flag_nc_gamma_bdt = true;
