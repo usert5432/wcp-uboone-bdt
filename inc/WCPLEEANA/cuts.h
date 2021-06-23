@@ -1547,6 +1547,16 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside)) return true;
     else return false;
     
+  }else if (ch_name == "nueCC_extra_nueoverlay_fc"){
+    if (flag_nueCC && flag_truth_inside && flag_FC) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_ext_fc" || ch_name == "BG_nueCC_extra_dirt_fc" || ch_name =="nueCC_extra_bnb_fc"){
+    if (flag_nueCC && flag_FC) return true;
+    else return false;
+  }else if (ch_name == "BG_nueCC_extra_overlay_fc"){
+    if (flag_nueCC && !(eval.truth_isCC==1 && abs(eval.truth_nuPdg)==12 && flag_truth_inside) && flag_FC) return true;
+    else return false;
+    
     // FC and Np
   }else if (ch_name == "nueCC_extra_nueoverlay_fc_np"){
     if (flag_nueCC && flag_truth_inside && flag_FC && (!flag_0p)) return true;
@@ -1583,6 +1593,9 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
  // numuCC selection PC+FC 1 obs channel   
   }else if (ch_name == "numuCC_overlay" || ch_name == "BG_numuCC_ext" || ch_name =="BG_numuCC_dirt" || ch_name == "numuCC_bnb"){
     if (flag_numuCC) return true;
+    else return false;
+  }else if (ch_name == "numuCC_overlay_fc" || ch_name == "BG_numuCC_ext_fc" || ch_name =="BG_numuCC_dirt_fc" || ch_name == "numuCC_bnb_fc"){
+    if (flag_numuCC && flag_FC) return true;
     else return false;
   }else if (ch_name == "numuCC_overlay_fc_np" || ch_name == "BG_numuCC_ext_fc_np" || ch_name =="BG_numuCC_dirt_fc_np" || ch_name == "numuCC_bnb_fc_np"){
     if (flag_numuCC && flag_FC && (!flag_0p)) return true;
