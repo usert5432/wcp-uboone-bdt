@@ -741,7 +741,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   h1_pred_clone->SetMarkerSize(0);
   h1_pred_clone->SetLineColor(kRed);
   h1_pred_clone->GetXaxis()->SetLabelColor(10);
-  func_xy_title(h1_pred_clone, "Bin index", "Entries"); func_title_size(h1_pred_clone, 0.065, 0.065, 0.065, 0.065);
+  func_xy_title(h1_pred_clone, "Measurement bin index", "Entries"); func_title_size(h1_pred_clone, 0.065, 0.065, 0.065, 0.065);
   h1_pred_clone->GetXaxis()->CenterTitle(); h1_pred_clone->GetYaxis()->CenterTitle();
   h1_pred_clone->GetYaxis()->SetTitleOffset(1.2); 
 
@@ -772,7 +772,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   h1_meas2pred_syst->SetMinimum(0); h1_meas2pred_syst->SetMaximum(2);
   h1_meas2pred_syst->SetFillColor(kRed-10); h1_meas2pred_syst->SetFillStyle(1001); h1_meas2pred_syst->SetMarkerSize(0);
   func_title_size(h1_meas2pred_syst, 0.078, 0.078, 0.078, 0.078);
-  func_xy_title(h1_meas2pred_syst, "Measured bin index", "Data / Pred");
+  func_xy_title(h1_meas2pred_syst, "Measurement bin index", "Data / Pred");
   h1_meas2pred_syst->GetXaxis()->SetTickLength(0.05);  h1_meas2pred_syst->GetXaxis()->SetLabelOffset(0.005);
   h1_meas2pred_syst->GetXaxis()->CenterTitle(); h1_meas2pred_syst->GetYaxis()->CenterTitle(); 
   h1_meas2pred_syst->GetYaxis()->SetTitleOffset(0.99);
@@ -802,7 +802,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   h1_lambda_pred_clone->SetFillColor(kRed-10); h1_lambda_pred_clone->SetFillStyle(1001);
   h1_lambda_pred_clone->SetMarkerSize(0);
   h1_lambda_pred_clone->SetLineColor(color_pred);
-  func_xy_title(h1_lambda_pred_clone, "Decomposed bin index", "Entries\'");
+  func_xy_title(h1_lambda_pred_clone, "Decomposition bin index", "Entries\'");
   func_title_size(h1_lambda_pred_clone, 0.05, 0.05, 0.05, 0.05);
   h1_lambda_pred_clone->GetXaxis()->CenterTitle(); h1_lambda_pred_clone->GetYaxis()->CenterTitle();
   h1_lambda_pred_clone->GetYaxis()->SetTitleOffset(1.5); 
@@ -841,7 +841,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   h1_lambda_sigmax3->SetFillColor(kRed-9); h1_lambda_sigmax3->SetFillStyle(1001);
   h1_lambda_sigmax3->SetMarkerSize(0);
   h1_lambda_sigmax3->SetLineColor(color_pred);
-  func_xy_title(h1_lambda_sigmax3, "Decomposed bin index", "#sigma_{i}\' value");
+  func_xy_title(h1_lambda_sigmax3, "Decomposition bin index", "#epsilon_{i}\' value");
   func_title_size(h1_lambda_sigmax3, 0.05, 0.05, 0.05, 0.05);
   h1_lambda_sigmax3->GetXaxis()->CenterTitle(); h1_lambda_sigmax3->GetYaxis()->CenterTitle();
   h1_lambda_sigmax3->GetYaxis()->SetTitleOffset(1.2); 
@@ -933,7 +933,7 @@ void TLee::Plotting_singlecase(TMatrixD matrix_pred_temp, TMatrixD matrix_meas_t
   TCanvas *canv_h2_lambda_transform_matrix = new TCanvas(roostr, roostr, 900, 850);
   func_canv_margin(canv_h2_lambda_transform_matrix, 0.15, 0.2,0.15,0.2);
   h2_lambda_transform_matrix->Draw("colz");
-  func_xy_title(h2_lambda_transform_matrix, "Measured bin index", "Decomposed bin index");
+  func_xy_title(h2_lambda_transform_matrix, "Measurement bin index", "Decomposition bin index");
   func_title_size(h2_lambda_transform_matrix, 0.05, 0.05, 0.05, 0.05);
   h2_lambda_transform_matrix->GetXaxis()->CenterTitle(); h2_lambda_transform_matrix->GetYaxis()->CenterTitle();
   if( saveFIG ) {
@@ -1127,7 +1127,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
   line_FC_PC->SetLineWidth(4);
   //line_FC_PC->SetLineStyle(7);
 
-  if( index==1 ) {    
+  if( index==0 ) {    
     flag_axis_userAA = 1;
     flag_axis_userAB = 1;
 
@@ -1145,7 +1145,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAB_value_hgh = 2600;    
   }
 
-  if( index==9 ) {    
+  if( index==0 ) {    
     flag_axis_userAA = 1;
     flag_axis_userAB = 1;
 
@@ -1163,7 +1163,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAB_value_hgh = 3100;    
   }
 
-  if( index==2 || index==3 || index==4 ) {
+  if( index==0 ) {
     flag_axis_userAA = 1;
     flag_axis_userAB = 0;
 
@@ -1176,7 +1176,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAA_value_hgh = 1100;    
   }
   
-  if( index==5 ) {
+  if( index==0 ) {
     flag_axis_userAA = 1;
     flag_axis_userAB = 0;
 
@@ -1189,7 +1189,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAA_value_hgh = 2600;    
   }
    
-  if( index==6 ) {
+  if( index==0 ) {
     flag_axis_userAA = 1;
     flag_axis_userAB = 0;
 
@@ -1202,7 +1202,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAA_value_hgh = 2600;    
   }
   
-  if( index==7 ) {
+  if( index==0 ) {
     flag_axis_userAA = 1;
     flag_axis_userAB = 0;
 
@@ -1215,7 +1215,7 @@ int TLee::Exe_Goodness_of_fit(int num_Y, int num_X, TMatrixD matrix_pred, TMatri
     userAA_value_hgh = 800;    
   }
     
-  if( index==8 ) {
+  if( index==0 ) {
     flag_axis_userAA = 1;
     flag_axis_userAB = 0;
 
