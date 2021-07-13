@@ -186,7 +186,7 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     //  }else if (var_name == "pi0_mass"){
     // return kine.kine_pio_mass;
   }else if (var_name == "nue_score"){
-    return tagger.nue_score;
+    return (tagger.nue_score<=15.99?tagger.nue_score:15.99);
   }else if (var_name == "nc_pio_score"){
     return tagger.nc_pio_score;
   }else if (var_name == "nc_delta_score"){
