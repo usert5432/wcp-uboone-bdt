@@ -85,6 +85,8 @@ namespace LEEana{
   // TCut truth_numuCC_inside = "abs(truth_nuPdg)==14 && truth_isCC==1 && truth_vtxInside==1";
   bool is_truth_nueCC_inside(EvalInfo& eval);
   bool is_truth_numuCC_inside(EvalInfo& eval);
+
+  int mcc8_pmuon_costheta_bin(float pmuon, float costh);
 }
 
 
@@ -370,10 +372,21 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
 
       }
       else return -1;
-  
-
+  }else if (var_name == "reco_mcc8_pmuoncosth_Enu"){
+    if (pfeval.reco_muonMomentum[3]<0) return -10000;
+    // muon momentum
+    float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66;
+    float pmuon = TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66) / 1000.0;
+    // muon costheta
+    TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    float costh = TMath::Cos(muonMomentum.Theta());
+    // flattened Enu
+    int indx = mcc8_pmuon_costheta_bin(pmuon, costh); // index of pmuon-costh
+    double reco_Enu = get_reco_Enu_corr(kine, flag_data) / 100.0;
+    if (reco_Enu<0) return -10000;
+    else if (reco_Enu>25.0) return 10000; // overflow bin
+    else return (indx-1)*25.0 + reco_Enu;
   }
-
   else{
     std::cout << "No such variable: " << var_name << std::endl;
     exit(EXIT_FAILURE);
@@ -729,6 +742,11 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon > 105.7 && Emuon<=2506) map_cuts_flag["Xs_Emu_numuCCinFV"] = true;
   else map_cuts_flag["Xs_Emu_numuCCinFV"] = false;
+  // double KE_muon = pfeval.truth_muonMomentum[3]*1000.-105.66;
+  // double Pmuon   = (TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66));
+  // if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_muonMomentum[3]>0 && Pmuon>0 && Pmuon<2500) map_cuts_flag["Xs_Emu_numuCCinFV"] = true;
+  // else map_cuts_flag["Xs_Emu_numuCCinFV"] = false;
+
 
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron > 30 && Ehadron <=2500) map_cuts_flag["Xs_Ehad_numuCCinFV"] = true;
   else map_cuts_flag["Xs_Ehad_numuCCinFV"] = false;
@@ -824,6 +842,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
   bool flag_generic = is_generic(eval);
   bool flag_numuCC = is_numuCC(tagger);
+  // bool flag_numuCC = is_numuCC(tagger) and (is_far_sideband(kine, tagger, flag_data) or is_near_sideband(kine, tagger, flag_data) );
   bool flag_numuCC_tight = is_numuCC_tight(tagger, pfeval);
   bool flag_numuCC_1mu0p = is_numuCC_1mu0p(tagger, kine, pfeval);
   bool flag_numuCC_lowEhad = is_numuCC_lowEhad(tagger, kine, pfeval, flag_data);
@@ -1715,5 +1734,78 @@ bool LEEana::is_preselection(EvalInfo& eval){
   return flag;
 }
 
+int LEEana::mcc8_pmuon_costheta_bin(float pmuon, float costh){
+
+    if (costh>=-1 and costh<-0.5) {
+      if (pmuon>=0 and pmuon<0.18) return 1;
+      else if (pmuon>=0.18 and pmuon<0.30) return 2;
+      else if (pmuon>=0.30 and pmuon<0.45) return 3;
+      else if (pmuon>=0.45 and pmuon<0.77) return 4;
+      else if (pmuon>=0.77 and pmuon<2.5) return 5;
+      else return -10000;
+    }
+    else if (costh>=-0.5 and costh<0){
+      if (pmuon>=0 and pmuon<0.18) return 6;
+      else if (pmuon>=0.18 and pmuon<0.30) return 7;
+      else if (pmuon>=0.30 and pmuon<0.45) return 8;
+      else if (pmuon>=0.45 and pmuon<0.77) return 9;
+      else if (pmuon>=0.77 and pmuon<2.5) return 10;
+      else return -10000;
+    }
+    else if (costh>0 and costh<0.27){
+      if (pmuon>=0 and pmuon<0.18) return 11;
+      else if (pmuon>=0.18 and pmuon<0.30) return 12;
+      else if (pmuon>=0.30 and pmuon<0.45) return 13;
+      else if (pmuon>=0.45 and pmuon<0.77) return 14;
+      else if (pmuon>=0.77 and pmuon<2.5) return 15;
+      else return -10000;    
+    }
+    else if (costh>=0.27 and costh<0.45){
+      if (pmuon>=0 and pmuon<0.30) return 16;
+      else if (pmuon>=0.30 and pmuon<0.45) return 17;
+      else if (pmuon>=0.45 and pmuon<0.77) return 18;
+      else if (pmuon>=0.77 and pmuon<2.5) return 19;
+      else return -10000;    
+    }
+    else if (costh>=0.45 and costh<0.62){
+      if (pmuon>=0 and pmuon<0.30) return 20;
+      else if (pmuon>=0.30 and pmuon<0.45) return 21;
+      else if (pmuon>=0.45 and pmuon<0.77) return 22;
+      else if (pmuon>=0.77 and pmuon<2.5) return 23;
+      else return -10000;   
+    }
+    else if (costh>=0.62 and costh<0.76){
+      if (pmuon>=0 and pmuon<0.30) return 24;
+      else if (pmuon>=0.30 and pmuon<0.45) return 25;
+      else if (pmuon>=0.45 and pmuon<0.77) return 26;
+      else if (pmuon>=0.77 and pmuon<2.5) return 27;
+      else return -10000;  
+    }
+    else if (costh>=0.76 and costh<0.86){
+      if (pmuon>=0 and pmuon<0.30) return 28;
+      else if (pmuon>=0.30 and pmuon<0.45) return 29;
+      else if (pmuon>=0.45 and pmuon<0.77) return 30;
+      else if (pmuon>=0.77 and pmuon<1.28) return 31;
+      else if (pmuon>=1.28 and pmuon<2.5) return 32;
+      else return -10000;
+    }
+    else if (costh>=0.86 and costh<0.94){
+      if (pmuon>=0 and pmuon<0.30) return 33;
+      else if (pmuon>=0.30 and pmuon<0.45) return 34;
+      else if (pmuon>=0.45 and pmuon<0.77) return 35;
+      else if (pmuon>=0.77 and pmuon<1.28) return 36;
+      else if (pmuon>=1.28 and pmuon<2.5) return 37;
+      else return -10000;     
+    }
+    else if (costh>=0.94 and costh<1.00){
+      if (pmuon>=0 and pmuon<0.30) return 38;
+      else if (pmuon>=0.30 and pmuon<0.45) return 39;
+      else if (pmuon>=0.45 and pmuon<0.77) return 40;
+      else if (pmuon>=0.77 and pmuon<1.28) return 41;
+      else if (pmuon>=1.28 and pmuon<2.5) return 42;
+      else return -10000;   
+    }
+    else return -10000;
+} 
 
 #endif
