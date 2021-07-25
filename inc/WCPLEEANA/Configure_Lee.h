@@ -60,10 +60,10 @@ namespace config_Lee
 
 
   
-  TString spectra_file = "./TLee_input_Mar25_final_16chs_standard/merge.root";
-  TString flux_Xs_directory = "./TLee_input_Mar25_final_16chs_standard/flux_Xs/";
-  TString detector_directory = "./TLee_input_Mar25_final_16chs_standard/det/";
-  TString mc_directory = "./TLee_input_Mar25_final_16chs_standard/mc_stat/";
+  TString spectra_file = "./new_TLee_input_opendata5e19/merge.root";
+  TString flux_Xs_directory = "./new_TLee_input_opendata5e19/flux_Xs/";
+  TString detector_directory = "./new_TLee_input_opendata5e19/det/";
+  TString mc_directory = "./new_TLee_input_opendata5e19/mc_stat/";
 
 
   
@@ -86,7 +86,7 @@ namespace config_Lee
   
   ////////// display graphics flag
 
-  bool flag_display_graphics = 0;
+  bool flag_display_graphics = 1;
   
   ////////// systematics flag
   
@@ -103,7 +103,7 @@ namespace config_Lee
   
   double Lee_strength_for_GoF         = 0;
 
-  bool flag_GoF_output2file_default_0 = 0;
+  bool flag_GoF_output2file_default_0 = 1;
 
   bool flag_lookelsewhere             = 0;
   

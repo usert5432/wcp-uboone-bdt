@@ -2186,6 +2186,9 @@ int main( int argc, char** argv )
     //   std::cout << i << " " << eval.run << " " << eval.event << " " << nc_pio_score << std::endl;
     // }
     //
+
+    //hack
+    //    tagger.nc_delta_score = -15;
     
     
     // limit the cut val ...

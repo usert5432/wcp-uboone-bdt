@@ -564,10 +564,10 @@ int main( int argc, char** argv )
   put_tree_address(t2_cv, pot_cv);
   put_tree_address(t5_cv, kine_cv);
   
-  // T_eval_cv->SetBranchStatus("*",1);
-  // T_PFeval_cv->SetBranchStatus("*",1);
-  // T_BDTvars_cv->SetBranchStatus("*",1);
-  // T_KINEvars_cv->SetBranchStatus("*",1);
+  T_eval_cv->SetBranchStatus("*",1);
+  T_PFeval_cv->SetBranchStatus("*",1);
+  T_BDTvars_cv->SetBranchStatus("*",1);
+  T_KINEvars_cv->SetBranchStatus("*",1);
 
   std::cout << "start filling" << std::endl;
   

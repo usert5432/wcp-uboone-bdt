@@ -630,10 +630,10 @@ int main( int argc, char** argv )
   }
 
 
-  // T_eval->SetBranchStatus("*",1);
-  // T_PFeval->SetBranchStatus("*",1);
-  // T_BDTvars->SetBranchStatus("*",1);
-  // T_KINEvars->SetBranchStatus("*",1);
+  T_eval->SetBranchStatus("*",1);
+  T_PFeval->SetBranchStatus("*",1);
+  T_BDTvars->SetBranchStatus("*",1);
+  T_KINEvars->SetBranchStatus("*",1);
 
 
   std::map<int, int> map_cv_weight_index;
