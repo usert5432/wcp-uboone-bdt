@@ -70,7 +70,17 @@ namespace LEEana{
     Float_t weight_lee;
     
     Bool_t weight_change;
-  
+
+
+    // PeLEE
+    Bool_t flag_pl;
+    Float_t pl_shr_energy_tot_cali;
+    Float_t pl_shr_tkfit_dedx_Y;
+    Float_t pl_reco_nu_vtx_sce_x;
+    Float_t pl_reco_nu_vtx_sce_y;
+    Float_t pl_reco_nu_vtx_sce_z;
+    Double_t pl_reco_e;
+    Int_t pl_flag;
 };
 
  void set_tree_address(TTree *tree0, EvalInfo& eval_info, int flag = 1);
@@ -82,6 +92,19 @@ namespace LEEana{
 void LEEana::set_tree_address(TTree *tree0, EvalInfo& eval_info, int flag){
   eval_info.is_match_found_int = false;
   eval_info.is_file_type = false;
+  eval_info.flag_pl = false;
+
+  if (tree0->GetBranch("pl_flag")){
+    eval_info.flag_pl = true;
+
+    tree0->SetBranchAddress("pl_shr_energy_tot_cali",&eval_info.pl_shr_energy_tot_cali);
+    tree0->SetBranchAddress("pl_shr_tkfit_dedx_Y",&eval_info.pl_shr_tkfit_dedx_Y);
+    tree0->SetBranchAddress("pl_reco_nu_vtx_sce_x",&eval_info.pl_reco_nu_vtx_sce_x);
+    tree0->SetBranchAddress("pl_reco_nu_vtx_sce_y",&eval_info.pl_reco_nu_vtx_sce_y);
+    tree0->SetBranchAddress("pl_reco_nu_vtx_sce_z",&eval_info.pl_reco_nu_vtx_sce_z);
+    tree0->SetBranchAddress("pl_reco_e",&eval_info.pl_reco_e);
+    tree0->SetBranchAddress("pl_flag",&eval_info.pl_flag);
+  }
   
   tree0->SetBranchAddress("run", &eval_info.run);
   tree0->SetBranchAddress("subrun", &eval_info.subrun);
@@ -229,6 +252,18 @@ void LEEana::put_tree_address(TTree *tree0, EvalInfo& eval_info, int flag){
     
     tree0->Branch("weight_change",&eval_info.weight_change,"data/O");
   }
+
+  if (eval_info.flag_pl){
+
+    tree0->Branch("pl_shr_energy_tot_cali",&eval_info.pl_shr_energy_tot_cali,"data/F");
+    tree0->Branch("pl_shr_tkfit_dedx_Y",&eval_info.pl_shr_tkfit_dedx_Y,"data/F");
+    tree0->Branch("pl_reco_nu_vtx_sce_x",&eval_info.pl_reco_nu_vtx_sce_x,"data/F");
+    tree0->Branch("pl_reco_nu_vtx_sce_y",&eval_info.pl_reco_nu_vtx_sce_y,"data/F");
+    tree0->Branch("pl_reco_nu_vtx_sce_z",&eval_info.pl_reco_nu_vtx_sce_z,"data/F");
+    tree0->Branch("pl_reco_e",&eval_info.pl_reco_e,"data/D");
+    tree0->Branch("pl_flag",&eval_info.pl_flag,"data/I");
+  }
+  
 }
 
 
