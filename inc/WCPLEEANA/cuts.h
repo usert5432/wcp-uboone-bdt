@@ -1184,7 +1184,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   bool flag_NC = is_NC(tagger);
   bool flag_FC = is_FC(eval);
   bool flag_0p = is_0p(tagger, kine, pfeval);
-  bool flag_ncpio_bdt = is_NCpio_bdt(tagger);
+  // bool flag_ncpio_bdt = is_NCpio_bdt(tagger) && (!flag_0p);
+   bool flag_ncpio_bdt = is_NCpio_bdt(tagger);
   bool flag_ncdelta_bdt = is_NCdelta_bdt(tagger);
 
   //float costheta_binning[10] = {-1, -.5, 0, .27, .45, .62, .76, .86, .94, 1};		// PeLEE binning
@@ -1409,7 +1410,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     else return false;
   }else if (ch_name == "NCpi0_nonueCC_overlay" || ch_name == "BG_NCpi0_nonueCC_ext" || ch_name == "BG_NCpi0_nonueCC_dirt" || ch_name == "NCpi0_nonueCC_bnb"){
     if (flag_NC && flag_pi0 && (!flag_nueCC) ) return true;
-    //if (flag_NC && flag_pi0 && (!flag_nueCC) && flag_FC) return true; // a test ...
+    // if (flag_NC && flag_pi0 && (!flag_nueCC) && flag_FC && (!flag_0p) ) return true; // a test ...
     else return false;
   }else if (ch_name == "nueCC_bnb" || ch_name == "nueCC_nueoverlay"){   // side band ...
     if (flag_truth_inside &&  ch_name == "nueCC_nueoverlay" || ch_name == "nueCC_bnb") return true;
@@ -1801,7 +1802,7 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     if (ch_name == "nc_pio_energy_FC" 
 	|| ch_name == "nc_pio_energy_FC_ext" 
 	|| ch_name == "nc_pio_energy_FC_dirt" ){
-      if (flag_ncpio_bdt && flag_FC) return true;
+      if (flag_ncpio_bdt && flag_FC ) return true;
     }else if (ch_name == "nc_pio_energy_FC_ncpio_overlay" ){
       if (flag_ncpio_bdt && flag_FC && (eval.truth_isCC==0 && flag_truth_inside && pfeval.truth_NprimPio>0 
 					&& !(eval.truth_isCC==0 && pfeval.truth_NCDelta==1 && flag_truth_inside))) return true; 
