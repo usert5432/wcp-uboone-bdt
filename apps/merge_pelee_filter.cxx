@@ -60,6 +60,7 @@ int main( int argc, char** argv )
   std::set<std::pair<int, int> > set_pelee_rs;
   
   // read in PeLEE Np
+  if (input_pelee_Np_file != "nan")
   {
     TFile *file_np = new TFile(input_pelee_Np_file);
     TTree *T_temp = (TTree*)file_np->Get("NeutrinoSelectionFilter");
@@ -75,12 +76,19 @@ int main( int argc, char** argv )
     T_temp->SetBranchAddress("reco_nu_vtx_sce_z",&pl_reco_nu_vtx_sce_z);
     T_temp->SetBranchAddress("reco_e",&pl_reco_e);
 
-    map_pelee_np[std::make_pair(pl_run, pl_evt)] = std::make_tuple(pl_shr_energy_tot_cali, pl_shr_tkfit_dedx_Y,
-								   pl_reco_nu_vtx_sce_x, pl_reco_nu_vtx_sce_y, pl_reco_nu_vtx_sce_z,
-								   pl_reco_e);
+    for (Int_t i=0;i!=T_temp->GetEntries();i++){
+      T_temp->GetEntry(i);
+
+      // std::cout << pl_shr_tkfit_dedx_Y << std::endl;
+      
+      map_pelee_np[std::make_pair(pl_run, pl_evt)] = std::make_tuple(pl_shr_energy_tot_cali, pl_shr_tkfit_dedx_Y,
+								     pl_reco_nu_vtx_sce_x, pl_reco_nu_vtx_sce_y, pl_reco_nu_vtx_sce_z,
+								     pl_reco_e);
+    }
     
   }
-  
+
+  if (input_pelee_0p_file != "nan")
   // read in PeLEE 0p
   {
     TFile *file_0p = new TFile(input_pelee_0p_file);
@@ -97,18 +105,30 @@ int main( int argc, char** argv )
     T_temp->SetBranchAddress("reco_nu_vtx_sce_z",&pl_reco_nu_vtx_sce_z);
     T_temp->SetBranchAddress("reco_e",&pl_reco_e);
 
-    map_pelee_0p[std::make_pair(pl_run, pl_evt)] = std::make_tuple(pl_shr_energy_tot_cali, pl_shr_tkfit_dedx_Y,
-								   pl_reco_nu_vtx_sce_x, pl_reco_nu_vtx_sce_y, pl_reco_nu_vtx_sce_z,
-								   pl_reco_e);
-    
+    for (Int_t i=0;i!=T_temp->GetEntries();i++){
+      T_temp->GetEntry(i);
+      map_pelee_0p[std::make_pair(pl_run, pl_evt)] = std::make_tuple(pl_shr_energy_tot_cali, pl_shr_tkfit_dedx_Y,
+								     pl_reco_nu_vtx_sce_x, pl_reco_nu_vtx_sce_y, pl_reco_nu_vtx_sce_z,
+								     pl_reco_e);
+    }
   }
 
   // read in PeLEE run list
   {
     // to be added ...
-    
+    TFile *file_run = new TFile(input_pelee_run_file);
+    TTree *T_temp = (TTree*)file_run->Get("SubRun");
+    T_temp->SetBranchAddress("run",&pl_run);
+    T_temp->SetBranchAddress("subRun",&pl_sub);
+    for (Int_t i=0;i!=T_temp->GetEntries();i++){
+      T_temp->GetEntry(i);
+      set_pelee_rs.insert(std::make_pair(pl_run, pl_sub));
+    }
   }
-  
+
+
+  // std::cout << map_pelee_np.size() << " " << map_pelee_0p.size() << " " << set_pelee_rs.size() << std::endl;
+  // return 0;
   
   TFile *file1 = new TFile(input_file);
   TTree *T_BDTvars = (TTree*)file1->Get("wcpselection/T_BDTvars");
@@ -425,13 +445,13 @@ int main( int argc, char** argv )
   bool flag_remove = true;
   Int_t pl_flag;
   // add the new information to eval tree
-  T_eval->Branch("pl_shr_energy_tot_cali",&pl_shr_energy_tot_cali,"pl_shr_energy_tot_cali/F");
-  T_eval->Branch("pl_shr_tkfit_dedx_Y",&pl_shr_tkfit_dedx_Y,"pl_shr_tkfit_dedx_Y/F");
-  T_eval->Branch("pl_reco_nu_vtx_sce_x",&pl_reco_nu_vtx_sce_x,"pl_reco_nu_vtx_sce_x/F");
-  T_eval->Branch("pl_reco_nu_vtx_sce_y",&pl_reco_nu_vtx_sce_y,"pl_reco_nu_vtx_sce_y/F");
-  T_eval->Branch("pl_reco_nu_vtx_sce_z",&pl_reco_nu_vtx_sce_z,"pl_reco_nu_vtx_sce_z/F");
-  T_eval->Branch("pl_reco_e",&pl_reco_e,"pl_reco_e/D");
-  T_eval->Branch("pl_flag",&pl_flag,"pl_flag/I");
+  t1->Branch("pl_shr_energy_tot_cali",&pl_shr_energy_tot_cali,"pl_shr_energy_tot_cali/F");
+  t1->Branch("pl_shr_tkfit_dedx_Y",&pl_shr_tkfit_dedx_Y,"pl_shr_tkfit_dedx_Y/F");
+  t1->Branch("pl_reco_nu_vtx_sce_x",&pl_reco_nu_vtx_sce_x,"pl_reco_nu_vtx_sce_x/F");
+  t1->Branch("pl_reco_nu_vtx_sce_y",&pl_reco_nu_vtx_sce_y,"pl_reco_nu_vtx_sce_y/F");
+  t1->Branch("pl_reco_nu_vtx_sce_z",&pl_reco_nu_vtx_sce_z,"pl_reco_nu_vtx_sce_z/F");
+  t1->Branch("pl_reco_e",&pl_reco_e,"pl_reco_e/D");
+  t1->Branch("pl_flag",&pl_flag,"pl_flag/I");
   
   for (int i=0;i!=T_BDTvars->GetEntries();i++){
     T_BDTvars->GetEntry(i);
