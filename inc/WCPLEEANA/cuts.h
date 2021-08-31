@@ -415,9 +415,6 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   else if (var_name == "reco_concatenated_Ehad"){
 
     if (pfeval.reco_muonMomentum[3]<0) return -10000;
-    // muon momentum
-    float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66;
-    float pmuon = TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66) / 1000.0;
     // muon costheta
     TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
     float costh = TMath::Cos(muonMomentum.Theta());
@@ -1121,10 +1118,11 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
 
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon > 105.7 && Emuon<=2506) map_cuts_flag["Xs_Emu_numuCCinFV"] = true;
   else map_cuts_flag["Xs_Emu_numuCCinFV"] = false;
-  // double KE_muon = pfeval.truth_muonMomentum[3]*1000.-105.66;
-  // double Pmuon   = (TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66));
-  // if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pfeval.truth_muonMomentum[3]>0 && Pmuon>0 && Pmuon<2500) map_cuts_flag["Xs_Emu_numuCCinFV"] = true;
-  // else map_cuts_flag["Xs_Emu_numuCCinFV"] = false;
+
+  double KE_muon = pfeval.truth_muonMomentum[3]*1000.-105.66;
+  double Pmuon   = (TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66));
+  if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Pmuon>0 && Pmuon<=2500) map_cuts_flag["Xs_Pmu_numuCCinFV"] = true;
+  else map_cuts_flag["Xs_Pmu_numuCCinFV"] = false;
 
 
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Ehadron > 30 && Ehadron <=2500) map_cuts_flag["Xs_Ehad_numuCCinFV"] = true;
@@ -1792,6 +1790,19 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       if (flag_numuCC && flag_FC && (!map_cuts_flag["Xs_Emu_numuCCinFV"])) return true;
     }else if (ch_name == "numuCC_background_Emu_PC_overlay" || ch_name == "numuCC1_background_Emu_PC_overlay" || ch_name == "numuCC2_background_Emu_PC_overlay"){
       if (flag_numuCC && (!flag_FC) && (!map_cuts_flag["Xs_Emu_numuCCinFV"])) return true;
+    }
+    return false;
+
+  } else if (ch_name == "numuCC_signal_Pmu_FC_overlay" || ch_name == "numuCC_signal_Pmu_PC_overlay" || ch_name == "numuCC_background_Pmu_FC_overlay" || ch_name == "numuCC_background_Pmu_PC_overlay"
+    ){
+    if (ch_name == "numuCC_signal_Pmu_FC_overlay" ){
+      if (flag_numuCC && flag_FC && map_cuts_flag["Xs_Pmu_numuCCinFV"]) return true;
+    }else if (ch_name == "numuCC_signal_Pmu_PC_overlay" ){
+      if (flag_numuCC && (!flag_FC) && map_cuts_flag["Xs_Pmu_numuCCinFV"]) return true;
+    }else if (ch_name == "numuCC_background_Pmu_FC_overlay" ){
+      if (flag_numuCC && flag_FC && (!map_cuts_flag["Xs_Pmu_numuCCinFV"])) return true;
+    }else if (ch_name == "numuCC_background_Pmu_PC_overlay" ){
+      if (flag_numuCC && (!flag_FC) && (!map_cuts_flag["Xs_Pmu_numuCCinFV"])) return true;
     }
     return false;
 
