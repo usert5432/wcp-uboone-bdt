@@ -388,6 +388,55 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     else if (reco_Enu>25.0) return 10000; // overflow bin
     else return (indx-1)*25.0 + reco_Enu;
   }
+  else if (var_name == "reco_concatenated_Pmuon"){
+
+    if (pfeval.reco_muonMomentum[3]<0) return -10000;
+    // muon momentum
+    float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66;
+    float pmuon = TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66) / 1000.0;
+    // muon costheta
+    TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    float costh = TMath::Cos(muonMomentum.Theta());
+
+    float pmuon_MeV = pmuon * 1000.0;
+    if (pmuon_MeV > 1500.0) return -10000;
+    if (costh>=-1 and costh<-0.5) { return pmuon_MeV; }
+    else if (costh>=-0.5 and costh<0){ return pmuon_MeV + 1500*1; }
+    else if (costh>=0 and costh<0.27){ return pmuon_MeV + 1500*2; }
+    else if (costh>=0.27 and costh<0.45){ return pmuon_MeV + 1500*3; }
+    else if (costh>=0.45 and costh<0.62){ return pmuon_MeV + 1500*4; }
+    else if (costh>=0.62 and costh<0.76){ return pmuon_MeV + 1500*5; }
+    else if (costh>=0.76 and costh<0.86){ return pmuon_MeV + 1500*6; }
+    else if (costh>=0.86 and costh<0.94){ return pmuon_MeV + 1500*7; }
+    else if (costh>=0.94 and costh<=1.00){ return pmuon_MeV + 1500*8; }
+
+    return -10000;
+  }
+  else if (var_name == "reco_concatenated_Ehad"){
+
+    if (pfeval.reco_muonMomentum[3]<0) return -10000;
+    // muon momentum
+    float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66;
+    float pmuon = TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66) / 1000.0;
+    // muon costheta
+    TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+    float costh = TMath::Cos(muonMomentum.Theta());
+
+    float Ehad = get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.0;
+
+    if (Ehad > 1500.0) return -10000;
+    if (costh>=-1 and costh<-0.5) { return Ehad; }
+    else if (costh>=-0.5 and costh<0){ return Ehad + 1500*1; }
+    else if (costh>=0 and costh<0.27){ return Ehad + 1500*2; }
+    else if (costh>=0.27 and costh<0.45){ return Ehad + 1500*3; }
+    else if (costh>=0.45 and costh<0.62){ return Ehad + 1500*4; }
+    else if (costh>=0.62 and costh<0.76){ return Ehad + 1500*5; }
+    else if (costh>=0.76 and costh<0.86){ return Ehad + 1500*6; }
+    else if (costh>=0.86 and costh<0.94){ return Ehad + 1500*7; }
+    else if (costh>=0.94 and costh<=1.00){ return Ehad + 1500*8; }
+
+    return -10000;
+  }
   else{
     std::cout << "No such variable: " << var_name << std::endl;
     exit(EXIT_FAILURE);
