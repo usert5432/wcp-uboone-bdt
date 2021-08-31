@@ -6,6 +6,9 @@ struct PFevalInfo{
   bool flag_NCDelta;
   bool flag_showerMomentum;
   bool flag_recoprotonMomentum;
+  bool flag_pf_truth;
+  bool flag_pf_reco;
+  bool flag_init_pointers;
   
   Int_t run;
   Int_t subrun;
@@ -85,22 +88,92 @@ struct PFevalInfo{
   Float_t reco_protonMomentum[4];
 
 
-  
-  
+  // PF particle
+  Int_t truth_Ntrack;  // number of tracks in MC
+  Int_t truth_id[30000];  // track id; size == truth_Ntrack
+  Int_t truth_pdg[30000];  // track particle pdg; size == truth_Ntrack
+  std::vector<std::string > *truth_process;
+  Int_t truth_mother[30000];  // mother id of this track; size == truth_Ntrack
+  Float_t truth_startXYZT[30000][4];  // start position of this track; size == truth_Ntrack
+  Float_t truth_endXYZT[30000][4];  // end position of this track; size == truth_Ntrack
+  Float_t truth_startMomentum[30000][4];  // start momentum of this track; size == truth_Ntrack
+  Float_t truth_endMomentum[30000][4];  // end momentum of this track; size == truth_Ntrack
+  std::vector<std::vector<Int_t> > *truth_daughters;  // daughters id of this track; vector
+
+  TObjArray *fMC_trackPosition;
+
+  Int_t reco_Ntrack;  // number of tracks in MC
+  Int_t reco_id[30000];  // track id; size == reco_Ntrack
+  Int_t reco_pdg[30000];  // track particle pdg; size == reco_Ntrack
+  std::vector<std::string > *reco_process;
+  Int_t reco_mother[30000];  // mother id of this track; size == reco_Ntrack
+  Float_t reco_startXYZT[30000][4];  // start position of this track; size == reco_Ntrack
+  Float_t reco_endXYZT[30000][4];  // end position of this track; size == reco_Ntrack
+  Float_t reco_startMomentum[30000][4];  // start momentum of this track; size == reco_Ntrack
+  Float_t reco_endMomentum[30000][4];  // end momentum of this track; size == reco_Ntrack
+
+  std::vector<std::vector<Int_t> > *reco_daughters;  // daughters id of this track; vector
+
+  Int_t mc_isnu; // is neutrino Int_teraction
+  Int_t mc_nGeniePrimaries; // number of Genie primaries
+  Int_t mc_nu_pdg; // pdg code of neutrino
+  Int_t mc_nu_ccnc; // cc or nc
+  Int_t mc_nu_mode; // mode: http://nusoft.fnal.gov/larsoft/doxsvn/html/MCNeutrino_8h_source.html
+  Int_t mc_nu_intType; // interaction type
+  Int_t mc_nu_target; // target interaction
+  Int_t mc_hitnuc; // hit nucleon
+  Int_t mc_hitquark; // hit quark
+
+  Double_t mc_nu_Q2; // Q^2
+  Double_t mc_nu_W; // W
+  Double_t mc_nu_X; // X
+  Double_t mc_nu_Y; // Y
+  Double_t mc_nu_Pt; // Pt
+  Double_t mc_nu_Theta; // angle relative to lepton
+  Float_t mc_nu_pos[4];  // interaction position of nu
+  Float_t mc_nu_mom[4];  // interaction momentum of nu
   
 };
 
 
-void set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
-void put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
+ void set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
+ void put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag = 1);
  void clear_pfeval_info(PFevalInfo& tagger_info);
+ void init_pointers(PFevalInfo& tagger_info);
+ void del_pointers(PFevalInfo& tagger_info);
 }
+
+void LEEana::init_pointers(PFevalInfo& tagger_info){
+
+  tagger_info.truth_process = new std::vector<std::string >;
+  tagger_info.truth_daughters = new   std::vector<std::vector<Int_t> >;
+  tagger_info.fMC_trackPosition = new TObjArray();
+  tagger_info.fMC_trackPosition->SetOwner(kTRUE);
+  tagger_info.reco_process = new   std::vector<std::string >;
+  tagger_info.reco_daughters = new   std::vector<std::vector<Int_t> > ;
+}
+
+void LEEana::del_pointers(PFevalInfo& tagger_info){
+  delete tagger_info.truth_process;
+  delete tagger_info.truth_daughters;
+  delete tagger_info.fMC_trackPosition;
+  delete tagger_info.reco_process;
+  delete tagger_info.reco_daughters;
+}
+
 
 void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
   tagger_info.flag_NCDelta = false;
   tagger_info.flag_showerMomentum = false;
   tagger_info.flag_recoprotonMomentum = false;
-
+  tagger_info.flag_pf_truth = false;
+  tagger_info.flag_pf_reco = false;
+  
+  if (!tagger_info.flag_init_pointers){
+    init_pointers(tagger_info);
+    tagger_info.flag_init_pointers = true;
+  }
+  
   tagger_info.neutrino_type=0;
   tagger_info.reco_nuvtxX=0;
   tagger_info.reco_nuvtxY=0;
@@ -112,8 +185,6 @@ void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
   tagger_info.reco_muonvtxX=0;
   tagger_info.reco_muonvtxY=0;
   tagger_info.reco_muonvtxZ=0;
-  
-  
   
   tagger_info.nuvtx_diff=0;
   tagger_info.showervtx_diff=0;
@@ -182,12 +253,50 @@ void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
     tagger_info.truth_nu_pos[i] =0;
     tagger_info.truth_nu_momentum[i]=0;
   }
+
+  //PF ...
+  tagger_info.truth_Ntrack = 0;  // number of tracks in MC
+  tagger_info.truth_process->clear();
+  tagger_info.truth_daughters->clear();  // daughters id of this track; vector
+  tagger_info.fMC_trackPosition->Clear("");
+
+  tagger_info.reco_Ntrack = 0;  // number of tracks in MC
+  tagger_info.reco_process->clear();
+  
+  tagger_info.reco_daughters->clear();  // daughters id of this track; vector
+
+  tagger_info.mc_isnu=0; // is neutrino eraction
+  tagger_info.mc_nGeniePrimaries=0; // number of Genie primaries
+  tagger_info.mc_nu_pdg=0; // pdg code of neutrino
+  tagger_info.mc_nu_ccnc=0; // cc or nc
+  tagger_info.mc_nu_mode=0; // mode: http://nusoft.fnal.gov/larsoft/doxsvn/html/MCNeutrino_8h_source.html
+  tagger_info.mc_nu_intType=0; // interaction type
+  tagger_info.mc_nu_target=0; // target interaction
+  tagger_info.mc_hitnuc=0; // hit nucleon
+  tagger_info.mc_hitquark=0; // hit quark
+  
+  tagger_info.mc_nu_Q2=0; // Q^2
+  tagger_info.mc_nu_W=0; // W
+  tagger_info.mc_nu_X=0; // X
+  tagger_info.mc_nu_Y=0; // Y
+  tagger_info.mc_nu_Pt=0; // Pt
+  tagger_info.mc_nu_Theta=0; // angle relative to lepton
+  for (Int_t i=0;i!=4;i++){
+    tagger_info.mc_nu_pos[i] = 0;  // interaction position of nu
+    tagger_info.mc_nu_mom[i] = 0;  // interaction momentum of nu
+  }
+  
 }
 
 void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
   tagger_info.flag_NCDelta = false;
   tagger_info.flag_showerMomentum = false;
   tagger_info.flag_recoprotonMomentum = false;
+  tagger_info.flag_pf_truth = false;
+  tagger_info.flag_pf_reco = false;
+  tagger_info.flag_init_pointers = false;
+
+
   
   tree0->SetBranchAddress("run", &tagger_info.run);
   tree0->SetBranchAddress("subrun", &tagger_info.subrun);
@@ -283,6 +392,66 @@ void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
     tagger_info.flag_recoprotonMomentum = true;
     tree0->SetBranchAddress("reco_protonMomentum",&tagger_info.reco_protonMomentum[0]);
   }
+
+
+  if (tree0->GetBranch("truth_Ntrack")){
+    tagger_info.flag_pf_truth = true;
+    if (!tagger_info.flag_init_pointers){
+      init_pointers(tagger_info);
+      tagger_info.flag_init_pointers = true;
+    }
+
+    tree0->SetBranchAddress("truth_Ntrack", &tagger_info.truth_Ntrack);
+    tree0->SetBranchAddress("truth_id", &tagger_info.truth_id);
+    tree0->SetBranchAddress("truth_pdg", &tagger_info.truth_pdg);
+    tree0->SetBranchAddress("truth_process", &tagger_info.truth_process);
+    tree0->SetBranchAddress("truth_mother", &tagger_info.truth_mother);
+    tree0->SetBranchAddress("truth_startXYZT", &tagger_info.truth_startXYZT);
+    tree0->SetBranchAddress("truth_endXYZT", &tagger_info.truth_endXYZT);
+    tree0->SetBranchAddress("truth_startMomentum", &tagger_info.truth_startMomentum);
+    tree0->SetBranchAddress("truth_endMomentum", &tagger_info.truth_endMomentum);
+    tree0->SetBranchAddress("truth_daughters", &tagger_info.truth_daughters);
+    tree0->SetBranchAddress("fMC_trackPosition", &tagger_info.fMC_trackPosition);
+    
+    tree0->SetBranchAddress("mc_isnu", &tagger_info.mc_isnu);
+    tree0->SetBranchAddress("mc_nGeniePrimaries", &tagger_info.mc_nGeniePrimaries);
+    tree0->SetBranchAddress("mc_nu_pdg", &tagger_info.mc_nu_pdg);
+    tree0->SetBranchAddress("mc_nu_ccnc", &tagger_info.mc_nu_ccnc);
+    tree0->SetBranchAddress("mc_nu_mode", &tagger_info.mc_nu_mode);
+    tree0->SetBranchAddress("mc_nu_intType", &tagger_info.mc_nu_intType);
+    tree0->SetBranchAddress("mc_nu_target", &tagger_info.mc_nu_target);
+    tree0->SetBranchAddress("mc_hitnuc", &tagger_info.mc_hitnuc);
+    tree0->SetBranchAddress("mc_hitquark", &tagger_info.mc_hitquark);
+    tree0->SetBranchAddress("mc_nu_Q2", &tagger_info.mc_nu_Q2);
+    tree0->SetBranchAddress("mc_nu_W", &tagger_info.mc_nu_W);
+    tree0->SetBranchAddress("mc_nu_X", &tagger_info.mc_nu_X);
+    tree0->SetBranchAddress("mc_nu_Y", &tagger_info.mc_nu_Y);
+    tree0->SetBranchAddress("mc_nu_Pt", &tagger_info.mc_nu_Pt);
+    tree0->SetBranchAddress("mc_nu_Theta", &tagger_info.mc_nu_Theta);
+    tree0->SetBranchAddress("mc_nu_pos", &tagger_info.mc_nu_pos);
+    tree0->SetBranchAddress("mc_nu_mom", &tagger_info.mc_nu_mom);
+
+  }
+
+  if (tree0->GetBranch("reco_Ntrack")){
+    tagger_info.flag_pf_reco = true;
+    if (!tagger_info.flag_init_pointers){
+      init_pointers(tagger_info);
+      tagger_info.flag_init_pointers = true;
+    }
+    
+    tree0->SetBranchAddress("reco_Ntrack", &tagger_info.reco_Ntrack);
+    tree0->SetBranchAddress("reco_id", &tagger_info.reco_id);
+    tree0->SetBranchAddress("reco_pdg", &tagger_info.reco_pdg);
+    tree0->SetBranchAddress("reco_process", &tagger_info.reco_process);
+    tree0->SetBranchAddress("reco_mother", &tagger_info.reco_mother);
+    tree0->SetBranchAddress("reco_startXYZT", &tagger_info.reco_startXYZT);
+    tree0->SetBranchAddress("reco_endXYZT", &tagger_info.reco_endXYZT);
+    tree0->SetBranchAddress("reco_startMomentum", &tagger_info.reco_startMomentum);
+    tree0->SetBranchAddress("reco_endMomentum", &tagger_info.reco_endMomentum);
+    tree0->SetBranchAddress("reco_daughters", &tagger_info.reco_daughters);
+  }
+
 }
 
 void LEEana::put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
@@ -374,6 +543,55 @@ void LEEana::put_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
       tree0->Branch("truth_nu_pos", &tagger_info.truth_nu_pos[0],"truth_nu_pos[4]/F");
       tree0->Branch("truth_nu_momentum", &tagger_info.truth_nu_momentum[0], "truth_nu_momentum[4]/F");
     }
+  }
+
+
+  if (tagger_info.flag_pf_truth){
+    
+    tree0->Branch("truth_Ntrack", &tagger_info.truth_Ntrack);
+    tree0->Branch("truth_id", &tagger_info.truth_id, "truth_id[truth_Ntrack]/I");
+    tree0->Branch("truth_pdg", &tagger_info.truth_pdg, "truth_pdg[truth_Ntrack]/I");
+    tree0->Branch("truth_process", &tagger_info.truth_process);
+    tree0->Branch("truth_mother", &tagger_info.truth_mother, "truth_mother[truth_Ntrack]/I");
+    tree0->Branch("truth_startXYZT", &tagger_info.truth_startXYZT, "truth_startXYZT[truth_Ntrack][4]/F");
+    tree0->Branch("truth_endXYZT", &tagger_info.truth_endXYZT, "truth_endXYZT[truth_Ntrack][4]/F");
+    tree0->Branch("truth_startMomentum", &tagger_info.truth_startMomentum, "truth_startMomentum[truth_Ntrack][4]/F");
+    tree0->Branch("truth_endMomentum", &tagger_info.truth_endMomentum, "truth_endMomentum[truth_Ntrack][4]/F");
+    tree0->Branch("truth_daughters", tagger_info.truth_daughters);
+    tree0->Branch("fMC_trackPosition", &tagger_info.fMC_trackPosition);
+    
+    
+
+    tree0->Branch("mc_isnu", &tagger_info.mc_isnu);
+    tree0->Branch("mc_nGeniePrimaries", &tagger_info.mc_nGeniePrimaries);
+    tree0->Branch("mc_nu_pdg", &tagger_info.mc_nu_pdg);
+    tree0->Branch("mc_nu_ccnc", &tagger_info.mc_nu_ccnc);
+    tree0->Branch("mc_nu_mode", &tagger_info.mc_nu_mode);
+    tree0->Branch("mc_nu_intType", &tagger_info.mc_nu_intType);
+    tree0->Branch("mc_nu_target", &tagger_info.mc_nu_target);
+    tree0->Branch("mc_hitnuc", &tagger_info.mc_hitnuc);
+    tree0->Branch("mc_hitquark", &tagger_info.mc_hitquark);
+    tree0->Branch("mc_nu_Q2", &tagger_info.mc_nu_Q2);
+    tree0->Branch("mc_nu_W", &tagger_info.mc_nu_W);
+    tree0->Branch("mc_nu_X", &tagger_info.mc_nu_X);
+    tree0->Branch("mc_nu_Y", &tagger_info.mc_nu_Y);
+    tree0->Branch("mc_nu_Pt", &tagger_info.mc_nu_Pt);
+    tree0->Branch("mc_nu_Theta", &tagger_info.mc_nu_Theta);
+    tree0->Branch("mc_nu_pos", &tagger_info.mc_nu_pos, "mc_nu_pos[4]/F");
+    tree0->Branch("mc_nu_mom", &tagger_info.mc_nu_mom, "mc_nu_mom[4]/F");
+  }
+
+  if (tagger_info.flag_pf_reco){
+    tree0->Branch("reco_Ntrack", &tagger_info.reco_Ntrack);
+    tree0->Branch("reco_id", &tagger_info.reco_id, "reco_id[reco_Ntrack]/I");
+    tree0->Branch("reco_pdg", &tagger_info.reco_pdg, "reco_pdg[reco_Ntrack]/I");
+    tree0->Branch("reco_process", &tagger_info.reco_process);
+    tree0->Branch("reco_mother", &tagger_info.reco_mother, "reco_mother[reco_Ntrack]/I");
+    tree0->Branch("reco_startXYZT", &tagger_info.reco_startXYZT, "reco_startXYZT[reco_Ntrack][4]/F");
+    tree0->Branch("reco_endXYZT", &tagger_info.reco_endXYZT, "reco_endXYZT[reco_Ntrack][4]/F");
+    tree0->Branch("reco_startMomentum", &tagger_info.reco_startMomentum, "reco_startMomentum[reco_Ntrack][4]/F");
+    tree0->Branch("reco_endMomentum", &tagger_info.reco_endMomentum, "reco_endMomentum[reco_Ntrack][4]/F");
+    tree0->Branch("reco_daughters", tagger_info.reco_daughters);
   }
   
 }
