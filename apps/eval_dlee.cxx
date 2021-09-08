@@ -121,7 +121,7 @@ void extractPFPDGVars(const RootVars &rootVars, VarDict &vars)
 {
     const std::string PDG_PREFIX = "particle.pdg.";
     const std::unordered_map<int, std::string> PDG_MAP({
-	    { 11,   PDG_PREFIX + "electron" },
+        { 11,   PDG_PREFIX + "electron" },
         { 13,   PDG_PREFIX + "muon"     },
         { 22,   PDG_PREFIX + "gamma"    },
         { 2212, PDG_PREFIX + "proton"   },
