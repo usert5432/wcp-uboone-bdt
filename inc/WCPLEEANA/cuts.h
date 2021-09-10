@@ -198,6 +198,14 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     return tagger.numu_score;
   }else if (var_name == "shower_energy"){
     return tagger.mip_energy;
+  }else if (var_name == "electron_energy"){
+    if (flag_data){
+      return pfeval.reco_showerMomentum[3] * em_charge_scale *1000;
+    }else{
+      return pfeval.reco_showerMomentum[3] * 1000;
+    }
+  }else if (var_name == "electron_polar_angle"){
+    return pfeval.reco_showerMomentum[2]/pfeval.reco_showerMomentum[3];
   }else if (var_name == "shower_angle_beam"){
     return tagger.mip_angle_beam;
   }else if (var_name == "shower_angle_vertical"){
