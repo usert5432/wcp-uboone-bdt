@@ -1,11 +1,13 @@
+#include "config.h"
+#if HAVE_VLNEVAL == 1
+
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <stdexcept>
 
 #include "TFile.h"
 #include "TTree.h"
-#include "TLeaf.h"
 
 #include <boost/timer/progress_display.hpp>
 #include <boost/program_options.hpp>
@@ -294,7 +296,10 @@ TBranch* createEnergyBranch(
 
     TBranch *branch = trees.ke->GetBranch(name.c_str());
     if (branch != nullptr) {
-        return branch;
+        throw std::runtime_error(
+            "DL EE branch '" + name + "' already exists."
+            " Refusing to override."
+        );
     }
 
     return trees.ke->Branch(name.c_str(), value, leaf.c_str());
@@ -349,4 +354,12 @@ int main(int argc, char** argv)
 
     std::cout << "Done" << std::endl;
 }
+
+#else  /* HAVE_VLNEVAL != 1 */
+
+#include <iostream>
+int main(int argc, char** argv)
+{ std::cout << "Stub Application" << std::endl; }
+
+#endif /* HAVE_VLNEVAL */
 

@@ -2,38 +2,37 @@ import os.path as osp
 from waflib.Configure import conf
 
 def options(opt):
-    opt = opt.add_option_group('VLNetEval Options')
+    opt = opt.add_option_group('VLNEval Options')
 
     opt.add_option(
         '--with-vlneval',
         type = 'string',
-        help = "give VLNetEval installation location",
+        help = "give VLNEval installation location",
     )
 
     opt.add_option(
         '--with-vlneval-include',
         default = '',
-        help    = "give VLNetEval include installation location",
+        help    = "give VLNEval include installation location",
         type    = 'string',
     )
 
     opt.add_option(
         '--with-vlneval-lib',
         default = '',
-        help    = "give VLNetEval lib installation location",
+        help    = "give VLNEval lib installation location",
         type    = 'string',
     )
 
 @conf
 def check_vlneval(ctx, mandatory = True):
-    ctx.end_msg('fdfdsafdsfdasfdasfdas')
     instdir = ctx.options.with_vlneval
 
     if (instdir is None) or (instdir.lower() in ['yes', 'true', 'on']):
-        ctx.start_msg('Checking for VLNetEval in PKG_CONFIG_PATH')
+        ctx.start_msg('Checking for VLNEval in PKG_CONFIG_PATH')
         ctx.check_cfg(
             package      = 'vlneval',
-            uselib_store = 'VLNETEVAL',
+            uselib_store = 'VLNEVAL',
             args         = '--cflags --libs',
             mandatory    = mandatory
         )
@@ -45,27 +44,31 @@ def check_vlneval(ctx, mandatory = True):
         ctx.start_msg('Checking for VLNEval in %s' % instdir)
 
         if ctx.options.with_vlneval_include:
-            ctx.env.INCLUDES_VLNETEVAL = [ ctx.options.with_vlneval_include ]
+            ctx.env.INCLUDES_VLNEVAL = [ ctx.options.with_vlneval_include ]
         else:
-            ctx.env.INCLUDES_VLNETEVAL = [ osp.join(instdir, 'include') ]
+            ctx.env.INCLUDES_VLNEVAL = [ osp.join(instdir, 'include') ]
 
         if ctx.options.with_vlneval_lib:
-            ctx.env.LIBPATH_VLNETEVAL = [ ctx.options.with_vlneval_lib ]
+            ctx.env.LIBPATH_VLNEVAL = [ ctx.options.with_vlneval_lib ]
 
-        ctx.env.LIB_VLNETEVAL = [ 'vlneval' ]
+        ctx.env.LIB_VLNEVAL = [ 'vlneval' ]
 
     ctx.check(
-        header_name = "vlneval/struct/VarDict.h",
-        use         = 'VLNETEVAL',
-        mandatory   = mandatory
+        header_name  = "vlneval/struct/VarDict.h",
+        use          = 'VLNEVAL',
+        uselib_store = 'VLNEVAL',
+        define_name  = 'HAVE_VLNEVAL',
+        mandatory    = mandatory
     )
 
-    if len(ctx.env.INCLUDES_VLNETEVAL):
-        ctx.end_msg(ctx.env.INCLUDES_VLNETEVAL[0])
+    if len(ctx.env.INCLUDES_VLNEVAL):
+        ctx.end_msg(ctx.env.INCLUDES_VLNEVAL[0])
     else:
-        ctx.end_msg('VLNETEVAL not found')
+        ctx.end_msg('VLNEVAL not found')
 
 def configure(cfg):
-    cfg.check_vlneval()
-    cfg.check_boost(lib='program_options')
+    cfg.check_vlneval(mandatory = False)
+
+    if cfg.env["HAVE_VLNEVAL"]:
+        cfg.check_boost(lib = 'program_options')
 
