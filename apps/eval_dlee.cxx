@@ -1,5 +1,5 @@
 #include "config.h"
-#if HAVE_VLNEVAL == 1
+#if (HAVE_VLNEVAL_INC == 1) && (HAVE_VLNEVAL_LIB == 1)
 
 #include <iostream>
 #include <unordered_map>

@@ -6,15 +6,12 @@ APPNAME = 'Junk'
 
 def options(opt):
     opt.load("wcb")
-    opt.load('boost')
-    opt.load("find_vlneval")
 
 def configure(cfg):
     cfg.load("wcb")
-    cfg.load('boost')
-    cfg.load("find_vlneval")
 
-    cfg.write_config_header("config.h")
+    if cfg.env["HAVE_VLNEVAL"]:
+        cfg.check_boost(lib = 'program_options')
 
     # boost 1.59 uses auto_ptr and GCC 5 deprecates it vociferously.
     cfg.env.CXXFLAGS += ['-Wno-deprecated-declarations']
@@ -24,7 +21,6 @@ def configure(cfg):
 
 def build(bld):
     bld.load('wcb')
-    bld.load("find_vlneval")
 
     use = [ 'ROOTSYS' ]
 
