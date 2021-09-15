@@ -25,7 +25,7 @@ using namespace std;
 //2. path to NuMI pre-generated geometry weight histograms. The file can be found on github under the same directory as this current file. File name is NuMI_Geometry_Weights_Histograms.root.
 //3. specify mode of the horn, run1 is "FHC" , run3 is "RHC"
 //This program produces an output file name "nucleoninexsec_FluxUnisim.root": navigate to, for example, ../processed_checkout_rootfiles/prodgenie_numi_intrinsic_nue_overlay_run1 and replace the original nucleoninexsec_FluxUnisim.root with this new output. Done!
-//Example to call this program Example root -l 'getNuMIGeometryWeights.cxx("checkout_prodgenie_numi_overlay_run1.root","NuMI_Geometry_Weights_Histograms.root","FHC")'
+//Example to call this program Example root -l 'extractNuMIGeometryWeights.C("checkout_prodgenie_numi_overlay_run1.root","NuMI_Geometry_Weights_Histograms.root","FHC")'
 
 void extractNuMIGeometryWeights(string path_to_CV, string path_to_weightHistos,string hornMode){
 
