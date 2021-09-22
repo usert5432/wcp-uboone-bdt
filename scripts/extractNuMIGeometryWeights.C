@@ -282,10 +282,6 @@ void extractNuMIGeometryWeights(string path_to_CV, string path_to_weightHistos,s
     T_BDTvars_copy->GetEntry(i);
     T_pot_copy->GetEntry(i);
 
-    if(kine_reco_Enu<=0){
-      continue;
-    }
-
     // if (truth_nuEnergy < 1200){
     //   continue;
     // }
