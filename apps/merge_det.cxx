@@ -45,6 +45,7 @@ int main( int argc, char** argv )
   TTree *T_PFeval_cv = (TTree*)file1->Get("wcpselection/T_PFeval");
   TTree *T_KINEvars_cv = (TTree*)file1->Get("wcpselection/T_KINEvars");
 
+  
   TFile *file2 = new TFile(input_file_det);
   TTree *T_BDTvars_det = (TTree*)file2->Get("wcpselection/T_BDTvars");
   TTree *T_eval_det = (TTree*)file2->Get("wcpselection/T_eval");
@@ -52,6 +53,7 @@ int main( int argc, char** argv )
   TTree *T_PFeval_det = (TTree*)file2->Get("wcpselection/T_PFeval");
   TTree *T_KINEvars_det = (TTree*)file2->Get("wcpselection/T_KINEvars");
 
+  
   TFile *file3 = new TFile(out_file,"RECREATE");
   file3->mkdir("wcpselection");
   file3->cd("wcpselection");
@@ -68,7 +70,7 @@ int main( int argc, char** argv )
   TTree *t4_det = new TTree("T_BDTvars_det","T_BDTvars_det");
 
   
-  
+
   EvalInfo eval_cv;
   eval_cv.file_type = new std::string();
   POTInfo pot_cv;
@@ -334,7 +336,7 @@ int main( int argc, char** argv )
   tagger_cv.numu_cc_2_n_daughter_tracks = new std::vector<float>;
   tagger_cv.numu_cc_2_n_daughter_all = new std::vector<float>;
 
-
+  
   EvalInfo eval_det;
   eval_det.file_type = new std::string();
   POTInfo pot_det;
@@ -600,32 +602,35 @@ int main( int argc, char** argv )
   tagger_det.numu_cc_2_n_daughter_tracks = new std::vector<float>;
   tagger_det.numu_cc_2_n_daughter_all = new std::vector<float>;
 
+
+  
   set_tree_address(T_BDTvars_cv, tagger_cv,2 );
   set_tree_address(T_eval_cv, eval_cv);
   set_tree_address(T_PFeval_cv, pfeval_cv);
   set_tree_address(T_pot_cv, pot_cv);
   set_tree_address(T_KINEvars_cv, kine_cv);
 
+
   put_tree_address(t4_cv, tagger_cv,2);
   put_tree_address(t1_cv, eval_cv);
   put_tree_address(t3_cv, pfeval_cv);
   put_tree_address(t2_cv, pot_cv);
   put_tree_address(t5_cv, kine_cv);
-  
-  
+ 
   set_tree_address(T_BDTvars_det, tagger_det,2 );
   set_tree_address(T_eval_det, eval_det);
   set_tree_address(T_PFeval_det, pfeval_det);
   set_tree_address(T_pot_det, pot_det);
-  set_tree_address(T_KINEvars_det, kine_det);
-
+  set_tree_address(T_KINEvars_det, kine_det); 
   
   put_tree_address(t4_det, tagger_det,2);
   put_tree_address(t1_det, eval_det);
   put_tree_address(t3_det, pfeval_det);
   put_tree_address(t2_det, pot_det);
   put_tree_address(t5_det, kine_det);
+ 
 
+  
   
   T_BDTvars_cv->SetBranchStatus("*",0);
   T_BDTvars_cv->SetBranchStatus("numu_cc_flag",1);
@@ -661,6 +666,8 @@ int main( int argc, char** argv )
   T_BDTvars_cv->SetBranchStatus("spt_angle_beam",1);
   T_BDTvars_cv->SetBranchStatus("spt_angle_vertical",1);
 
+  
+  
   if (tagger_cv.flag_nc_gamma_bdt){
     T_BDTvars_cv->SetBranchStatus("nc_delta_score", 1);
     T_BDTvars_cv->SetBranchStatus("nc_pio_score", 1);
@@ -719,6 +726,8 @@ int main( int argc, char** argv )
   T_KINEvars_cv->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_angle",1);
 
+
+  
   T_PFeval_cv->SetBranchStatus("*",0);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxX",1);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxY",1);

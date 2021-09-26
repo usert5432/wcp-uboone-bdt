@@ -90,27 +90,27 @@ struct PFevalInfo{
 
   // PF particle
   Int_t truth_Ntrack;  // number of tracks in MC
-  Int_t truth_id[30000];  // track id; size == truth_Ntrack
-  Int_t truth_pdg[30000];  // track particle pdg; size == truth_Ntrack
+  Int_t truth_id[10000];  // track id; size == truth_Ntrack
+  Int_t truth_pdg[10000];  // track particle pdg; size == truth_Ntrack
   std::vector<std::string > *truth_process;
-  Int_t truth_mother[30000];  // mother id of this track; size == truth_Ntrack
-  Float_t truth_startXYZT[30000][4];  // start position of this track; size == truth_Ntrack
-  Float_t truth_endXYZT[30000][4];  // end position of this track; size == truth_Ntrack
-  Float_t truth_startMomentum[30000][4];  // start momentum of this track; size == truth_Ntrack
-  Float_t truth_endMomentum[30000][4];  // end momentum of this track; size == truth_Ntrack
+  Int_t truth_mother[10000];  // mother id of this track; size == truth_Ntrack
+  Float_t truth_startXYZT[10000][4];  // start position of this track; size == truth_Ntrack
+  Float_t truth_endXYZT[10000][4];  // end position of this track; size == truth_Ntrack
+  Float_t truth_startMomentum[10000][4];  // start momentum of this track; size == truth_Ntrack
+  Float_t truth_endMomentum[10000][4];  // end momentum of this track; size == truth_Ntrack
   std::vector<std::vector<Int_t> > *truth_daughters;  // daughters id of this track; vector
 
   TObjArray *fMC_trackPosition;
 
   Int_t reco_Ntrack;  // number of tracks in MC
-  Int_t reco_id[30000];  // track id; size == reco_Ntrack
-  Int_t reco_pdg[30000];  // track particle pdg; size == reco_Ntrack
+  Int_t reco_id[10000];  // track id; size == reco_Ntrack
+  Int_t reco_pdg[10000];  // track particle pdg; size == reco_Ntrack
   std::vector<std::string > *reco_process;
-  Int_t reco_mother[30000];  // mother id of this track; size == reco_Ntrack
-  Float_t reco_startXYZT[30000][4];  // start position of this track; size == reco_Ntrack
-  Float_t reco_endXYZT[30000][4];  // end position of this track; size == reco_Ntrack
-  Float_t reco_startMomentum[30000][4];  // start momentum of this track; size == reco_Ntrack
-  Float_t reco_endMomentum[30000][4];  // end momentum of this track; size == reco_Ntrack
+  Int_t reco_mother[10000];  // mother id of this track; size == reco_Ntrack
+  Float_t reco_startXYZT[10000][4];  // start position of this track; size == reco_Ntrack
+  Float_t reco_endXYZT[10000][4];  // end position of this track; size == reco_Ntrack
+  Float_t reco_startMomentum[10000][4];  // start momentum of this track; size == reco_Ntrack
+  Float_t reco_endMomentum[10000][4];  // end momentum of this track; size == reco_Ntrack
 
   std::vector<std::vector<Int_t> > *reco_daughters;  // daughters id of this track; vector
 
@@ -289,6 +289,8 @@ void LEEana::clear_pfeval_info(PFevalInfo& tagger_info){
 }
 
 void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
+  //  std::cout << "test" << std::endl;
+    
   tagger_info.flag_NCDelta = false;
   tagger_info.flag_showerMomentum = false;
   tagger_info.flag_recoprotonMomentum = false;
@@ -297,7 +299,7 @@ void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
   tagger_info.flag_init_pointers = false;
 
 
-  
+
   tree0->SetBranchAddress("run", &tagger_info.run);
   tree0->SetBranchAddress("subrun", &tagger_info.subrun);
   tree0->SetBranchAddress("event", &tagger_info.event);
@@ -451,6 +453,7 @@ void LEEana::set_tree_address(TTree *tree0, PFevalInfo& tagger_info, int flag){
     tree0->SetBranchAddress("reco_endMomentum", &tagger_info.reco_endMomentum);
     tree0->SetBranchAddress("reco_daughters", &tagger_info.reco_daughters);
   }
+  
 
 }
 
