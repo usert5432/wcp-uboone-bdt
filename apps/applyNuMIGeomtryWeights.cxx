@@ -303,14 +303,18 @@ int main( int argc, char** argv )
   // float h19= 0;
   // float hcv = 0;
 
-
+  for (size_t i=0;i < T_pot_copy->GetEntries(); i++){
+    T_pot_copy->GetEntry(i);
+    T_pot->Fill();
+  }
+  
 
   for (size_t i=0; i<T_eval_copy->GetEntries(); i++) {
     T_eval_copy->GetEntry(i);
     T_PFeval_copy->GetEntry(i);
     T_KINEvars_copy->GetEntry(i);
     T_BDTvars_copy->GetEntry(i);
-    T_pot_copy->GetEntry(i);
+    //
 
     // if (truth_nuEnergy < 1200){
     //   continue;
@@ -337,7 +341,7 @@ int main( int argc, char** argv )
     T_PFeval->Fill();
     T_KINEvars->Fill();
     T_BDTvars->Fill();
-    T_pot->Fill();
+
 
 
     if(truth_nuPdg==12 && hornMode=="FHC"){
