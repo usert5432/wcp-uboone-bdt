@@ -457,10 +457,14 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
     double Emuon = pfeval.truth_muonMomentum[3]*1000; // MeV
     double Ehadron = eval.truth_nuEnergy - pfeval.truth_muonMomentum[3]*1000.; // MeV
 
+    float KE_muon = pfeval.truth_muonMomentum[3]*1000.-105.66; // MeV
+    float pmuon = TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66); // MeV
+
     //float costheta_binning[10] = {-1, -.5, 0, .27, .45, .62, .76, .86, .94, 1};		//fine binning
     //float costheta_binning[5]  = {-1,         .27,      .62,      .86,      1};		//coarse binning
     float costheta_binning[3]    = {-1,                   .62,                1};		//very coarse binning
     TLorentzVector muonMomentum(pfeval.truth_muonMomentum[0], pfeval.truth_muonMomentum[1], pfeval.truth_muonMomentum[2], pfeval.truth_muonMomentum[3]);
+    float costh = TMath::Cos(muonMomentum.Theta());
 
     if (cut_file == 1){
       if (cut_name == "numuCC.inside.Enu.le.300"){
@@ -1056,6 +1060,120 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
         if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon<=1285 && Emuon>984  && (muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[1] && TMath::Cos(muonMomentum.Theta())<=costheta_binning[2])) return number;
       }else if (cut_name == "numuCC.inside.Emuon.theta1.le.2506.gt.1285"){ // 1285 - 2506, only 1% > 2506 MeV
         if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon>1285 && Emuon<=2506 && (muonMomentum[3]>0) && (TMath::Cos(muonMomentum.Theta())>=costheta_binning[1] && TMath::Cos(muonMomentum.Theta())<=costheta_binning[2])) return number;
+      }
+    }
+    else if (cut_file == 16){ // pmuon, costh
+
+      if (cut_name == "numuCC.inside.Pmuon.theta0.le.180.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<180.00 && costh>=-1.00 && costh<-0.50 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta0.le.300.gt.180"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=180.00 && pmuon<300.00 && costh>=-1.00 && costh<-0.50 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta0.le.2500.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<2500.00 && costh>=-1.00 && costh<-0.50 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta1.le.180.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<180.00 && costh>=-0.50 && costh<0.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta1.le.300.gt.180"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=180.00 && pmuon<300.00 && costh>=-0.50 && costh<0.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta1.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=-0.50 && costh<0.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta1.le.2500.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<2500.00 && costh>=-0.50 && costh<0.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta2.le.180.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<180.00 && costh>=0.00 && costh<0.27 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta2.le.300.gt.180"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=180.00 && pmuon<300.00 && costh>=0.00 && costh<0.27 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta2.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.00 && costh<0.27 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta2.le.2500.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<2500.00 && costh>=0.00 && costh<0.27 ) return number;
+        }
+        else if (cut_name == "numuCC.inside.Pmuon.theta3.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.27 && costh<0.45 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta3.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.27 && costh<0.45 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta3.le.2500.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<2500.00 && costh>=0.27 && costh<0.45 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta4.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.45 && costh<0.62 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta4.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.45 && costh<0.62 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta4.le.770.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<770.00 && costh>=0.45 && costh<0.62 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta4.le.2500.gt.770"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=770.00 && pmuon<2500.00 && costh>=0.45 && costh<0.62 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta5.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.62 && costh<0.76 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta5.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.62 && costh<0.76 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta5.le.770.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<770.00 && costh>=0.62 && costh<0.76 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta5.le.2500.gt.770"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=770.00 && pmuon<2500.00 && costh>=0.62 && costh<0.76 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta6.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.76 && costh<0.86 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta6.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.76 && costh<0.86 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta6.le.770.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<770.00 && costh>=0.76 && costh<0.86 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta6.le.2500.gt.770"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=770.00 && pmuon<2500.00 && costh>=0.76 && costh<0.86 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta7.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.86 && costh<0.94 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta7.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.86 && costh<0.94 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta7.le.770.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<770.00 && costh>=0.86 && costh<0.94 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta7.le.1280.gt.770"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=770.00 && pmuon<1280.00 && costh>=0.86 && costh<0.94 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta7.le.2500.gt.1280"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=1280.00 && pmuon<2500.00 && costh>=0.86 && costh<0.94 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta8.le.300.gt.0"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=0.00 && pmuon<300.00 && costh>=0.94 && costh<1.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta8.le.450.gt.300"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=300.00 && pmuon<450.00 && costh>=0.94 && costh<1.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta8.le.770.gt.450"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=450.00 && pmuon<770.00 && costh>=0.94 && costh<1.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta8.le.1280.gt.770"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=770.00 && pmuon<1280.00 && costh>=0.94 && costh<1.00 ) return number;
+        }
+      else if (cut_name == "numuCC.inside.Pmuon.theta8.le.2500.gt.1280"){
+      if (eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && pmuon>=1280.00 && pmuon<2500.00 && costh>=0.94 && costh<1.00 ) return number;
+        }
+      else{
+      std::cout << "get_xs_signal_no: no cut found!" << std::endl;
       }
     }
 
