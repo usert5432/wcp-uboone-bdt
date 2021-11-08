@@ -17,8 +17,8 @@ int main(){
   std::vector<double> pars = {1., 1.};
   RationalQuadraticKernel kern = RationalQuadraticKernel(pars);
   
-  GPRegressor reg = GPRegressor(kern);
   // prepare data points
+  double error = 0.25;
   std::vector<GPPoint> x;
   std::vector<double> xd, yd, eyd;
   TRandom3 rt; rt.SetSeed();
@@ -26,7 +26,6 @@ int main(){
     double xt= i + 1.0;
     x.emplace_back(xt);
     xd.push_back(xt);
-    double error = 0.25;
     double eyt= rt.Gaus(0,error);
     yd.push_back(5*sin(xt) + eyt);
     eyd.push_back(error);
@@ -41,7 +40,12 @@ int main(){
     xd_new.push_back(xt);
     yd_new.push_back(5*sin(xt));
   }
+  // prepare noise term (diagonal in cov)
+  std::vector<double> nd(yd.size(), error*error);
+  TVectorD noise(nd.size(), &nd[0]);
+  TVectorD* noise_ptr = &noise;
 
+  GPRegressor reg = GPRegressor(kern, true, noise_ptr);
   reg.Fit(x, y);
   reg.Predict(x_new);
   
