@@ -94,6 +94,8 @@ int main(int argc, char** argv)
     TMatrixD AddSmear(n,n);
     TVectorD WF(n);
     TMatrixD UnfoldCov(n,n);
+    TMatrixD covRotation(n,m);
+    TMatrixD covRotation_t(m,n);
     TH2D* smear = new TH2D("smear","Additional Smearing Matirx",n,Nuedges,n,Nuedges);
     TH1D* wiener = new TH1D("wiener","Wiener Filter Vector",n,0,n);
     TH2D* unfcov = new TH2D("unfcov","Unfolded spectrum covariance", n, Nuedges, n, Nuedges);
@@ -101,7 +103,9 @@ int main(int argc, char** argv)
 
     // Core implementation of Wiener-SVD
     // Input as names read. AddSmear and WF to record the core information in the unfolding.
-    TVectorD unfold = WienerSVD(response, signal, measure, covariance, C_type, Norm_type, AddSmear, WF, UnfoldCov, flag_WienerFilter);
+    //TVectorD unfold = WienerSVD(response, signal, measure, covariance, C_type, Norm_type, AddSmear, WF, UnfoldCov, flag_WienerFilter);
+    TVectorD unfold = WienerSVD(response, signal, measure, covariance, C_type, Norm_type, AddSmear, WF, UnfoldCov, covRotation, covRotation_t, flag_WienerFilter);
+
 
     // output and comparison between true/expected signal spectrum with unfolded one
     TFile* file = new TFile(outputfile.c_str(), "RECREATE");
@@ -194,6 +198,8 @@ int main(int argc, char** argv)
     unfcov->Write();
     MSE->Write();
     MSE2->Write();
+    covRotation.Write("covRotation");
+    covRotation_t.Write("covRotation_t");
     c->Write();
     file->Close();
 
