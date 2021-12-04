@@ -19,6 +19,8 @@ public:
   {
   }
 
+  virtual double Mag(GPPoint pt1, GPPoint pt2) const = 0;
+
   virtual double Element(GPPoint pt1, GPPoint pt2, int dpar_idx = -1) const = 0;
 
   void SetParameters(std::vector<double> pars) { fPars = pars; }
@@ -44,9 +46,10 @@ class RBFKernel: virtual public GPKernel
 public:
   RBFKernel(std::vector<double> pars, double noise = 1.e-10) : 
    GPKernel(pars, noise) { 
-     assert(pars.size() == 1 && "Input hyperparameters need to be size 1 for RBF Kernel"); 
+     assert(pars.size() == 6 && "Input hyperparameters need to be size 6 for RBF Kernel"); 
    }
   
+  double Mag(GPPoint pt1, GPPoint pt2) const override;
   double Element(GPPoint pt1, GPPoint pt2, int dpar_idx = -1) const override;
   void SetThetas(std::vector<double> thetas) override;
 };
@@ -58,7 +61,7 @@ class RationalQuadraticKernel: virtual public GPKernel
 public:
   RationalQuadraticKernel(std::vector<double> pars, double noise = 1.e-10) : 
    GPKernel(pars, noise) { 
-     assert(pars.size() == 2 && "Input hyperparameters need to be size 2 for Rational Quadratic Kernel"); 
+     assert(pars.size() == 3 && "Input hyperparameters need to be size 3 for Rational Quadratic Kernel"); 
    }
   
   double Element(GPPoint pt1, GPPoint pt2, int dpar_idx = -1) const override;

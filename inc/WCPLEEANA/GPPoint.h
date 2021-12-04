@@ -6,27 +6,26 @@
 class GPPoint
 {
 public:
-  GPPoint(double x=0, double y=0, double z=0)
-    : fX(x), fY(y), fZ(z)
-  {
+  GPPoint(double x[5]) {
+    SetX(x);
   }
   
-  void SetX(double x) { fX = x; }
-  void SetY(double y) { fY = y; }
-  void SetZ(double z) { fZ = z; }
+  void SetX(double x[5]) { for (int i=0;i<5;i++) { this->x[i] = x[i]; } }
   
-  double X() const { return fX; }
-  double Y() const { return fY; }
-  double Z() const { return fZ; }
-  
-  double Mag(GPPoint pt) const { 
-    return TMath::Power(fX-pt.X(), 2) + TMath::Power(fY-pt.Y(), 2) + TMath::Power(fZ-pt.Z(), 2);
-  };
+  double* X() { return x; }
+
+  double Mag (GPPoint pt) {
+    double* ptx = pt.X();
+    double mag = 0;
+    for (int i=0;i<5;i++) { mag += TMath::Power(ptx[i]-x[i], 2); }
+    return mag;
+  }
   
   bool operator==(GPPoint pt) const {
-    return (fX == pt.X()) && (fY == pt.Y()) && (fZ == pt.Z());
+    double* ptx = pt.X();
+    return (x[0] == ptx[0]) && (x[1] == ptx[1]) && (x[2] == ptx[2]) && (x[3] == ptx[3]) && (x[4] == ptx[4]);
   };
 
 protected:
-  double fX, fY, fZ;
+  double x[5];
 };

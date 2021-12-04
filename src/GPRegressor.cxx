@@ -6,12 +6,12 @@
 #include <math.h>
 
 //----------------------------------------------------------------------
-GPRegressor::GPRegressor(GPKernel& kern, bool normalize_y, TVectorD* noise)
+GPRegressor::GPRegressor(GPKernel& kern, bool normalize_y, TMatrixD* noise)
   : fKern(kern), doNorm(normalize_y), fNoise(noise)
 {
 }
 //----------------------------------------------------------------------
-void GPRegressor::Fit(std::vector<GPPoint> X, TVectorD y)
+void GPRegressor::Fit(std::vector<GPPoint> X, TVectorD y, bool solveHyperParams=true)
 {
   fY_T.ResizeTo(y.GetNoElements());
   fY_T = y;
@@ -29,16 +29,21 @@ void GPRegressor::Fit(std::vector<GPPoint> X, TVectorD y)
     fY_Ts = 1.;
   }
 
-  if(fNoise)
-    assert((*fNoise).GetNoElements() == y.GetNoElements());
-
-  SolveHyperParameters();
+  if (solveHyperParams) { SolveHyperParameters(); }
 
   fK.ResizeTo(fX_T.size(), fX_T.size());
   fK = fKern(fX_T);
   if(fNoise){
-    for(int i = 0; i < fK.GetNrows(); i++)
-      fK(i, i) += (*fNoise)[i];
+    assert((*fNoise).GetNrows() == y.GetNoElements());
+    assert((*fNoise).GetNcols() == y.GetNoElements());
+
+    for(int i = 0; i < fK.GetNrows(); i++) {
+      for (int j = 0; j < fK.GetNrows(); j++) {
+        double noise = (*fNoise)(i,j);
+        if (doNorm) { noise /= TMath::Power(fY_Ts,2); } 
+        fK(i, j) += noise;
+      }
+    }
   }
 
   fKInv.ResizeTo(fK.GetNrows(), fK.GetNrows());
@@ -89,6 +94,9 @@ void GPRegressor::SolveHyperParameters()
 void GPRegressor::Predict(std::vector<GPPoint> X)
 {
   TMatrixD PosteriorK_T = fKern.KernelBlock(X, fX_T);
+  TMatrixD PosteriorK(PosteriorK_T.GetNcols(),PosteriorK_T.GetNrows());
+  PosteriorK.Transpose(PosteriorK_T);
+  TMatrixD sigma_11 = fKern.KernelBlock(X, X);
   fPosteriorMean.ResizeTo(X.size());
   fPosteriorStd.ResizeTo(X.size());
   fPosteriorMean = PosteriorK_T*fAlpha;
@@ -98,19 +106,28 @@ void GPRegressor::Predict(std::vector<GPPoint> X)
   fPosteriorStd = fKern.KernelDiag(X);
 
   TMatrixD temp(X.size(), fX_T.size());
+  TMatrixD temp2(X.size(), X.size());
   temp.Mult(PosteriorK_T, fKInv);
-  for(int i = 0; i < temp.GetNrows(); i++){
-    fPosteriorStd[i] -= TVectorD(temp[i])*TVectorD(PosteriorK_T[i]);
-    if(fPosteriorStd[i] < 0.)
-      fPosteriorStd[i] = 0.;
+  temp2.Mult(temp,PosteriorK);
+
+  int nrows = temp2.GetNrows();
+  int ncols = temp2.GetNcols();
+  mPosteriorCov.ResizeTo(nrows,ncols);
+  for (int i=0;i<nrows;i++) {
+    for (int j=0;j<ncols;j++) {
+      mPosteriorCov(i,j) = (sigma_11(i,j) - temp2(i,j))*TMath::Power(fY_Ts,2);
+      if (i==j) {
+        if(mPosteriorCov(i,i) < 0.) { mPosteriorCov(i,i) = 0.; }
+        fPosteriorStd[i] = mPosteriorCov(i,i);
+      }
+    }
   }
-  fPosteriorStd *= TMath::Power(fY_Ts, 2);
   fPosteriorStd = fPosteriorStd.Sqrt();
 }
 //----------------------------------------------------------------------
 
 
-MarginalLikelihood::MarginalLikelihood(GPKernel& kern, std::vector<GPPoint> x, TVectorD y, TVectorD* noise)
+MarginalLikelihood::MarginalLikelihood(GPKernel& kern, std::vector<GPPoint> x, TVectorD y, TMatrixD* noise)
   : fKern(kern), fX(x), fY(y), fNoise(noise)
 {
     fDim = fKern.NPar();
@@ -129,9 +146,13 @@ void MarginalLikelihood::Solve(const double* theta) const
 
   fK = fKern(fX, -1);
   if(fNoise){
-    assert((*fNoise).GetNoElements() == fY.GetNoElements());
-    for(int i = 0; i < fK.GetNrows(); i++)
-      fK(i, i) += (*fNoise)[i];
+    assert((*fNoise).GetNrows() == fY.GetNoElements());
+    assert((*fNoise).GetNcols() == fY.GetNoElements());
+    for(int i = 0; i < fK.GetNrows(); i++) {
+      for(int j = 0; j < fK.GetNrows(); j++) {
+        fK(i, j) += (*fNoise)(i,j);
+      }
+    }
   }
 
   TDecompChol cho(fK);

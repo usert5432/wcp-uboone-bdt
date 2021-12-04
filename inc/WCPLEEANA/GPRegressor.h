@@ -10,9 +10,9 @@
 class GPRegressor
 {
 public:
-  GPRegressor(GPKernel& kern, bool normalize_y=true, TVectorD* noise = 0);
+  GPRegressor(GPKernel& kern, bool normalize_y=true, TMatrixD* noise = 0);
 
-  void Fit(std::vector<GPPoint> X, TVectorD y);
+  void Fit(std::vector<GPPoint> X, TVectorD y, bool solveHyperParams);
   void Predict(std::vector<GPPoint> X);
 
   void SolveHyperParameters();
@@ -20,18 +20,20 @@ public:
 
   TVectorD PosteriorMean(){ return fPosteriorMean; }
   TVectorD PosteriorStd(){ return fPosteriorStd; }
+  TMatrixD PosteriorCov(){ return mPosteriorCov; }
 
 protected:
 
   GPKernel& fKern;
   bool doNorm;
-  TVectorD* fNoise;
+  TMatrixD* fNoise;
   
   std::vector<GPPoint> fX_T;
   mutable TVectorD fY_T;
   double fY_Tm, fY_Ts;
   
   mutable TVectorD fPosteriorMean, fPosteriorStd;
+  mutable TMatrixD mPosteriorCov;
   mutable TMatrixDSym fK, fKInv;
   mutable TVectorD fAlpha;
 
@@ -40,7 +42,7 @@ protected:
 class MarginalLikelihood: public ROOT::Math::IGradientFunctionMultiDim
 {
   public:
-    MarginalLikelihood(GPKernel& kern, std::vector<GPPoint> x, TVectorD y, TVectorD* noise = 0);
+    MarginalLikelihood(GPKernel& kern, std::vector<GPPoint> x, TVectorD y, TMatrixD* noise = 0);
 
     void Solve(const double* theta) const;
 
@@ -56,7 +58,7 @@ class MarginalLikelihood: public ROOT::Math::IGradientFunctionMultiDim
     int fDim; 
     const std::vector<GPPoint> fX;
     const TVectorD fY; 
-    TVectorD* fNoise;
+    TMatrixD* fNoise;
     
     mutable TMatrixDSym fK, fKInv;
     mutable TVectorD fAlpha;

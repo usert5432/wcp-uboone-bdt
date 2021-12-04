@@ -14,6 +14,9 @@ std::vector<double> convert_to_std_vector(TVectorD x){
 }
 
 int main(){
+
+//Obsoleted, needs to be revised
+/*
   std::vector<double> pars = {1., 1.};
   RationalQuadraticKernel kern = RationalQuadraticKernel(pars);
   
@@ -66,5 +69,6 @@ int main(){
   gh_pred_gp->Write("gh_pred_gp"); // gaussian process regression
   gh_pred_orig->Write("gh_pred_orig"); // original function
   ofile->Close();
+*/
   return 0;
 }

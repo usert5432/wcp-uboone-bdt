@@ -1,4 +1,4 @@
-//#include "GPSmoothing.C"
+#include "GPSmoothing.C"
 
 void LEEana::CovMatrix::add_disabled_ch_name(TString name){
   disabled_ch_names.insert(name);
@@ -149,7 +149,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
   *vec_mean_diff = (*prin.GetMeanValues());
 
   //Do GP Smoothing Here
-  //GPSmoothing(vec_mean_diff, cov_mat_bootstrapping,"/uboone/data/users/lcoopert/LEE/wcp-uboone-bdt/gp_input.txt");
+  //GPSmoothing(vec_mean_diff, cov_mat_bootstrapping,"/uboone/data/users/lcoopert/LEE/LEEana_xs_1D_Nov12_2021/hist_rootfiles/DetVar/gp_input.txt");
 
   // Now get the full covariance matrix ...
   TMatrixDSym DMatrix(rows);
