@@ -98,7 +98,7 @@ TMatrixD Matrix_C(Int_t n, Int_t type)
 
 
 
-TVectorD WienerSVD(TMatrixD Response, TVectorD Signal, TVectorD Measure, TMatrixD Covariance, Int_t C_type, Float_t Norm_type, TMatrixD& AddSmear, TVectorD& WF, TMatrixD& UnfoldCov, Float_t flag_WienerFilter)
+TVectorD WienerSVD(TMatrixD Response, TVectorD Signal, TVectorD Measure, TMatrixD Covariance, Int_t C_type, Float_t Norm_type, TMatrixD& AddSmear, TVectorD& WF, TMatrixD& UnfoldCov, TMatrixD& covRotation, TMatrixD& covRotation_t, Float_t flag_WienerFilter)
 {
     Int_t m = Response.GetNrows(); // measure, M
     Int_t n = Response.GetNcols(); // signal, S
@@ -198,11 +198,13 @@ TVectorD WienerSVD(TMatrixD Response, TVectorD Signal, TVectorD Measure, TMatrix
 
     TVectorD unfold = C_inv*V*W*D_t*U_t*M;
     AddSmear = C_inv*V*W0*V_t*C;
-
     // covariance matrix of the unfolded spectrum
-    TMatrixD covRotation = C_inv*V*W*D_t*U_t*Q;
-    TMatrixD covRotation_t (TMatrixD::kTransposed, covRotation); 
-    UnfoldCov = covRotation*Covariance*covRotation_t;  
+    //TMatrixD covRotation = C_inv*V*W*D_t*U_t*Q;
+    //TMatrixD covRotation_t (TMatrixD::kTransposed, covRotation); 
+    covRotation = C_inv*V*W*D_t*U_t*Q;
+    covRotation_t.Transpose(covRotation);
+    UnfoldCov = covRotation*Covariance*covRotation_t; 
+
 
     return unfold;
 }
