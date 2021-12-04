@@ -73,7 +73,10 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
       for (int j=0;j<nbins[i];j++) { bin_centers_temp.push_back(std::stod(v_line[j])); }
       bin_centers.push_back(bin_centers_temp);
     }
-  } else { return; }
+  } else { 
+    std::cout << "error: Couldn't find gp_input configuration file" << std::endl;
+    return;
+  }
   file.close();
 
   std::vector<GPPoint> gp_points, gp_points_posterior;
