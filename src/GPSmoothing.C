@@ -52,6 +52,7 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   if (!do_smoothing) { return; }
 
   int nbins[5];
+  std::vector<bool> log_scales;
   std::vector<double> bin_centers_temp, params;
   std::vector<std::vector<double>> bin_centers;
 
@@ -60,9 +61,13 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   std::ifstream file;
   file.open(input_filename,std::ios::in);
   if (file.is_open()) {
-    //first line specifies the parameters for GPRegresor
+    //first line specifies which dimensions use log scales
     if (!std::getline(file,line)) { return; }
     std::vector v_line = split(line,"\t");
+    for (int i=0;i<5;i++) { log_scales.push_back(v_line[i]=="true"); }
+    //second line specifies the parameters for GPRegresor
+    if (!std::getline(file,line)) { return; }
+    v_line = split(line,"\t");
     for (int i=0;i<6;i++) { params.push_back(std::stod(v_line[i])); }
     //next 5 lines specify the bin centers for each dimension
     for (int i=0;i<5;i++) {
@@ -93,9 +98,9 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   }
 
   //Fit and Predict
-  RBFKernel kern = RBFKernel(params);
+  RBFKernel kern = RBFKernel(params,log_scales);
   GPRegressor reg = GPRegressor(kern, true, cov_mat_bootstrapping);		//bool is for normalizing data
-  reg.Fit(gp_points, (*vec_mean), false);						//bool is for tuning hyperparameters
+  reg.Fit(gp_points, (*vec_mean), false);					//bool is for tuning hyperparameters
   reg.Predict(gp_points_posterior);
 
   TVectorD vec_mean_temp              = reg.PosteriorMean();

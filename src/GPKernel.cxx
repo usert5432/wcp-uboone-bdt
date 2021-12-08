@@ -8,8 +8,21 @@ double RBFKernel::Mag(GPPoint p1, GPPoint p2) const {
   double* p1x = p1.X();
   double* p2x = p2.X();
   double mag = 0;
+  std::vector<double> parameters;
+  //use log scales for fractional smoothing (ie: 20%)
+  for (int i=0;i<5;i++) {
+    if (doLogScales[i]) {
+      p1x[i] = log(p1x[i]);
+      p2x[i] = log(p2x[i]);
+      parameters.push_back(log(GPKernel::fPars[i]));
+    } else {
+      parameters.push_back(GPKernel::fPars[i]);
+    }
+  }
+  //don't smooth between points with different values along a dimension with length scale 0
   for (int i=0;i<5;i++) { if (GPKernel::fPars[i]==0 && p1x[i]!=p2x[i]) { return 1e6; } }
-  for (int i=0;i<5;i++) { if (p1x[i]!=p2x[i]) { mag += TMath::Power((p1x[i]-p2x[i])/GPKernel::fPars[i], 2); } }
+  //compute the non-euclidean distance between two points
+  for (int i=0;i<5;i++) { if (p1x[i]!=p2x[i]) { mag += TMath::Power((p1x[i]-p2x[i])/parameters[i], 2); } }
   return mag;
 };
 //----------------------------------------------------------------------
