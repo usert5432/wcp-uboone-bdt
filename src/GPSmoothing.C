@@ -63,7 +63,7 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   if (file.is_open()) {
     //first line specifies which dimensions use log scales
     if (!std::getline(file,line)) { return; }
-    std::vector v_line = split(line,"\t");
+    std::vector<std::string> v_line = split(line,"\t");
     for (int i=0;i<5;i++) { log_scales.push_back(v_line[i]=="true"); }
     //second line specifies the parameters for GPRegresor
     if (!std::getline(file,line)) { return; }
