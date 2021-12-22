@@ -6,8 +6,11 @@ namespace LEEana{
   struct TaggerInfo
   {
     bool flag_nc_gamma_bdt;
+    bool flag_nc_gamma_0track_bdt;
 
     float nc_delta_score;
+    float nc_delta_0track_score;
+    float nc_delta_ntrack_score;
     float nc_pio_score;
     
     
@@ -777,8 +780,11 @@ namespace LEEana{
 void LEEana::clear_tagger_info(TaggerInfo& tagger_info){
 
   tagger_info.flag_nc_gamma_bdt = false;
+  tagger_info.flag_nc_gamma_0track_bdt = false;
 
   tagger_info.nc_delta_score = -20;
+  tagger_info.nc_delta_0track_score = -20;
+  tagger_info.nc_delta_ntrack_score = -20;
   tagger_info.nc_pio_score = -20;
 
 
@@ -1542,6 +1548,12 @@ void LEEana::set_tree_address(TTree *tree0, TaggerInfo& tagger_info, int flag){
     tree0->SetBranchAddress("nc_delta_score", &tagger_info.nc_delta_score);
     tree0->SetBranchAddress("nc_pio_score", &tagger_info.nc_pio_score);
   }
+  if (tree0->GetBranch("nc_delta_0track_score")){
+    tagger_info.flag_nc_gamma_0track_bdt = true;
+    tree0->SetBranchAddress("nc_delta_0track_score", &tagger_info.nc_delta_0track_score);
+    tree0->SetBranchAddress("nc_delta_ntrack_score", &tagger_info.nc_delta_ntrack_score);
+  }
+  
   
     // cosmic tagger
   tree0->SetBranchAddress("cosmic_flag", &tagger_info.cosmic_flag);
@@ -2928,6 +2940,11 @@ void LEEana::put_tree_address(TTree *T_tagger, TaggerInfo& tagger_info, int flag
     if (tagger_info.flag_nc_gamma_bdt){
       T_tagger->Branch("nc_delta_score", &tagger_info.nc_delta_score,"nc_delta_score/F");
       T_tagger->Branch("nc_pio_score", &tagger_info.nc_pio_score,"nc_pio_score/F");
+    }
+
+    if (tagger_info.flag_nc_gamma_0track_bdt){
+      T_tagger->Branch("nc_delta_0track_score", &tagger_info.nc_delta_0track_score,"nc_delta_0track_score/F");
+      T_tagger->Branch("nc_delta_ntrack_score", &tagger_info.nc_delta_ntrack_score,"nc_delta_ntrack_score/F");
     }
 
     
