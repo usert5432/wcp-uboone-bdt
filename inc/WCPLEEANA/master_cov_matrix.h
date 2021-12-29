@@ -240,6 +240,11 @@ namespace LEEana{
     std::set<TString> osc_signal_ch_names;
     double osc_par_delta_m2_eV2;
     double osc_par_sin22theta_ee;
+    double osc_par_delta_m2_41_eV2;
+    double osc_par_sin2_2theta_14; // = ee
+    double osc_par_sin2_theta_24;
+    double osc_par_sin2_theta_34;
+
 
     
     // special weights ...

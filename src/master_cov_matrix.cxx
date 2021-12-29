@@ -457,10 +457,16 @@ void LEEana::CovMatrix::add_osc_config(TString osc_ch_filename, TString osc_pars
   }
   std::ifstream infile2(osc_pars_filename);
   infile2 >> osc_par_delta_m2_eV2 >> osc_par_sin22theta_ee;
+  infile2 >> osc_par_delta_m2_41_eV2 >> osc_par_sin2_2theta_14 >> osc_par_sin2_theta_24 >> osc_par_sin2_theta_34;
 
-  std::cout << "Oscillation Mode: " << std::endl;
-  std::cout << "Dm2: " << osc_par_delta_m2_eV2 << " eV2 " << std::endl;
-  std::cout << "sin22theta_ee: " << osc_par_sin22theta_ee << std::endl;
+  std::cout << "===> Oscillation Mode: " << std::endl;
+  std::cout << "===> Dm2: " << osc_par_delta_m2_eV2 << " eV2 " << std::endl;
+  std::cout << "===> sin22theta_ee: " << osc_par_sin22theta_ee << std::endl;
+  std::cout << "=====> Full oscillation mode: " << std::endl;
+  std::cout << "=====> Dm2_41: " << osc_par_delta_m2_41_eV2 << " eV2 " << std::endl;
+  std::cout << "=====> sin2_2theta_14: " << osc_par_sin2_2theta_14 << std::endl;
+  std::cout << "=====> sin2_theta_24: " << osc_par_sin2_theta_24 << std::endl;
+  std::cout << "=====> sin2_theta_34: " << osc_par_sin2_theta_34 << std::endl;
   
 }
 
@@ -474,8 +480,39 @@ bool LEEana::CovMatrix::is_osc_channel(TString ch_name){
 double LEEana::CovMatrix::get_osc_weight(EvalInfo& eval, PFevalInfo& pfeval){
   double weight = 1.0;
   // only support nueCC disappearance now ...
-  if (fabs(eval.truth_nuPdg)==12){
+  if (fabs(eval.truth_nuPdg)==12){  
     weight = 1 - osc_par_sin22theta_ee * pow(TMath::Sin(1.267 * osc_par_delta_m2_eV2 * (pfeval.mcflux_gen2vtx + pfeval.mcflux_dk2gen)/pfeval.truth_nu_momentum[3]/1000.),2);
+  }
+  
+  if(osc_par_delta_m2_41_eV2>=0){
+  // nueCC to nueCC 
+  if (fabs(eval.truth_nuPdg)==12 && fabs(pfeval.mcflux_ntype)==12 && eval.truth_isCC){ 
+    weight = 0.0; 
+  }
+  // numuCC to numuCC
+  else if (fabs(eval.truth_nuPdg)==14 && fabs(pfeval.mcflux_ntype)==14 && eval.truth_isCC){
+    weight = 0.0;
+  }
+  // numuCC to nueCC 
+  else if (fabs(eval.truth_nuPdg)==12 && fabs(pfeval.mcflux_ntype)==14 && eval.truth_isCC){ 
+    weight = 0.006; 
+  }
+  // nueCC to numuCC 
+  else if (fabs(eval.truth_nuPdg)==14 && fabs(pfeval.mcflux_ntype)==12 && eval.truth_isCC){ 
+    weight = 0.; 
+  }
+  // 1 - (nue to sterile) NC  
+  else if (fabs(eval.truth_nuPdg)==12 && fabs(pfeval.mcflux_ntype)==12 && !eval.truth_isCC){ 
+    weight = 0.0; 
+  }
+  // 1 - (numu to sterile) NC  
+  else if (fabs(eval.truth_nuPdg)==14 && fabs(pfeval.mcflux_ntype)==14 && !eval.truth_isCC){ 
+    weight = 0.0; 
+  }
+  else{
+    std::cout << "Error: unknown file/osc type: final nu flavor: "<<eval.truth_nuPdg<<" initial nu flavor: "<<pfeval.mcflux_ntype<<" CC interaction: "<<eval.truth_isCC<<std::endl;
+    exit(1);
+  }
   }
   return weight;
 }
