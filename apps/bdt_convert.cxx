@@ -723,6 +723,7 @@ int main( int argc, char** argv )
 
   set_tree_address(T_BDTvars, tagger,2 );
   tagger.flag_nc_gamma_bdt = true;
+  tagger.flag_nc_gamma_0track_bdt = true;
   put_tree_address(t4, tagger,2);
 
   if (flag_data){
@@ -2822,6 +2823,7 @@ int main( int argc, char** argv )
   T_eval->SetBranchStatus("*",1);
   T_BDTvars->SetBranchStatus("*",1);
   
+  //  for (int i=0;i!=100;i++){
   for (int i=0;i!=T_BDTvars->GetEntries();i++){
     eval.weight_change = false;
     T_BDTvars->GetEntry(i);
@@ -2880,6 +2882,8 @@ int main( int argc, char** argv )
     tagger.nc_delta_score = cal_nc_delta_bdts_xgboost(tagger, reader_nc_delta);
     tagger.nc_delta_0track_score = cal_nc_delta_0track_bdts_xgboost(tagger, reader_nc_delta_0track);
     tagger.nc_delta_ntrack_score = cal_nc_delta_ntrack_bdts_xgboost(tagger, reader_nc_delta_ntrack);
+ 
+    //    std::cout << tagger.nc_delta_0track_score << " " << tagger.nc_delta_ntrack_score << std::endl;
     
     tagger.nc_pio_score = cal_nc_pio_bdts_xgboost(tagger, reader_nc_pi0);
     // if (eval.run == 6467 && eval.event == 97
