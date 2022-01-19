@@ -149,7 +149,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
   *vec_mean_diff = (*prin.GetMeanValues());
 
   //Do GP Smoothing Here
-  //GPSmoothing(vec_mean_diff, cov_mat_bootstrapping,"/uboone/data/users/lcoopert/LEE/LEEana_xs_1D_Nov12_2021/configurations/gp_input.txt");
+  //GPSmoothing(vec_mean_diff, cov_mat_bootstrapping,"./configurations/gp_input.txt");
 
   // Now get the full covariance matrix ...
   TMatrixDSym DMatrix(rows);

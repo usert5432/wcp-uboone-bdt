@@ -4,34 +4,14 @@
 #include <iostream>
 
 //----------------------------------------------------------------------
-double RBFKernel::Mag(GPPoint p1, GPPoint p2) const {
-  double* p1x = p1.X();
-  double* p2x = p2.X();
-  double mag = 0;
-  std::vector<double> parameters;
-  //use log scales for fractional smoothing (ie: 20%)
-  for (int i=0;i<5;i++) {
-    if (doLogScales[i]) {
-      p1x[i] = log(p1x[i]);
-      p2x[i] = log(p2x[i]);
-      parameters.push_back(log(GPKernel::fPars[i]));
-    } else {
-      parameters.push_back(GPKernel::fPars[i]);
-    }
-  }
-  //don't smooth between points with different values along a dimension with length scale 0
-  for (int i=0;i<5;i++) { if (GPKernel::fPars[i]==0 && p1x[i]!=p2x[i]) { return 1e6; } }
-  //compute the non-euclidean distance between two points
-  for (int i=0;i<5;i++) { if (p1x[i]!=p2x[i]) { mag += TMath::Power((p1x[i]-p2x[i])/parameters[i], 2); } }
-  return mag;
-};
-//----------------------------------------------------------------------
 TMatrixDSym GPKernel::operator()(std::vector<GPPoint> pts, int dpar_idx) const
 {
+std::cout << "GPK fkern, dim_size = " << pts.size() << std::endl;
   TMatrixDSym sym(pts.size());
   for(int i = 0; i < (int)pts.size(); i++){
     for(int j = 0; j <= i; j++){
       double element = Element(pts[i], pts[j], dpar_idx);
+//std::cout << "i,j, element = " << i << ", " << j << ",    " << element << std::endl;
       sym(i, j) = element;
       sym(j, i) = element;
     }
@@ -62,23 +42,53 @@ TVectorD GPKernel::KernelDiag(std::vector<GPPoint> pts) const
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+double RBFKernel::Mag(GPPoint p1, GPPoint p2) const {
+  double* p1x = p1.X();
+  double* p2x = p2.X();
+  double mag = 0;
+  std::vector<double> parameters;
+  //use log scales for fractional smoothing (ie: 20%)
+  for (int i=0;i<5;i++) {
+    if (doLogScales[i]) {
+      p1x[i] = log(p1x[i]);
+      p2x[i] = log(p2x[i]);
+      parameters.push_back(log(fPars[i]));
+    } else {
+      parameters.push_back(fPars[i]);
+    }
+  }
+  //don't smooth between points with different values along a dimension with length scale 0
+  for (int i=0;i<5;i++) { if (GPKernel::fPars[i]==0 && p1x[i]!=p2x[i]) { return 1e6; } }
+  //compute the non-euclidean distance between two points
+  for (int i=0;i<5;i++) { if (p1x[i]!=p2x[i]) { mag += TMath::Power((p1x[i]-p2x[i])/parameters[i], 2); } }
+
+  return mag;
+};
+//----------------------------------------------------------------------
 double RBFKernel::Element(GPPoint pt1, GPPoint pt2, int dpar_idx) const
 {
-   assert(dpar_idx < 2 && "RBF Kernel has 6 hyperparameters, index is either -1, 0 or 1");
+   assert(dpar_idx < 5 && "RBF Kernel has 6 hyperparameters, index is either -1 or 0-4");
    double coeff = fPars[5];
   
   double mag = RBFKernel::Mag(pt1,pt2);
   if(mag == 0.){
-    if(dpar_idx == 0) 
+    if(dpar_idx >= 0 && dpar_idx < 5) {
       return 0.;
-    else
+    } else {
       return coeff * (1 + fNoise);
+    }
   }
 
-  if(dpar_idx == 0)
-    return coeff * exp(-mag/2.)*mag;
-  else
-    return coeff * exp(-mag/2.);
+  if(dpar_idx >=0 && dpar_idx < 5){
+    double lscale = doLogScales[dpar_idx] ? log(fPars[dpar_idx]) : fPars[dpar_idx];
+    if(doLogScales[dpar_idx]) {
+      return coeff*exp(-mag/2)*TMath::Power((pt1.X()[dpar_idx] - pt2.X()[dpar_idx]),2)/TMath::Power(lscale,3);
+    } else {
+       return coeff*exp(-mag/2)*TMath::Power((pt1.X()[dpar_idx] - pt2.X()[dpar_idx]),2)/TMath::Power(lscale,2);
+    }
+  } else {
+    return coeff*exp(-mag/2);
+  }
 }
 
 //----------------------------------------------------------------------

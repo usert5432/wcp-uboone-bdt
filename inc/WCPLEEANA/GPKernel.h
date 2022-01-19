@@ -13,7 +13,7 @@
 class GPKernel
 {
 public:
-  GPKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,true,false,false}, double noise=0.)
+  GPKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,false,false,false}, double noise=0.)
     :  fPars(pars),
        doLogScales(log_scales),
        fNoise(noise)
@@ -46,7 +46,7 @@ protected:
 class RBFKernel: virtual public GPKernel
 {
 public:
-  RBFKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,true,false,false}, double noise = 1.e-10) : 
+  RBFKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,false,false,false}, double noise = 1.e-10) : 
    GPKernel(pars, log_scales, noise) { 
      assert(pars.size() == 6 && "Input hyperparameters need to be size 6 for RBF Kernel"); 
    }
@@ -61,7 +61,7 @@ public:
 class RationalQuadraticKernel: virtual public GPKernel
 {
 public:
-  RationalQuadraticKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,true,false,false}, double noise = 1.e-10) : 
+  RationalQuadraticKernel(std::vector<double> pars, std::vector<bool> log_scales={false,false,false,false,false}, double noise = 1.e-10) : 
    GPKernel(pars, log_scales, noise) { 
      assert(pars.size() == 3 && "Input hyperparameters need to be size 3 for Rational Quadratic Kernel"); 
    }

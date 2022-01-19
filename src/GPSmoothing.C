@@ -107,7 +107,7 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   TMatrixD cov_mat_bootstrapping_temp = reg.PosteriorCov();
 
   //Debugging -------
-
+/*
   //Rescale cov matrix
   double vec_mean_var = 0;
   double vec_mean_av = 0;
@@ -152,6 +152,7 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   TVectorD vec_mean_debug              = reg.PosteriorMean();
   TMatrixD cov_mat_bootstrapping_debug = reg.PosteriorCov();
 
+
   TFile* debug_file = new TFile("/uboone/data/users/lcoopert/LEE/LEEana_xs_1D_Nov12_2021/hist_rootfiles/DetVar/debug_smoothing.root","RECREATE");
   debug_file->cd();
   vec_mean_debug.Write("vec_mean_debug");
@@ -164,6 +165,7 @@ void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::stri
   cov_mat_bootstrapping_debug.Write("cov_mat_smoothed");
   debug_file->Write();
   debug_file->Close();
+*/
   //------------
   
 
