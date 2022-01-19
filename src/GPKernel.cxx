@@ -6,12 +6,10 @@
 //----------------------------------------------------------------------
 TMatrixDSym GPKernel::operator()(std::vector<GPPoint> pts, int dpar_idx) const
 {
-std::cout << "GPK fkern, dim_size = " << pts.size() << std::endl;
   TMatrixDSym sym(pts.size());
   for(int i = 0; i < (int)pts.size(); i++){
     for(int j = 0; j <= i; j++){
       double element = Element(pts[i], pts[j], dpar_idx);
-//std::cout << "i,j, element = " << i << ", " << j << ",    " << element << std::endl;
       sym(i, j) = element;
       sym(j, i) = element;
     }
