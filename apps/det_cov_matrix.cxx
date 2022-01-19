@@ -24,10 +24,11 @@ int main( int argc, char** argv )
 {
   
   if (argc < 2){
-    std::cout << "./det_cov_matrix -r[#sys 1-10]" << std::endl;
+    std::cout << "./det_cov_matrix -r[#sys 1-10] -g[#gp 0,1]" << std::endl;
   }
   int run = 1; // run 1 ...
   bool flag_osc = false;
+  bool flag_gp = false; // gaussian process smoothing
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
@@ -35,6 +36,9 @@ int main( int argc, char** argv )
       break;
     case 'o':
       flag_osc = atoi(&argv[i][2]); // which run period
+      break;
+    case 'g':
+      flag_gp = atoi(&argv[i][2]); // 1: on, 0: off
       break;
     }
   }
@@ -111,7 +115,7 @@ int main( int argc, char** argv )
   TVectorD* vec_mean_diff = new TVectorD(cov_add_mat->GetNrows());
   TVectorD* vec_mean = new TVectorD(cov_add_mat->GetNrows());
   
-  cov.gen_det_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, vec_mean_diff, cov_mat_bootstrapping, cov_det_mat);
+  cov.gen_det_cov_matrix(run, map_covch_hist, map_histoname_hist, vec_mean, vec_mean_diff, cov_mat_bootstrapping, cov_det_mat, flag_gp);
 
   TMatrixD* frac_cov_det_mat = new TMatrixD(cov_add_mat->GetNrows(), cov_add_mat->GetNcols());
   for (size_t i=0; i!= frac_cov_det_mat->GetNrows(); i++){

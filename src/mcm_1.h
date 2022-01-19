@@ -7,7 +7,7 @@ void LEEana::CovMatrix::remove_disabled_ch_name(TString name){
   disabled_ch_names.erase(name);
 }
 
-void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean, TVectorD* vec_mean_diff, TMatrixD* cov_mat_bootstrapping, TMatrixD* cov_det_mat){
+void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_covch_hist, std::map<TString, TH1F*>& map_histoname_hist, TVectorD* vec_mean, TVectorD* vec_mean_diff, TMatrixD* cov_mat_bootstrapping, TMatrixD* cov_det_mat, bool flag_gp=false){
 
   
   // prepare the maps ... name --> no,  covch, lee
@@ -149,7 +149,7 @@ void LEEana::CovMatrix::gen_det_cov_matrix(int run, std::map<int, TH1F*>& map_co
   *vec_mean_diff = (*prin.GetMeanValues());
 
   //Do GP Smoothing Here
-  //GPSmoothing(vec_mean_diff, cov_mat_bootstrapping,"./configurations/gp_input.txt");
+  GPSmoothing(vec_mean_diff, cov_mat_bootstrapping, "./configurations/gp_input.txt", flag_gp);
 
   // Now get the full covariance matrix ...
   TMatrixDSym DMatrix(rows);
