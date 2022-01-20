@@ -296,12 +296,13 @@ Config parseArgs(int argc, char** argv)
             .run(),
         vm
     );
-    po::notify(vm);
 
     if (vm.count("help")) {
         usage(argv[0], options);
         exit(0);
     }
+
+    po::notify(vm);
 
     if (vm.count("input") == 0) {
         usage(argv[0], options);
