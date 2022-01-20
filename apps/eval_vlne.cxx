@@ -1,3 +1,8 @@
+/*
+ * An application to evaluate the Deep Learning energy estimator,
+ * that is using Particle Flow information.
+ */
+
 #include "config.h"
 #if (HAVE_VLNEVAL_INC == 1) && (HAVE_VLNEVAL_LIB == 1)
 
@@ -239,7 +244,7 @@ Config parseArgs(int argc, char** argv)
         ("help,h", "print this help message")
         (
             "branch,b",
-            po::value<std::string>()->default_value("dlee"),
+            po::value<std::string>()->default_value("vlne"),
             "branch to save energy"
         )
         (
