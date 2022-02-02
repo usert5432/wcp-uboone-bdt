@@ -301,8 +301,8 @@ Config parseArgs(int argc, char** argv)
             po::value<std::string>()->default_value("numu"),
             "flavor of inputs [numu|nue]"
         )
-        ("input,i",  po::value<std::string>(), "Input File")
-        ("model,m",  po::value<std::string>()->required(), "Model Directory")
+        ("input,i",  po::value<std::string>(), "input file")
+        ("model,m",  po::value<std::string>()->required(), "model directory")
         ;
 
     po::positional_options_description positional_args;
