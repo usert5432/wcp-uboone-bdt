@@ -6,10 +6,11 @@
 #include "config.h"
 #if (HAVE_VLNEVAL_INC == 1) && (HAVE_VLNEVAL_LIB == 1)
 
+#include <cmath>
 #include <iostream>
-#include <unordered_map>
 #include <string>
 #include <stdexcept>
+#include <unordered_map>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -27,6 +28,7 @@ namespace po = boost::program_options;
  *      need to double check that this value is correct
  */
 constexpr size_t MAX_TRACKS = 30000;
+constexpr double MASK_VALUE = 0.;       // Value to replace NaNs with
 
 struct Config
 {
@@ -204,6 +206,24 @@ void extractVars(const RootVars &rootVars, VarDict &vars)
     extractPFVars(rootVars, vars);
 }
 
+void maskNans(VarDict &vars, double mask)
+{
+    for (auto &item : vars.scalar) {
+        if (! std::isfinite(item.second)) {
+            item.second = mask;
+        }
+    }
+
+    for (auto &item : vars.vector) {
+        for (auto &value : item.second) {
+            if (! std::isfinite(value)) {
+                value = mask;
+            }
+        }
+    }
+
+}
+
 void usage(const char *name, const po::options_description &options)
 {
     std::cout << "USAGE: " << name << " [OPTION..] INPUT" << std::endl;
@@ -365,6 +385,8 @@ void processFile(TFile &file, const Config &config, VLN::VLNEnergyModel &model)
         trees.pf->GetEntry(idx);
 
         extractVars(rootVars, vars);
+        maskNans(vars, MASK_VALUE);
+
         energy = model.predict(vars);
 
         primaryEBranch->Fill();
