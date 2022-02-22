@@ -503,18 +503,21 @@ void processFile(TFile &file, const Config &config, VLN::VLNEnergyModel &model)
 
 int main(int argc, char** argv)
 {
-    std::cout << "Starting..." << std::endl;
-
     const Config config = parseArgs(argc, argv);
     TFile file(config.input.c_str(), "update");
 
     VLN::VLNEnergyModel model(config.model);
 
-    std::cout << "Evaluating energy for file " << config.input << std::endl;
+    std::cout
+        << "Starting energy evaluation"             << std::endl
+        << "  - File: "         << config.input     << std::endl
+        << "  - Model: "        << config.model     << std::endl
+        << "  - Save Branch: "  << config.branch    << std::endl;
+
     processFile(file, config, model);
     file.Write();
 
-    std::cout << "Done" << std::endl;
+    std::cout << "Finished energy evaluation" << std::endl;
 }
 
 #else  /* HAVE_VLNEVAL != 1 */
