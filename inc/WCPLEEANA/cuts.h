@@ -450,6 +450,30 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   return -1;
 }
 
+int get_costheta_bin (float costh) {
+  int nbins = 9;
+  float costheta_binning[nbins+1] = {-1, -.5, 0, .27, .45, .62, .76, .86, .94, 1};
+  if (costh == costheta_binning[0]) { return 0; }
+  for (int i=0;i<nbins;i++) { if (costh >  costheta_binning[i] && costh <= costheta_binning[i+1]) { return i; } }
+  return -1;
+}
+
+int get_Pmuon_bin (float Pmuon) {
+  int nbins = 6;
+  float pmuon_binning[nbins+1] = {0, 180, 300, 450, 770, 1280, 2500};
+  if (Pmuon == pmuon_binning[0]) { return 0; }
+  for (int i=0;i<nbins;i++) { if (Pmuon >  pmuon_binning[i] && Pmuon <= pmuon_binning[i+1]) { return i; } }
+  return -1;
+}
+
+int get_Enu_bin (float Enu) {
+  int nbins = 4;
+  float enu_binning[nbins+1] = {200, 705, 1050, 1570, 4000};
+  if (Enu == enu_binning[0]) { return 0; }
+  for (int i=0;i<nbins;i++) { if (Enu >  enu_binning[i] && Enu <= enu_binning[i+1]) { return i; } }
+  return -1;
+}
+
 int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bin, EvalInfo& eval, PFevalInfo& pfeval, TaggerInfo& tagger, KineInfo& kine){
   for (auto it = map_cut_xs_bin.begin(); it != map_cut_xs_bin.end(); it++){
     TString cut_name = it->first;
@@ -1093,6 +1117,155 @@ int LEEana::get_xs_signal_no(int cut_file, std::map<TString, int>& map_cut_xs_bi
       }
     }
 
+    else if (cut_file == 17){ // Enu, costheta, Pmuon
+
+      int Enu_bin      = get_Enu_bin(eval.truth_nuEnergy);
+      int costheta_bin = get_costheta_bin(costh);
+      int Pmuon_bin    = get_Pmuon_bin(Pmuon);
+      bool pre_cut     = eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && (muonMomentum[3]>0);
+
+      if      (cut_name == "numuCC.inside.Enu0.theta0.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==0 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta0.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==0 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta0.Pmuon.le.2500.gt.300" ) { if (pre_cut && Enu_bin==0 && costheta_bin==0 && Pmuon_bin>=2 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta1.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==1 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta1.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==1 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      //else if (cut_name == "numuCC.inside.Enu0.theta1.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==1 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta1.Pmuon.le.2500.gt.300" ) { if (pre_cut && Enu_bin==0 && costheta_bin==1 && Pmuon_bin>=2 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta2.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==2 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta2.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==2 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta2.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==2 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta2.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==2 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta3.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==3 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta3.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==3 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta3.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==3 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta4.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==4 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta4.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==4 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta4.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==4 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta5.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==5 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta5.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==5 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta5.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==5 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta6.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==6 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta6.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==6 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta6.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==6 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta7.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==7 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta7.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==7 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta7.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==7 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta8.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==0 && costheta_bin==8 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta8.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==0 && costheta_bin==8 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu0.theta8.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==0 && costheta_bin==8 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+
+      else if (cut_name == "numuCC.inside.Enu1.theta0.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==0 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta0.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==0 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta0.Pmuon.le.2500.gt.300" ) { if (pre_cut && Enu_bin==1 && costheta_bin==0 && Pmuon_bin>=2 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta1.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==1 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta1.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==1 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta1.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==1 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta1.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==1 && costheta_bin==1 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta2.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==2 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta2.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==2 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta2.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==2 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta2.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==1 && costheta_bin==2 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta3.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==3 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta3.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==3 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta3.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==1 && costheta_bin==3 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta4.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==4 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta4.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==4 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      //else if (cut_name == "numuCC.inside.Enu1.theta4.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==4 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta4.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==1 && costheta_bin==4 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta5.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==5 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta5.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==5 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta5.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==5 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta5.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==1 && costheta_bin==5 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta6.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==6 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta6.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==6 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta6.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==6 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta6.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==1 && costheta_bin==6 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta7.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==7 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta7.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==7 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta7.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==7 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta7.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==1 && costheta_bin==7 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta8.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==1 && costheta_bin==8 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta8.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==8 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta8.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==1 && costheta_bin==8 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu1.theta8.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==1 && costheta_bin==8 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+
+      else if (cut_name == "numuCC.inside.Enu2.theta0.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==0 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta0.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==0 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta0.Pmuon.le.2500.gt.300" ) { if (pre_cut && Enu_bin==2 && costheta_bin==0 && Pmuon_bin>=2 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta1.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==1 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta1.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==1 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta1.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==1 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta1.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==2 && costheta_bin==1 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta2.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==2 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta2.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==2 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta2.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==2 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta2.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==2 && costheta_bin==2 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta3.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==3 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta3.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==3 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta3.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==2 && costheta_bin==3 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta4.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==4 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta4.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==4 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta4.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==4 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta4.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==2 && costheta_bin==4 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta5.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==5 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta5.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==5 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta5.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==5 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta5.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==2 && costheta_bin==5 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta6.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==6 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta6.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==6 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta6.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==6 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta6.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==2 && costheta_bin==6 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta7.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==7 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta7.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==7 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta7.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==7 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta7.Pmuon.le.1280.gt.770" ) { if (pre_cut && Enu_bin==2 && costheta_bin==7 && Pmuon_bin>=4 && Pmuon_bin<=4) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta7.Pmuon.le.2500.gt.1280") { if (pre_cut && Enu_bin==2 && costheta_bin==7 && Pmuon_bin>=5 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta8.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==2 && costheta_bin==8 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta8.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==8 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta8.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==2 && costheta_bin==8 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta8.Pmuon.le.1280.gt.770" ) { if (pre_cut && Enu_bin==2 && costheta_bin==8 && Pmuon_bin>=4 && Pmuon_bin<=4) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu2.theta8.Pmuon.le.2500.gt.1280") { if (pre_cut && Enu_bin==2 && costheta_bin==8 && Pmuon_bin>=5 && Pmuon_bin<=5) { return number; } }
+
+      else if (cut_name == "numuCC.inside.Enu3.theta0.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==0 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta0.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==0 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta0.Pmuon.le.2500.gt.300" ) { if (pre_cut && Enu_bin==3 && costheta_bin==0 && Pmuon_bin>=2 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta1.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==1 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta1.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==1 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta1.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==1 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta1.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==3 && costheta_bin==1 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta2.Pmuon.le.180.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==2 && Pmuon_bin>=0 && Pmuon_bin<=0) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta2.Pmuon.le.300.gt.180"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==2 && Pmuon_bin>=1 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta2.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==2 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta2.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==3 && costheta_bin==2 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta3.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==3 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta3.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==3 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta3.Pmuon.le.2500.gt.450" ) { if (pre_cut && Enu_bin==3 && costheta_bin==3 && Pmuon_bin>=3 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta4.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==4 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta4.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==4 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta4.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==4 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta4.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==3 && costheta_bin==4 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta5.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==5 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta5.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==5 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta5.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==5 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta5.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==3 && costheta_bin==5 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta6.Pmuon.le.300.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==6 && Pmuon_bin>=0 && Pmuon_bin<=1) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta6.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==6 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta6.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==6 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta6.Pmuon.le.2500.gt.770" ) { if (pre_cut && Enu_bin==3 && costheta_bin==6 && Pmuon_bin>=4 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta7.Pmuon.le.450.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==7 && Pmuon_bin>=0 && Pmuon_bin<=2) { return number; } }
+      //else if (cut_name == "numuCC.inside.Enu3.theta7.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==7 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta7.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==7 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta7.Pmuon.le.1280.gt.770" ) { if (pre_cut && Enu_bin==3 && costheta_bin==7 && Pmuon_bin>=4 && Pmuon_bin<=4) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta7.Pmuon.le.2500.gt.1280") { if (pre_cut && Enu_bin==3 && costheta_bin==7 && Pmuon_bin>=5 && Pmuon_bin<=5) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta8.Pmuon.le.450.gt.0"    ) { if (pre_cut && Enu_bin==3 && costheta_bin==8 && Pmuon_bin>=0 && Pmuon_bin<=2) { return number; } }
+      //else if (cut_name == "numuCC.inside.Enu3.theta8.Pmuon.le.450.gt.300"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==8 && Pmuon_bin>=2 && Pmuon_bin<=2) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta8.Pmuon.le.770.gt.450"  ) { if (pre_cut && Enu_bin==3 && costheta_bin==8 && Pmuon_bin>=3 && Pmuon_bin<=3) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta8.Pmuon.le.1280.gt.770" ) { if (pre_cut && Enu_bin==3 && costheta_bin==8 && Pmuon_bin>=4 && Pmuon_bin<=4) { return number; } }
+      else if (cut_name == "numuCC.inside.Enu3.theta8.Pmuon.le.2500.gt.1280") { if (pre_cut && Enu_bin==3 && costheta_bin==8 && Pmuon_bin>=5 && Pmuon_bin<=5) { return number; } }
+      else { std::cout << "get_xs_signal_no: no cut found!" << std::endl; }
+
+    }
+
   }
   
   return -1;
@@ -1108,6 +1281,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   
   double Emuon = pfeval.truth_muonMomentum[3]*1000; // MeV
   double Ehadron = eval.truth_nuEnergy - pfeval.truth_muonMomentum[3]*1000.; // MeV
+
+  TLorentzVector truth_muonMomentum(pfeval.truth_muonMomentum[0], pfeval.truth_muonMomentum[1], pfeval.truth_muonMomentum[2], pfeval.truth_muonMomentum[3]);
   
   bool flag_truth_inside = false; // in the active volume
   if (eval.truth_vtxX > -1 && eval.truth_vtxX <= 254.3 &&  eval.truth_vtxY >-115.0 && eval.truth_vtxY<=117.0 && eval.truth_vtxZ > 0.6 && eval.truth_vtxZ <=1036.4) flag_truth_inside = true;
@@ -1160,6 +1335,8 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy > 200) map_cuts_flag["Xs_Enu_numuCCinFV"] = true;
   else map_cuts_flag["Xs_Enu_numuCCinFV"] = false;
+
+  map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] = eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && truth_muonMomentum[3]>0 && eval.truth_nuEnergy<=4000 && eval.truth_nuEnergy > 200 && Pmuon > 0 && Pmuon <= 2500;
 
   if(eval.match_completeness_energy>0.1*eval.truth_energyInside && eval.truth_nuPdg==14 && eval.truth_isCC==1 && eval.truth_vtxInside==1 && Emuon > 105.7 && Emuon<=2506) map_cuts_flag["Xs_Emu_numuCCinFV"] = true;
   else map_cuts_flag["Xs_Emu_numuCCinFV"] = false;
@@ -1281,6 +1458,11 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   //float costheta_binning[7]  = {-1,         .27,      .62, .76, .86, .94, 1};		// coarse binning
   //float costheta_binning[3]    = {-1,                   .62,                1};	//very coarse binning
   TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
+  float reco_pmuon = TMath::Sqrt(pow(pfeval.reco_muonMomentum[0],2)+pow(pfeval.reco_muonMomentum[1],2)+pow(pfeval.reco_muonMomentum[2],2))*1000;
+
+  int costheta_bin = get_costheta_bin(TMath::Cos(muonMomentum.Theta()));
+  int Pmu_bin      = get_Pmuon_bin(reco_pmuon);
+  int Enu_bin      = get_Enu_bin(reco_Enu);
   
   if (ch_name == "LEE_FC_nueoverlay"  || ch_name == "nueCC_FC_nueoverlay"){
     if (flag_nueCC && flag_FC && flag_truth_inside) return true;
@@ -1434,6 +1616,259 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       else if (ch_name ==  "numuCC_signal_nu_theta8_FC_overlay" || ch_name ==  "numuCC_background_nu_theta8_FC_overlay") { return (map_cuts_flag["Xs_Ehad_numuCCinFV"]== (ch_name== "numuCC_signal_nu_theta8_FC_overlay")); }
       else return true;
     } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta0_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta0_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta0_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta0_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu0_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta0_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta0_Pmu_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta1_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta1_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta1_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta1_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu0_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta1_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta1_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta2_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta2_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta2_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta2_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu0_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta2_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta2_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta3_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta3_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta3_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta3_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu0_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta3_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta3_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta4_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta4_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta4_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta4_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu0_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta4_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta4_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta5_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta5_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta5_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta5_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu0_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta5_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta5_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta6_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta6_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta6_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta6_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu0_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta6_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta6_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta7_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta7_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta7_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta7_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu0_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta7_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta7_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta8_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta8_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu0_theta8_Pmu_FC_dirt" || ch_name == "numuCC_Enu0_theta8_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu0_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu0_theta8_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta8_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta0_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta0_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta0_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta0_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu1_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta0_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta0_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta1_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta1_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta1_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta1_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu1_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta1_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta1_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta2_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta2_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta2_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta2_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu1_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta2_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta2_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta3_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta3_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta3_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta3_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu1_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta3_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta3_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta4_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta4_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta4_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta4_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu1_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta4_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta4_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta5_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta5_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta5_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta5_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu1_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta5_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta5_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta6_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta6_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta6_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta6_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu1_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta6_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta6_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta7_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta7_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta7_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta7_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu1_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta7_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta7_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta8_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta8_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu1_theta8_Pmu_FC_dirt" || ch_name == "numuCC_Enu1_theta8_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu1_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu1_theta8_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta8_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta0_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta0_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta0_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta0_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu2_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta0_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta0_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta1_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta1_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta1_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta1_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu2_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta1_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta1_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta2_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta2_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta2_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta2_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu2_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta2_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta2_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta3_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta3_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta3_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta3_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu2_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta3_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta3_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta4_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta4_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta4_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta4_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu2_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta4_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta4_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta5_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta5_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta5_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta5_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu2_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta5_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta5_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta6_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta6_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta6_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta6_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu2_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta6_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta6_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta7_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta7_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta7_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta7_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu2_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta7_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta7_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta8_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta8_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu2_theta8_Pmu_FC_dirt" || ch_name == "numuCC_Enu2_theta8_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu2_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu2_theta8_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta8_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta0_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta0_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta0_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta0_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu3_theta0_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta0_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta0_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta1_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta1_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta1_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta1_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu3_theta1_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta1_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta1_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta2_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta2_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta2_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta2_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu3_theta2_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta2_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta2_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta3_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta3_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta3_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta3_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu3_theta3_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta3_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta3_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta4_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta4_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta4_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta4_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu3_theta4_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta4_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta4_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta5_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta5_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta5_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta5_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu3_theta5_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta5_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta5_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+
+  }else if (ch_name == "numuCC_signal_Enu3_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta6_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta6_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta6_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta6_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu3_theta6_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta6_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta6_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta7_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta7_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta7_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta7_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu3_theta7_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta7_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta7_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta8_Pmu_FC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta8_Pmu_FC_ext"         || ch_name =="BG_numuCC_Enu3_theta8_Pmu_FC_dirt" || ch_name == "numuCC_Enu3_theta8_Pmu_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu3_theta8_Pmu_FC_overlay" || ch_name == "numuCC_background_Enu3_theta8_Pmu_FC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta8_Pmu_FC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Pmu0_FC_overlay" || ch_name == "numuCC_background_Pmu0_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu0_FC_ext"         || ch_name =="BG_numuCC_Pmu0_FC_dirt" || ch_name == "numuCC_Pmu0_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==0) {
+      if      (ch_name == "numuCC_signal_Pmu0_FC_overlay" || ch_name == "numuCC_background_Pmu0_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu0_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu1_FC_overlay" || ch_name == "numuCC_background_Pmu1_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu1_FC_ext"         || ch_name =="BG_numuCC_Pmu1_FC_dirt" || ch_name == "numuCC_Pmu1_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==1) {
+      if      (ch_name == "numuCC_signal_Pmu1_FC_overlay" || ch_name == "numuCC_background_Pmu1_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu1_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu2_FC_overlay" || ch_name == "numuCC_background_Pmu2_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu2_FC_ext"         || ch_name =="BG_numuCC_Pmu2_FC_dirt" || ch_name == "numuCC_Pmu2_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==2) {
+      if      (ch_name == "numuCC_signal_Pmu2_FC_overlay" || ch_name == "numuCC_background_Pmu2_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu2_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu3_FC_overlay" || ch_name == "numuCC_background_Pmu3_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu3_FC_ext"         || ch_name =="BG_numuCC_Pmu3_FC_dirt" || ch_name == "numuCC_Pmu3_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==3) {
+      if      (ch_name == "numuCC_signal_Pmu3_FC_overlay" || ch_name == "numuCC_background_Pmu3_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu3_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu4_FC_overlay" || ch_name == "numuCC_background_Pmu4_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu4_FC_ext"         || ch_name =="BG_numuCC_Pmu4_FC_dirt" || ch_name == "numuCC_Pmu4_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==4) {
+      if      (ch_name == "numuCC_signal_Pmu4_FC_overlay" || ch_name == "numuCC_background_Pmu4_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu4_FC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu5_FC_overlay" || ch_name == "numuCC_background_Pmu5_FC_overlay"
+         || ch_name == "BG_numuCC_Pmu5_FC_ext"         || ch_name =="BG_numuCC_Pmu5_FC_dirt" || ch_name == "numuCC_Pmu5_FC_bnb"){
+    if (flag_numuCC && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==5) {
+      if      (ch_name == "numuCC_signal_Pmu5_FC_overlay" || ch_name == "numuCC_background_Pmu5_FC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu5_FC_overlay")); }
+      else return true;
+    }  else return false;
   }else if (ch_name == "numuCC_theta_all_0p_FC_overlay" || ch_name == "BG_numuCC_theta_all_0p_FC_ext" || ch_name =="BG_numuCC_theta_all_0p_FC_dirt" || ch_name == "numuCC_theta_all_0p_FC_bnb") {
     if (flag_numuCC && flag_numuCC_1mu0p && flag_FC && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
     else return false;
@@ -1551,6 +1986,258 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
       else if (ch_name ==  "numuCC_signal_nu_theta8_PC_overlay" || ch_name ==  "numuCC_background_nu_theta8_PC_overlay") { return (map_cuts_flag["Xs_Ehad_numuCCinFV"]== (ch_name== "numuCC_signal_nu_theta8_PC_overlay")); }
       else return true;
     } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta0_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta0_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta0_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta0_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu0_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta0_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta0_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta1_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta1_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta1_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta1_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu0_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta1_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta1_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta2_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta2_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta2_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta2_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu0_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta2_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta2_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta3_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta3_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta3_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta3_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu0_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta3_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta3_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta4_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta4_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta4_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta4_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu0_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta4_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta4_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta5_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta5_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta5_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta5_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu0_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta5_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta5_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta6_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta6_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta6_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta6_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu0_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta6_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta6_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta7_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta7_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta7_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta7_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu0_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta7_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta7_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu0_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta8_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu0_theta8_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu0_theta8_Pmu_PC_dirt" || ch_name == "numuCC_Enu0_theta8_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==0 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu0_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu0_theta8_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu0_theta8_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta0_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta0_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta0_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta0_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu1_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta0_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta0_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta1_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta1_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta1_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta1_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu1_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta1_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta1_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta2_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta2_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta2_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta2_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu1_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta2_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta2_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta3_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta3_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta3_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta3_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu1_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta3_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta3_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta4_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta4_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta4_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta4_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu1_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta4_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta4_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta5_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta5_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta5_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta5_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu1_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta5_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta5_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta6_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta6_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta6_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta6_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu1_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta6_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta6_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta7_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta7_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta7_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta7_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu1_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta7_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta7_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu1_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta8_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu1_theta8_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu1_theta8_Pmu_PC_dirt" || ch_name == "numuCC_Enu1_theta8_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==1 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu1_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu1_theta8_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu1_theta8_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta0_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta0_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta0_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta0_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu2_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta0_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta0_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta1_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta1_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta1_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta1_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu2_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta1_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta1_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta2_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta2_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta2_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta2_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu2_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta2_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta2_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta3_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta3_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta3_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta3_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu2_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta3_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta3_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta4_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta4_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta4_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta4_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu2_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta4_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta4_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta5_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta5_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta5_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta5_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu2_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta5_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta5_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta6_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta6_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta6_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta6_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu2_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta6_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta6_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta7_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta7_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta7_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta7_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu2_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta7_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta7_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu2_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta8_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu2_theta8_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu2_theta8_Pmu_PC_dirt" || ch_name == "numuCC_Enu2_theta8_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==2 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu2_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu2_theta8_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu2_theta8_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta0_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta0_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta0_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta0_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==0) {
+      if      (ch_name == "numuCC_signal_Enu3_theta0_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta0_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta0_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta1_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta1_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta1_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta1_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==1) {
+      if      (ch_name == "numuCC_signal_Enu3_theta1_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta1_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta1_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta2_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta2_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta2_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta2_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==2) {
+      if      (ch_name == "numuCC_signal_Enu3_theta2_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta2_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta2_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta3_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta3_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta3_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta3_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==3) {
+      if      (ch_name == "numuCC_signal_Enu3_theta3_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta3_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta3_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta4_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta4_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta4_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta4_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==4) {
+      if      (ch_name == "numuCC_signal_Enu3_theta4_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta4_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta4_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta5_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta5_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta5_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta5_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==5) {
+      if      (ch_name == "numuCC_signal_Enu3_theta5_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta5_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta5_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta6_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta6_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta6_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta6_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==6) {
+      if      (ch_name == "numuCC_signal_Enu3_theta6_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta6_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta6_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta7_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta7_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta7_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta7_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==7) {
+      if      (ch_name == "numuCC_signal_Enu3_theta7_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta7_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta7_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Enu3_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta8_Pmu_PC_overlay"
+         || ch_name == "BG_numuCC_Enu3_theta8_Pmu_PC_ext"         || ch_name =="BG_numuCC_Enu3_theta8_Pmu_PC_dirt" || ch_name == "numuCC_Enu3_theta8_Pmu_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Enu_bin==3 && costheta_bin==8) {
+      if      (ch_name == "numuCC_signal_Enu3_theta8_Pmu_PC_overlay" || ch_name == "numuCC_background_Enu3_theta8_Pmu_PC_overlay") { return (map_cuts_flag["Xs_Enu_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Enu3_theta8_Pmu_PC_overlay")); }
+      else return true;
+    } else return false;
+  }else if (ch_name == "numuCC_signal_Pmu0_PC_overlay" || ch_name == "numuCC_background_Pmu0_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu0_PC_ext"         || ch_name =="BG_numuCC_Pmu0_PC_dirt" || ch_name == "numuCC_Pmu0_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==0) {
+      if      (ch_name == "numuCC_signal_Pmu0_PC_overlay" || ch_name == "numuCC_background_Pmu0_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu0_PC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu1_PC_overlay" || ch_name == "numuCC_background_Pmu1_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu1_PC_ext"         || ch_name =="BG_numuCC_Pmu1_PC_dirt" || ch_name == "numuCC_Pmu1_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==1) {
+      if      (ch_name == "numuCC_signal_Pmu1_PC_overlay" || ch_name == "numuCC_background_Pmu1_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu1_PC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu2_PC_overlay" || ch_name == "numuCC_background_Pmu2_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu2_PC_ext"         || ch_name =="BG_numuCC_Pmu2_PC_dirt" || ch_name == "numuCC_Pmu2_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==2) {
+      if      (ch_name == "numuCC_signal_Pmu2_PC_overlay" || ch_name == "numuCC_background_Pmu2_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu2_PC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu3_PC_overlay" || ch_name == "numuCC_background_Pmu3_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu3_PC_ext"         || ch_name =="BG_numuCC_Pmu3_PC_dirt" || ch_name == "numuCC_Pmu3_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==3) {
+      if      (ch_name == "numuCC_signal_Pmu3_PC_overlay" || ch_name == "numuCC_background_Pmu3_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu3_PC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu4_PC_overlay" || ch_name == "numuCC_background_Pmu4_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu4_PC_ext"         || ch_name =="BG_numuCC_Pmu4_PC_dirt" || ch_name == "numuCC_Pmu4_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==4) {
+      if      (ch_name == "numuCC_signal_Pmu4_PC_overlay" || ch_name == "numuCC_background_Pmu4_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu4_PC_overlay")); }
+      else return true;
+    }  else return false;
+  }else if (ch_name == "numuCC_signal_Pmu5_PC_overlay" || ch_name == "numuCC_background_Pmu5_PC_overlay"
+         || ch_name == "BG_numuCC_Pmu5_PC_ext"         || ch_name =="BG_numuCC_Pmu5_PC_dirt" || ch_name == "numuCC_Pmu5_PC_bnb"){
+    if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0) && Pmu_bin==5) {
+      if      (ch_name == "numuCC_signal_Pmu5_PC_overlay" || ch_name == "numuCC_background_Pmu5_PC_overlay") { return (map_cuts_flag["Xs_Pmu_numuCCinFV"] == (ch_name=="numuCC_signal_Pmu5_PC_overlay")); }
+      else return true;
+    }  else return false;
   }else if (ch_name == "numuCC_theta_all_PC_overlay" || ch_name == "BG_numuCC_theta_all_PC_ext" || ch_name =="BG_numuCC_theta_all_PC_dirt" || ch_name == "numuCC_theta_all_PC_bnb") {
     if (flag_numuCC && (!flag_FC) && (!flag_nueCC) && (pfeval.reco_muonMomentum[3]>0)) return true;
     else return false;
