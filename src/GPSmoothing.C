@@ -50,7 +50,7 @@ std::vector<std::string> split(std::string line, std::string delimiter){
 void GPSmoothing (TVectorD* vec_mean, TMatrixD* cov_mat_bootstrapping, std::string input_filename, int smoothing_par=0) {
 
 
-std::cout << "begin GPSmoothing" << std::endl;
+//std::cout << "begin GPSmoothing" << std::endl;
 
   int nbins[5];
   std::vector<bool> log_scales;
@@ -217,7 +217,7 @@ std::cout << "begin GPSmoothing" << std::endl;
       }
     }
   }
-std::cout << "end smoothing" << std::endl;
+//std::cout << "end smoothing" << std::endl;
 }
 
 
