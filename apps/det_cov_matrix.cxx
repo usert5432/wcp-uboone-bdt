@@ -28,7 +28,7 @@ int main( int argc, char** argv )
   }
   int run = 1; // run 1 ...
   bool flag_osc = false;
-  bool flag_gp = false; // gaussian process smoothing
+  int flag_gp = 0; // gaussian process smoothing
   for (Int_t i=1;i!=argc;i++){
     switch(argv[i][1]){
     case 'r':
@@ -38,7 +38,7 @@ int main( int argc, char** argv )
       flag_osc = atoi(&argv[i][2]); // which run period
       break;
     case 'g':
-      flag_gp = atoi(&argv[i][2]); // 1: on, 0: off
+      flag_gp = atoi(&argv[i][2]); // 1: on, 0: off.  2 = off but do GPSmoothing debugging, 3 = smoothing and debugging
       break;
     }
   }

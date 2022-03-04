@@ -1,3 +1,8 @@
+/*
+ * An application to evaluate the Deep Learning energy estimator,
+ * that is using Particle Flow information.
+ */
+
 #include "config.h"
 #if (HAVE_VLNEVAL_INC == 1) && (HAVE_VLNEVAL_LIB == 1)
 
@@ -30,6 +35,7 @@ struct Config
     std::string model;
     bool isNue;
     bool isNumu;
+    bool fullContain;
 };
 
 struct Trees
@@ -204,6 +210,43 @@ void usage(const char *name, const po::options_description &options)
     std::cout << options << std::endl;
 }
 
+void parseVMFlavor(Config &config, const po::variables_map &vm)
+{
+    const std::string flavor = vm["flavor"].as<std::string>();
+
+    config.isNue  = false;
+    config.isNumu = false;
+
+    if (flavor == "numu") {
+        config.isNue  = false;
+        config.isNumu = true;
+    }
+    else if (flavor == "nue") {
+        config.isNue  = true;
+        config.isNumu = false;
+    }
+    else {
+        throw std::runtime_error("Unknown flavor: '" + flavor + "'");
+    }
+}
+
+void parseVMContainment(Config &config, const po::variables_map &vm)
+{
+    const std::string contain = vm["contain"].as<std::string>();
+
+    config.fullContain = true;
+
+    if (contain == "full") {
+        config.fullContain = true;
+    }
+    else if (contain == "partial") {
+        config.fullContain = false;
+    }
+    else {
+        throw std::runtime_error("Unknown containment: '" + contain + "'");
+    }
+}
+
 Config parseVM(po::variables_map vm)
 {
     Config result;
@@ -212,22 +255,8 @@ Config parseVM(po::variables_map vm)
     result.branch = vm["branch"].as<std::string>();
     result.model  = vm["model"].as<std::string>();
 
-    result.isNue  = false;
-    result.isNumu = false;
-
-    const std::string flavor = vm["flavor"].as<std::string>();
-
-    if (flavor == "numu") {
-        result.isNue  = false;
-        result.isNumu = true;
-    }
-    else if (flavor == "nue") {
-        result.isNue  = true;
-        result.isNumu = false;
-    }
-    else {
-        throw std::runtime_error("Unknown flavor: '" + flavor + "'");
-    }
+    parseVMFlavor(result, vm);
+    parseVMContainment(result, vm);
 
     return result;
 }
@@ -239,8 +268,13 @@ Config parseArgs(int argc, char** argv)
         ("help,h", "print this help message")
         (
             "branch,b",
-            po::value<std::string>()->default_value("dlee"),
+            po::value<std::string>()->default_value("vlne"),
             "branch to save energy"
+        )
+        (
+            "contain",
+            po::value<std::string>()->default_value("full"),
+            "event containment [full|partial]"
         )
         (
             "flavor",
@@ -262,12 +296,13 @@ Config parseArgs(int argc, char** argv)
             .run(),
         vm
     );
-    po::notify(vm);
 
     if (vm.count("help")) {
         usage(argv[0], options);
         exit(0);
     }
+
+    po::notify(vm);
 
     if (vm.count("input") == 0) {
         usage(argv[0], options);
@@ -281,8 +316,10 @@ Config parseArgs(int argc, char** argv)
 VarDict setupVarDict(const Config &config)
 {
     VarDict result;
+
     result.scalar["config.flavor.numu"] = config.isNumu;
     result.scalar["config.flavor.nue"]  = config.isNue;
+    result.scalar["config.contain.full"] = config.fullContain;
 
     return result;
 }
