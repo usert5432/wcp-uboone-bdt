@@ -265,7 +265,15 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   }else if (var_name == "muon_KE"){
       return pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
   }else if (var_name == "reco_Emuon"){
-      return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV  
+      return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV 
+  }else if(var_name == "reco_Emuon_dl"){
+      if (eval.match_isFC) {
+        // std::cout << "vlne_numu_full_primaryE: " << kine.vlne_numu_full_primaryE << std::endl;
+        return 1000.0*kine.vlne_numu_full_primaryE;
+      }
+      else {
+        return 1000.0*kine.vlne_numu_partial_primaryE;
+      }
   }else if (var_name == "muon_momentum"){
       if (pfeval.reco_muonMomentum[3] < 0) { return -1; }
       float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
@@ -311,6 +319,11 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       /*     //if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); */ 
       /* } */
     // return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
+  }else if (var_name == "Ehadron_dl"){
+    if (eval.match_isFC)
+      return 1000.0*(kine.vlne_numu_full_totalE - kine.vlne_numu_full_primaryE);
+    else 
+      return 1000.0*(kine.vlne_numu_partial_totalE - kine.vlne_numu_partial_primaryE);
   }else if (var_name == "Q2"){
     Float_t Enu = get_reco_Enu_corr(kine, flag_data);
     Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
