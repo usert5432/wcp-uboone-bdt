@@ -530,15 +530,15 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_KINEvars_cv->SetBranchStatus("kine_pio_phi_2",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_angle",1);
-  if (T_KINEvars_cv->GetBranch("vlne_numu_full_primaryE")) {
-    T_KINEvars_cv->SetBranchStatus("vlne_numu_full_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_numu_full_totalE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_numu_partial_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_numu_partial_totalE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_nue_full_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_nue_full_totalE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_totalE",1);
+  if (T_KINEvars_cv->GetBranch("vlne_v4_numu_full_primaryE")) {
+    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_full_primaryE",1);
+    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_full_totalE",1);
+    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_partial_primaryE",1);
+    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_partial_totalE",1);
+    // T_KINEvars_cv->SetBranchStatus("vlne_nue_full_primaryE",1);
+    // T_KINEvars_cv->SetBranchStatus("vlne_nue_full_totalE",1);
+    // T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_primaryE",1);
+    // T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_totalE",1);
   }
 
   T_PFeval_cv->SetBranchStatus("*",0);
@@ -670,15 +670,15 @@ void LEEana::CovMatrix::fill_det_histograms(std::map<TString, TH1D*> map_filenam
   T_KINEvars_det->SetBranchStatus("kine_pio_phi_2",1);
   T_KINEvars_det->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars_det->SetBranchStatus("kine_pio_angle",1);
-  if (T_KINEvars_det->GetBranch("vlne_numu_full_primaryE")) {
-    T_KINEvars_det->SetBranchStatus("vlne_numu_full_primaryE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_numu_full_totalE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_numu_partial_primaryE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_numu_partial_totalE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_nue_full_primaryE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_nue_full_totalE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_nue_partial_primaryE",1);
-    T_KINEvars_det->SetBranchStatus("vlne_nue_partial_totalE",1);
+  if (T_KINEvars_det->GetBranch("vlne_v4_numu_full_primaryE")) {
+    T_KINEvars_det->SetBranchStatus("vlne_v4_numu_full_primaryE",1);
+    T_KINEvars_det->SetBranchStatus("vlne_v4_numu_full_totalE",1);
+    T_KINEvars_det->SetBranchStatus("vlne_v4_numu_partial_primaryE",1);
+    T_KINEvars_det->SetBranchStatus("vlne_v4_numu_partial_totalE",1);
+    // T_KINEvars_det->SetBranchStatus("vlne_nue_full_primaryE",1);
+    // T_KINEvars_det->SetBranchStatus("vlne_nue_full_totalE",1);
+    // T_KINEvars_det->SetBranchStatus("vlne_nue_partial_primaryE",1);
+    // T_KINEvars_det->SetBranchStatus("vlne_nue_partial_totalE",1);
   }
 
   T_PFeval_det->SetBranchStatus("*",0);

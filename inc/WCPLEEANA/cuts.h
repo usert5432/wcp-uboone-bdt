@@ -5,6 +5,7 @@
 #include "TCut.h"
 #include "TString.h"
 #include "TLorentzVector.h"
+#include "TH1F.h"
 
 #include "tagger.h"
 #include "kine.h"
@@ -13,6 +14,7 @@
 
 #include <map>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -88,6 +90,8 @@ namespace LEEana{
   bool is_truth_numuCC_inside(EvalInfo& eval);
 
   int mcc8_pmuon_costheta_bin(float pmuon, float costh);
+  int alt_var_index(std::string var1, float val1, std::string var2, float val2, std::string config="./configurations/alt_var_xbins.txt");
+  std::map<std::string, TH1F> map_var_hist; // variable name and binning
 }
 
 
@@ -265,16 +269,20 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   }else if (var_name == "muon_KE"){
       return pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
   }else if (var_name == "reco_Emuon"){
-      return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV 
-  }else if(var_name == "reco_Emuon_dl"){
+      return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV
+  }
+  else if(var_name == "reco_Emuon_hybrid"){
       if (eval.match_isFC) {
         // std::cout << "vlne_numu_full_primaryE: " << kine.vlne_numu_full_primaryE << std::endl;
-        return 1000.0*kine.vlne_numu_full_primaryE;
+        return 1000.0*kine.vlne_v4_numu_full_primaryE;
       }
       else {
-        return 1000.0*kine.vlne_numu_partial_primaryE;
+        return 1000.0*pfeval.reco_muonMomentum[3];
       }
-  }else if (var_name == "muon_momentum"){
+  }else if(var_name == "reco_Emuon_dlnew"){
+      return 1000.0*kine.vlne_v4_numu_full_primaryE;
+  }
+  else if (var_name == "muon_momentum"){
       if (pfeval.reco_muonMomentum[3] < 0) { return -1; }
       float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
       return (TMath::Sqrt(pow(KE_muon,2) + 2*KE_muon*105.66));
@@ -319,15 +327,22 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       /*     //if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); */ 
       /* } */
     // return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
-  }else if (var_name == "Ehadron_dl"){
+  }else if (var_name == "Ehadron_hybrid"){
     if (eval.match_isFC)
-      return 1000.0*(kine.vlne_numu_full_totalE - kine.vlne_numu_full_primaryE);
-    else 
-      return 1000.0*(kine.vlne_numu_partial_totalE - kine.vlne_numu_partial_primaryE);
-  }else if (var_name == "Q2"){
+      return 1000.0*(kine.vlne_v4_numu_full_totalE - kine.vlne_v4_numu_full_primaryE);
+    else {
+      if (pfeval.reco_muonMomentum[3]>0)
+        return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+      else
+        return -1000;
+    }
+  }else if (var_name == "Ehadron_dlnew"){
+      return 1000.0*(kine.vlne_v4_numu_full_totalE - kine.vlne_v4_numu_full_primaryE);
+  }
+  else if (var_name == "Q2"){
     Float_t Enu = get_reco_Enu_corr(kine, flag_data);
     Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;
-    Float_t Ehadron = Enu - Emu;
+    // Float_t Ehadron = Enu - Emu;
     Float_t Pmu = TMath::Sqrt(Emu*Emu - 105.658*105.658);
     TLorentzVector muonMomentum(pfeval.reco_muonMomentum[0], pfeval.reco_muonMomentum[1], pfeval.reco_muonMomentum[2], pfeval.reco_muonMomentum[3]);
     Float_t cosTheta = TMath::Cos(muonMomentum.Theta());
@@ -433,6 +448,20 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
     else if (costh>=0.94 and costh<=1.00){ return pmuon_MeV + 1500*8; }
 
     return -10000;
+  }
+  else if (var_name == "muon_momentum_costheta"){
+    float muon_momentum = get_kine_var(kine, eval, pfeval, tagger, flag_data , "muon_momentum");
+    float costheta = get_kine_var(kine, eval, pfeval, tagger, flag_data , "muon_costheta");
+    int bin = alt_var_index("muon_momentum",muon_momentum, "costheta", costheta);
+    return bin;
+  }
+  else if (var_name == "Ehad_muon_costheta"){
+    float Ehadron = -1000;
+    if (pfeval.reco_muonMomentum[3]>0)
+      Ehadron = get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
+    float costheta = get_kine_var(kine, eval, pfeval, tagger, flag_data , "muon_costheta");
+    int bin = alt_var_index("Ehadron",Ehadron, "costheta", costheta);
+    return bin;
   }
   else if (var_name == "reco_concatenated_Ehad"){
 
@@ -3187,5 +3216,40 @@ int LEEana::mcc8_pmuon_costheta_bin(float pmuon, float costh){
     }
     else return -10000;
 } 
+
+// return bin number of a variable in alternative binning choice
+// bin edges are defined in config (default: ./configurations/alt_var_xbins.txt)
+int LEEana::alt_var_index(std::string var1, float val1, std::string var2, float val2, std::string config){ 
+
+  if (map_var_hist.empty()) {
+    // load all variables from configuration
+    std::vector<float> xbins;
+    float val;
+    std::string varname, line;
+    std::ifstream in(config);
+    while ( std::getline(in, line) ) {
+      std::istringstream ss(line);
+      ss >> varname;
+      xbins.clear();
+      while (ss >> val) {
+        xbins.push_back(val);
+      }
+      map_var_hist[varname] = TH1F(varname.c_str(), varname.c_str(), xbins.size()-1, xbins.data());
+    }
+    in.close();
+  }
+
+  auto varhist1 = map_var_hist[var1];
+  auto varhist2 = map_var_hist[var2];
+  int bin1 = varhist1.FindBin(val1);  
+  int bin2 = varhist2.FindBin(val2);
+  int nBins1 = varhist1.GetNbinsX();
+  int nBins2 = varhist2.GetNbinsX();
+  if( bin1>0 and bin1<=nBins1 and bin2>0 and bin2<=nBins2){
+    return bin1 + (bin2-1)*nBins1;
+  }
+
+  return -1;
+}
 
 #endif

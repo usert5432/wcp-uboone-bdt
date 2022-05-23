@@ -577,15 +577,15 @@ void LEEana::CovMatrix::get_data_events_info(TString input_filename, std::map<TS
   T_KINEvars->SetBranchStatus("kine_pio_phi_2",1);
   T_KINEvars->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars->SetBranchStatus("kine_pio_angle",1);
-  if (T_KINEvars->GetBranch("vlne_numu_full_primaryE")) {
-    T_KINEvars->SetBranchStatus("vlne_numu_full_primaryE",1);
-    T_KINEvars->SetBranchStatus("vlne_numu_full_totalE",1);
-    T_KINEvars->SetBranchStatus("vlne_numu_partial_primaryE",1);
-    T_KINEvars->SetBranchStatus("vlne_numu_partial_totalE",1);
-    T_KINEvars->SetBranchStatus("vlne_nue_full_primaryE",1);
-    T_KINEvars->SetBranchStatus("vlne_nue_full_totalE",1);
-    T_KINEvars->SetBranchStatus("vlne_nue_partial_primaryE",1);
-    T_KINEvars->SetBranchStatus("vlne_nue_partial_totalE",1);
+  if (T_KINEvars->GetBranch("vlne_v4_numu_full_primaryE")) {
+    T_KINEvars->SetBranchStatus("vlne_v4_numu_full_primaryE",1);
+    T_KINEvars->SetBranchStatus("vlne_v4_numu_full_totalE",1);
+    T_KINEvars->SetBranchStatus("vlne_v4_numu_partial_primaryE",1);
+    T_KINEvars->SetBranchStatus("vlne_v4_numu_partial_totalE",1);
+    // T_KINEvars->SetBranchStatus("vlne_nue_full_primaryE",1);
+    // T_KINEvars->SetBranchStatus("vlne_nue_full_totalE",1);
+    // T_KINEvars->SetBranchStatus("vlne_nue_partial_primaryE",1);
+    // T_KINEvars->SetBranchStatus("vlne_nue_partial_totalE",1);
   }
 
   T_PFeval->SetBranchStatus("*",0);

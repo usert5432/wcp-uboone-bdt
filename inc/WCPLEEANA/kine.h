@@ -24,14 +24,14 @@ struct KineInfo{
 
   // DL energy
   bool has_dl_ee;
-  Float_t vlne_numu_full_primaryE; // muon energy for FC
-  Float_t vlne_numu_full_totalE; // muon neutrino energy for FC
-  Float_t vlne_numu_partial_primaryE; // PC
-  Float_t vlne_numu_partial_totalE; // PC
-  Float_t vlne_nue_full_primaryE; // electron energy for FC
-  Float_t vlne_nue_full_totalE; // electron neutrino energy for FC
-  Float_t vlne_nue_partial_primaryE; // PC
-  Float_t vlne_nue_partial_totalE; // PC
+  Float_t vlne_v4_numu_full_primaryE; // muon energy for FC
+  Float_t vlne_v4_numu_full_totalE; // muon neutrino energy for FC
+  Float_t vlne_v4_numu_partial_primaryE; // PC
+  Float_t vlne_v4_numu_partial_totalE; // PC
+  // Float_t vlne_nue_full_primaryE; // electron energy for FC
+  // Float_t vlne_nue_full_totalE; // electron neutrino energy for FC
+  // Float_t vlne_nue_partial_primaryE; // PC
+  // Float_t vlne_nue_partial_totalE; // PC
 
 };
 
@@ -59,14 +59,14 @@ void LEEana::clear_kine_info(KineInfo& tagger_info){
   tagger_info.kine_pio_phi_2=0;
   tagger_info.kine_pio_dis_2=0;
   tagger_info.kine_pio_angle=0;
-  tagger_info.vlne_numu_full_primaryE=0;
-  tagger_info.vlne_numu_full_totalE=0;
-  tagger_info.vlne_numu_partial_primaryE=0;
-  tagger_info.vlne_numu_partial_totalE=0;
-  tagger_info.vlne_nue_full_primaryE=0;
-  tagger_info.vlne_nue_full_totalE=0;
-  tagger_info.vlne_nue_partial_primaryE=0;
-  tagger_info.vlne_nue_partial_totalE=0;
+  tagger_info.vlne_v4_numu_full_primaryE=0;
+  tagger_info.vlne_v4_numu_full_totalE=0;
+  tagger_info.vlne_v4_numu_partial_primaryE=0;
+  tagger_info.vlne_v4_numu_partial_totalE=0;
+  // tagger_info.vlne_nue_full_primaryE=0;
+  // tagger_info.vlne_nue_full_totalE=0;
+  // tagger_info.vlne_nue_partial_primaryE=0;
+  // tagger_info.vlne_nue_partial_totalE=0;
 }
 
 void LEEana::set_tree_address(TTree *tree0, KineInfo& tagger_info){
@@ -90,15 +90,15 @@ void LEEana::set_tree_address(TTree *tree0, KineInfo& tagger_info){
   tree0->SetBranchAddress("kine_pio_angle", &tagger_info.kine_pio_angle);
 
   tagger_info.has_dl_ee = false;
-  if (tree0->GetBranch("vlne_numu_full_primaryE")) {
-    tree0->SetBranchAddress("vlne_numu_full_primaryE", &tagger_info.vlne_numu_full_primaryE);
-    tree0->SetBranchAddress("vlne_numu_full_totalE", &tagger_info.vlne_numu_full_totalE);
-    tree0->SetBranchAddress("vlne_numu_partial_primaryE", &tagger_info.vlne_numu_partial_primaryE);
-    tree0->SetBranchAddress("vlne_numu_partial_totalE", &tagger_info.vlne_numu_partial_totalE);
-    tree0->SetBranchAddress("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE);
-    tree0->SetBranchAddress("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE);
-    tree0->SetBranchAddress("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE);
-    tree0->SetBranchAddress("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE);
+  if (tree0->GetBranch("vlne_v4_numu_full_primaryE")) {
+    tree0->SetBranchAddress("vlne_v4_numu_full_primaryE", &tagger_info.vlne_v4_numu_full_primaryE);
+    tree0->SetBranchAddress("vlne_v4_numu_full_totalE", &tagger_info.vlne_v4_numu_full_totalE);
+    tree0->SetBranchAddress("vlne_v4_numu_partial_primaryE", &tagger_info.vlne_v4_numu_partial_primaryE);
+    tree0->SetBranchAddress("vlne_v4_numu_partial_totalE", &tagger_info.vlne_v4_numu_partial_totalE);
+    // tree0->SetBranchAddress("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE);
+    // tree0->SetBranchAddress("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE);
+    // tree0->SetBranchAddress("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE);
+    // tree0->SetBranchAddress("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE);
     tagger_info.has_dl_ee = true;
   }
 };
@@ -124,14 +124,14 @@ void LEEana::put_tree_address(TTree *tree0, KineInfo& tagger_info){
   tree0->Branch("kine_pio_angle", &tagger_info.kine_pio_angle,"data/F");
 
   if (tagger_info.has_dl_ee){
-    tree0->Branch("vlne_numu_full_primaryE", &tagger_info.vlne_numu_full_primaryE,"data/F");
-    tree0->Branch("vlne_numu_full_totalE", &tagger_info.vlne_numu_full_totalE,"data/F");
-    tree0->Branch("vlne_numu_partial_primaryE", &tagger_info.vlne_numu_partial_primaryE,"data/F");
-    tree0->Branch("vlne_numu_partial_totalE", &tagger_info.vlne_numu_partial_totalE,"data/F");
-    tree0->Branch("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE,"data/F");
-    tree0->Branch("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE,"data/F");
-    tree0->Branch("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE,"data/F");
-    tree0->Branch("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE,"data/F");
+    tree0->Branch("vlne_v4_numu_full_primaryE", &tagger_info.vlne_v4_numu_full_primaryE,"data/F");
+    tree0->Branch("vlne_v4_numu_full_totalE", &tagger_info.vlne_v4_numu_full_totalE,"data/F");
+    tree0->Branch("vlne_v4_numu_partial_primaryE", &tagger_info.vlne_v4_numu_partial_primaryE,"data/F");
+    tree0->Branch("vlne_v4_numu_partial_totalE", &tagger_info.vlne_v4_numu_partial_totalE,"data/F");
+    // tree0->Branch("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE,"data/F");
+    // tree0->Branch("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE,"data/F");
+    // tree0->Branch("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE,"data/F");
+    // tree0->Branch("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE,"data/F");
   }
 };
 
