@@ -273,13 +273,13 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   }
   else if(var_name == "reco_Emuon_hybrid"){
       if (eval.match_isFC) {
-        // std::cout << "vlne_numu_full_primaryE: " << kine.vlne_numu_full_primaryE << std::endl;
         return 1000.0*kine.vlne_v4_numu_full_primaryE;
       }
       else {
         return 1000.0*pfeval.reco_muonMomentum[3];
       }
   }else if(var_name == "reco_Emuon_dlnew"){
+      // std::cout << "vlne_v4_numu_full_primaryE: " << kine.vlne_v4_numu_full_primaryE << std::endl;
       return 1000.0*kine.vlne_v4_numu_full_primaryE;
   }
   else if (var_name == "muon_momentum"){
