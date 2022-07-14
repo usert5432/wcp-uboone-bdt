@@ -19,6 +19,89 @@
 #include <vector>
 #include <algorithm>
 
+#define DLEE_IF_ELSE_BRANCH(version, name)                              \
+    else if (name == "Enu_vlne_" #version) {                            \
+        if (eval.match_isFC) {                                          \
+            return 1000.0 * kine.vlne_##version##_numu_full_totalE;     \
+        }                                                               \
+        else {                                                          \
+            return 1000.0 * kine.vlne_##version##_numu_partial_totalE;  \
+        }                                                               \
+    }                                                                   \
+    else if (name == "Enu_vlne_fc_" #version) {                         \
+        return 1000.0 * kine.vlne_##version##_numu_full_totalE;         \
+    }                                                                   \
+    else if (name == "Enu_vlne_pc_" #version) {                         \
+        return 1000.0 * kine.vlne_##version##_numu_partial_totalE;      \
+    }                                                                   \
+    else if (name == "Emuon_vlne_" #version) {                          \
+        if (eval.match_isFC) {                                          \
+            return 1000.0 * kine.vlne_##version##_numu_full_primaryE;   \
+        }                                                               \
+        else {                                                          \
+            return 1000.0 * kine.vlne_##version##_numu_partial_primaryE; \
+        }                                                               \
+    }                                                                   \
+    else if (name == "Emuon_vlne_fc_" #version) {                       \
+        return 1000.0 * kine.vlne_##version##_numu_full_primaryE;       \
+    }                                                                   \
+    else if (name == "Emuon_vlne_pc_" #version) {                       \
+        return 1000.0 * kine.vlne_##version##_numu_partial_primaryE;    \
+    }                                                                   \
+    else if (name == "Emuon_vlne_hybrid_" #version) {                   \
+        if (eval.match_isFC) {                                          \
+            return 1000.0 * kine.vlne_##version##_numu_full_primaryE;   \
+        }                                                               \
+        else {                                                          \
+            return 1000.0 * pfeval.reco_muonMomentum[3];                \
+        }                                                               \
+    }                                                                   \
+    else if (name == "Ehadron_vlne_" #version) {                        \
+        if (eval.match_isFC) {                                          \
+            return 1000.0 * (                                           \
+                  kine.vlne_##version##_numu_full_totalE                \
+                - kine.vlne_##version##_numu_full_primaryE              \
+            );                                                          \
+        }                                                               \
+        else {                                                          \
+            return 1000.0 * (                                           \
+                  kine.vlne_##version##_numu_partial_totalE             \
+                - kine.vlne_##version##_numu_partial_primaryE           \
+            );                                                          \
+        }                                                               \
+    }                                                                   \
+    else if (name == "Ehadron_vlne_fc_" #version) {                     \
+        return 1000.0 * (                                               \
+              kine.vlne_##version##_numu_full_totalE                    \
+            - kine.vlne_##version##_numu_full_primaryE                  \
+        );                                                              \
+    }                                                                   \
+    else if (name == "Ehadron_vlne_pc_" #version) {                     \
+        return 1000.0 * (                                               \
+              kine.vlne_##version##_numu_partial_totalE                 \
+            - kine.vlne_##version##_numu_partial_primaryE               \
+        );                                                              \
+    }                                                                   \
+    else if (name == "Ehadron_hybrid_" #version) {                      \
+        if (eval.match_isFC) {                                          \
+            return 1000.0 * (                                           \
+                  kine.vlne_##version##_numu_full_totalE                \
+                - kine.vlne_##version##_numu_full_primaryE              \
+            );                                                          \
+        }                                                               \
+        else {                                                          \
+            if (pfeval.reco_muonMomentum[3]>0) {                        \
+                return (                                                \
+                      get_reco_Enu_corr(kine, flag_data)                \
+                    - 1000.0 * pfeval.reco_muonMomentum[3]              \
+                );                                                      \
+            }                                                           \
+            else {                                                      \
+                return -1000;                                           \
+            }                                                           \
+        }                                                               \
+    }
+
 namespace LEEana{
   // this is for the real data, for fake data this should be 1 ...
   double em_charge_scale = 0.95;
@@ -271,17 +354,13 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
   }else if (var_name == "reco_Emuon"){
       return pfeval.reco_muonMomentum[3]*1000; // GeV --> MeV
   }
-  else if(var_name == "reco_Emuon_hybrid"){
-      if (eval.match_isFC) {
-        return 1000.0*kine.vlne_v4_numu_full_primaryE;
-      }
-      else {
-        return 1000.0*pfeval.reco_muonMomentum[3];
-      }
-  }else if(var_name == "reco_Emuon_dlnew"){
-      // std::cout << "vlne_v4_numu_full_primaryE: " << kine.vlne_v4_numu_full_primaryE << std::endl;
-      return 1000.0*kine.vlne_v4_numu_full_primaryE;
-  }
+  DLEE_IF_ELSE_BRANCH(v1, var_name)
+  DLEE_IF_ELSE_BRANCH(v2, var_name)
+  DLEE_IF_ELSE_BRANCH(v3, var_name)
+  DLEE_IF_ELSE_BRANCH(v4, var_name)
+  DLEE_IF_ELSE_BRANCH(v5, var_name)
+  DLEE_IF_ELSE_BRANCH(v6, var_name)
+  DLEE_IF_ELSE_BRANCH(v7, var_name)
   else if (var_name == "muon_momentum"){
       if (pfeval.reco_muonMomentum[3] < 0) { return -1; }
       float KE_muon = pfeval.reco_muonMomentum[3]*1000.-105.66; // GeV --> MeV
@@ -318,6 +397,7 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
     else
       return -1000;
+  }
     //  }else if (var_name == "Ehadron"){
       /* Float_t Ehadron = kine.kine_reco_Enu; */
       /* for(size_t i=0; i<kine.kine_energy_particle->size(); i++) */
@@ -327,18 +407,6 @@ double LEEana::get_kine_var(KineInfo& kine, EvalInfo& eval, PFevalInfo& pfeval, 
       /*     //if(abs(pdgcode)==11) Ehadron = Ehadron - kine.kine_energy_particle->at(i); */ 
       /* } */
     // return kine.kine_reco_Enu - pfeval.reco_muonMomentum[3]*1000.;
-  }else if (var_name == "Ehadron_hybrid"){
-    if (eval.match_isFC)
-      return 1000.0*(kine.vlne_v4_numu_full_totalE - kine.vlne_v4_numu_full_primaryE);
-    else {
-      if (pfeval.reco_muonMomentum[3]>0)
-        return get_reco_Enu_corr(kine, flag_data) - pfeval.reco_muonMomentum[3]*1000.;
-      else
-        return -1000;
-    }
-  }else if (var_name == "Ehadron_dlnew"){
-      return 1000.0*(kine.vlne_v4_numu_full_totalE - kine.vlne_v4_numu_full_primaryE);
-  }
   else if (var_name == "Q2"){
     Float_t Enu = get_reco_Enu_corr(kine, flag_data);
     Float_t Emu = pfeval.reco_muonMomentum[3]*1000.;

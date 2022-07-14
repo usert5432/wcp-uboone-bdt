@@ -1,6 +1,103 @@
 #ifndef UBOONE_LEE_KINE
 #define UBOONE_LEE_KINE
 
+#define DLEE_NAME(version, flavor, contain, energy) \
+    vlne_ ##version## _ ##flavor## _ ##contain## _ ##energy## E
+
+/* Dirty hack to make string subsitution work */
+#define TO_STRING_BASE(x) #x
+#define TO_STRING(x) TO_STRING_BASE(x)
+
+#define DLEE_NAME_S(version, flavor, contain, energy) \
+    TO_STRING(DLEE_NAME(version, flavor, contain, energy))
+
+#define DLEE_DEFINE(version)                            \
+    bool has_vlne_##version;                            \
+    Float_t DLEE_NAME(version, numu, full, primary);    \
+    Float_t DLEE_NAME(version, numu, full, total);      \
+    Float_t DLEE_NAME(version, numu, partial, primary); \
+    Float_t DLEE_NAME(version, numu, partial, total);
+
+#define DLEE_INIT(version, info)                                \
+    {                                                           \
+        info.DLEE_NAME(version, numu, full, primary)    = 0;    \
+        info.DLEE_NAME(version, numu, full, total)      = 0;    \
+        info.DLEE_NAME(version, numu, partial, primary) = 0;    \
+        info.DLEE_NAME(version, numu, partial, total)   = 0;    \
+    }
+
+#define DLEE_INFO_PUT_TREE_ADDRESS(version, tree, info)             \
+    {                                                               \
+        if (info.has_vlne_##version)                                \
+        {                                                           \
+            tree->Branch(                                           \
+                DLEE_NAME_S(version, numu, full, primary),          \
+                &info.DLEE_NAME(version, numu, full, primary),      \
+                "data/F"                                            \
+            );                                                      \
+            tree->Branch(                                           \
+                DLEE_NAME_S(version, numu, full, total),            \
+                &info.DLEE_NAME(version, numu, full, total),        \
+                "data/F"                                            \
+            );                                                      \
+            tree->Branch(                                           \
+                DLEE_NAME_S(version, numu, partial, primary),       \
+                &info.DLEE_NAME(version, numu, partial, primary),   \
+                "data/F"                                            \
+            );                                                      \
+            tree->Branch(                                           \
+                DLEE_NAME_S(version, numu, partial, total),         \
+                &info.DLEE_NAME(version, numu, partial, total),     \
+                "data/F"                                            \
+            );                                                      \
+        }                                                           \
+    }
+
+#define DLEE_INFO_SET_TREE_ADDRESS(version, tree, info)             \
+    {                                                               \
+        info.has_vlne_##version = false;                            \
+        if (tree->GetBranch(DLEE_NAME_S(version, numu, full, primary))) \
+        {                                                           \
+            tree->SetBranchAddress(                                 \
+                DLEE_NAME_S(version, numu, full, primary),          \
+                &info.DLEE_NAME(version, numu, full, primary)       \
+            );                                                      \
+            tree->SetBranchAddress(                                 \
+                DLEE_NAME_S(version, numu, full, total),            \
+                &info.DLEE_NAME(version, numu, full, total)         \
+            );                                                      \
+            tree->SetBranchAddress(                                 \
+                DLEE_NAME_S(version, numu, partial, primary),       \
+                &info.DLEE_NAME(version, numu, partial, primary)    \
+            );                                                      \
+            tree->SetBranchAddress(                                 \
+                DLEE_NAME_S(version, numu, partial, total),         \
+                &info.DLEE_NAME(version, numu, partial, total)      \
+            );                                                      \
+            info.has_vlne_##version = true;                         \
+        }                                                           \
+    }
+
+#define DLEE_SET_BRANCH_STATUS(version, tree, status)                   \
+    {                                                                   \
+        if (tree->GetBranch(DLEE_NAME_S(version, numu, full, primary))) \
+        {                                                               \
+            tree->SetBranchStatus(                                      \
+                DLEE_NAME_S(version, numu, full, primary), status       \
+            );                                                          \
+            tree->SetBranchStatus(                                      \
+                DLEE_NAME_S(version, numu, full, total), status         \
+            );                                                          \
+            tree->SetBranchStatus(                                      \
+                DLEE_NAME_S(version, numu, partial, primary), status    \
+            );                                                          \
+            tree->SetBranchStatus(                                      \
+                DLEE_NAME_S(version, numu, partial, total), status      \
+            );                                                          \
+        }                                                               \
+    }
+
+
 namespace LEEana{
 struct KineInfo{
   Float_t kine_reco_Enu;
@@ -24,15 +121,13 @@ struct KineInfo{
 
   // DL energy
   bool has_dl_ee;
-  Float_t vlne_v4_numu_full_primaryE; // muon energy for FC
-  Float_t vlne_v4_numu_full_totalE; // muon neutrino energy for FC
-  Float_t vlne_v4_numu_partial_primaryE; // PC
-  Float_t vlne_v4_numu_partial_totalE; // PC
-  // Float_t vlne_nue_full_primaryE; // electron energy for FC
-  // Float_t vlne_nue_full_totalE; // electron neutrino energy for FC
-  // Float_t vlne_nue_partial_primaryE; // PC
-  // Float_t vlne_nue_partial_totalE; // PC
-
+  DLEE_DEFINE(v1)
+  DLEE_DEFINE(v2)
+  DLEE_DEFINE(v3)
+  DLEE_DEFINE(v4)
+  DLEE_DEFINE(v5)
+  DLEE_DEFINE(v6)
+  DLEE_DEFINE(v7)
 };
 
 void set_tree_address(TTree *tree0, KineInfo& tagger_info);
@@ -59,14 +154,14 @@ void LEEana::clear_kine_info(KineInfo& tagger_info){
   tagger_info.kine_pio_phi_2=0;
   tagger_info.kine_pio_dis_2=0;
   tagger_info.kine_pio_angle=0;
-  tagger_info.vlne_v4_numu_full_primaryE=0;
-  tagger_info.vlne_v4_numu_full_totalE=0;
-  tagger_info.vlne_v4_numu_partial_primaryE=0;
-  tagger_info.vlne_v4_numu_partial_totalE=0;
-  // tagger_info.vlne_nue_full_primaryE=0;
-  // tagger_info.vlne_nue_full_totalE=0;
-  // tagger_info.vlne_nue_partial_primaryE=0;
-  // tagger_info.vlne_nue_partial_totalE=0;
+
+  DLEE_INIT(v1, tagger_info);
+  DLEE_INIT(v2, tagger_info);
+  DLEE_INIT(v3, tagger_info);
+  DLEE_INIT(v4, tagger_info);
+  DLEE_INIT(v5, tagger_info);
+  DLEE_INIT(v6, tagger_info);
+  DLEE_INIT(v7, tagger_info);
 }
 
 void LEEana::set_tree_address(TTree *tree0, KineInfo& tagger_info){
@@ -89,19 +184,14 @@ void LEEana::set_tree_address(TTree *tree0, KineInfo& tagger_info){
   tree0->SetBranchAddress("kine_pio_dis_2", &tagger_info.kine_pio_dis_2);
   tree0->SetBranchAddress("kine_pio_angle", &tagger_info.kine_pio_angle);
 
-  tagger_info.has_dl_ee = false;
-  if (tree0->GetBranch("vlne_v4_numu_full_primaryE")) {
-    tree0->SetBranchAddress("vlne_v4_numu_full_primaryE", &tagger_info.vlne_v4_numu_full_primaryE);
-    tree0->SetBranchAddress("vlne_v4_numu_full_totalE", &tagger_info.vlne_v4_numu_full_totalE);
-    tree0->SetBranchAddress("vlne_v4_numu_partial_primaryE", &tagger_info.vlne_v4_numu_partial_primaryE);
-    tree0->SetBranchAddress("vlne_v4_numu_partial_totalE", &tagger_info.vlne_v4_numu_partial_totalE);
-    // tree0->SetBranchAddress("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE);
-    // tree0->SetBranchAddress("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE);
-    // tree0->SetBranchAddress("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE);
-    // tree0->SetBranchAddress("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE);
-    tagger_info.has_dl_ee = true;
-  }
-};
+    DLEE_INFO_SET_TREE_ADDRESS(v1, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v2, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v3, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v4, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v5, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v6, tree0, tagger_info);
+    DLEE_INFO_SET_TREE_ADDRESS(v7, tree0, tagger_info);
+}
 
 void LEEana::put_tree_address(TTree *tree0, KineInfo& tagger_info){
   tree0->Branch("kine_reco_Enu", &tagger_info.kine_reco_Enu,"data/F");
@@ -123,17 +213,14 @@ void LEEana::put_tree_address(TTree *tree0, KineInfo& tagger_info){
   tree0->Branch("kine_pio_dis_2", &tagger_info.kine_pio_dis_2,"data/F");
   tree0->Branch("kine_pio_angle", &tagger_info.kine_pio_angle,"data/F");
 
-  if (tagger_info.has_dl_ee){
-    tree0->Branch("vlne_v4_numu_full_primaryE", &tagger_info.vlne_v4_numu_full_primaryE,"data/F");
-    tree0->Branch("vlne_v4_numu_full_totalE", &tagger_info.vlne_v4_numu_full_totalE,"data/F");
-    tree0->Branch("vlne_v4_numu_partial_primaryE", &tagger_info.vlne_v4_numu_partial_primaryE,"data/F");
-    tree0->Branch("vlne_v4_numu_partial_totalE", &tagger_info.vlne_v4_numu_partial_totalE,"data/F");
-    // tree0->Branch("vlne_nue_full_primaryE", &tagger_info.vlne_nue_full_primaryE,"data/F");
-    // tree0->Branch("vlne_nue_full_totalE", &tagger_info.vlne_nue_full_totalE,"data/F");
-    // tree0->Branch("vlne_nue_partial_primaryE", &tagger_info.vlne_nue_partial_primaryE,"data/F");
-    // tree0->Branch("vlne_nue_partial_totalE", &tagger_info.vlne_nue_partial_totalE,"data/F");
-  }
-};
+    DLEE_INFO_PUT_TREE_ADDRESS(v1, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v2, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v3, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v4, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v5, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v6, tree0, tagger_info);
+    DLEE_INFO_PUT_TREE_ADDRESS(v7, tree0, tagger_info);
+}
 
 
 #endif
