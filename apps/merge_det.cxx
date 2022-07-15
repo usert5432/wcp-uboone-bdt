@@ -725,17 +725,15 @@ int main( int argc, char** argv )
   T_KINEvars_cv->SetBranchStatus("kine_pio_phi_2",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_dis_2",1);
   T_KINEvars_cv->SetBranchStatus("kine_pio_angle",1);
-  if (T_KINEvars_cv->GetBranch("vlne_v4_numu_full_primaryE")) {
-    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_full_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_full_totalE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_partial_primaryE",1);
-    T_KINEvars_cv->SetBranchStatus("vlne_v4_numu_partial_totalE",1);
-    // T_KINEvars_cv->SetBranchStatus("vlne_nue_full_primaryE",1);
-    // T_KINEvars_cv->SetBranchStatus("vlne_nue_full_totalE",1);
-    // T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_primaryE",1);
-    // T_KINEvars_cv->SetBranchStatus("vlne_nue_partial_totalE",1);
-  }
-  
+
+    DLEE_SET_BRANCH_STATUS(v1, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v2, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v3, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v4, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v5, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v6, T_KINEvars_cv, 1);
+    DLEE_SET_BRANCH_STATUS(v7, T_KINEvars_cv, 1);
+
   T_PFeval_cv->SetBranchStatus("*",1);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxX",1);
   T_PFeval_cv->SetBranchStatus("reco_nuvtxY",1);
