@@ -2682,12 +2682,14 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
   }else if (ch_name == "numuCC_FC_bnb" || ch_name == "BG_numuCC_FC_ext" || ch_name == "BG_numuCC_FC_dirt"
 	    || ch_name == "numuCC1_FC_bnb" || ch_name == "BG_numuCC1_FC_ext" || ch_name == "BG_numuCC1_FC_dirt"
 	    || ch_name == "numuCC2_FC_bnb" || ch_name == "BG_numuCC2_FC_ext" || ch_name == "BG_numuCC2_FC_dirt"
+	    || ch_name == "numuCC3_FC_bnb" || ch_name == "BG_numuCC3_FC_ext" || ch_name == "BG_numuCC3_FC_dirt"
 	    ){
     if (flag_numuCC && flag_FC) return true;
     else return false;
   }else if (ch_name == "numuCC_PC_bnb" || ch_name == "BG_numuCC_PC_ext" || ch_name == "BG_numuCC_PC_dirt"
 	    || ch_name == "numuCC1_PC_bnb" || ch_name == "BG_numuCC1_PC_ext" || ch_name == "BG_numuCC1_PC_dirt"
 	    || ch_name == "numuCC2_PC_bnb" || ch_name == "BG_numuCC2_PC_ext" || ch_name == "BG_numuCC2_PC_dirt"
+	    || ch_name == "numuCC3_PC_bnb" || ch_name == "BG_numuCC3_PC_ext" || ch_name == "BG_numuCC3_PC_dirt"
 	    ){
     //if (flag_FC) return true; // quick hack test ...
     if (flag_numuCC && (!flag_FC)) return true;
@@ -2812,10 +2814,11 @@ bool LEEana::get_cut_pass(TString ch_name, TString add_cut, bool flag_data, Eval
     return false;
   }else if (ch_name == "numuCC_FC_overlay" || ch_name == "numuCC_PC_overlay" 
 	    || ch_name == "numuCC1_FC_overlay" || ch_name == "numuCC1_PC_overlay" 
+	    || ch_name == "numuCC3_FC_overlay" || ch_name == "numuCC3_PC_overlay" 
 	    || ch_name == "numuCC2_FC_overlay" || ch_name == "numuCC2_PC_overlay"   ){
-    if (ch_name == "numuCC_FC_overlay" || ch_name == "numuCC1_FC_overlay" || ch_name == "numuCC2_FC_overlay"){
+    if (ch_name == "numuCC_FC_overlay" || ch_name == "numuCC1_FC_overlay" || ch_name == "numuCC2_FC_overlay" || ch_name == "numuCC3_FC_overlay"){
       if (flag_numuCC && flag_FC ) return true;
-    }else if (ch_name == "numuCC_PC_overlay" || ch_name == "numuCC1_PC_overlay" || ch_name == "numuCC2_PC_overlay" ){
+    }else if (ch_name == "numuCC_PC_overlay" || ch_name == "numuCC1_PC_overlay" || ch_name == "numuCC2_PC_overlay" || ch_name == "numuCC3_PC_overlay"  ){
       if (flag_numuCC && (!flag_FC) ) return true;
     }
     return false;
